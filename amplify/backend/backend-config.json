@@ -16,5 +16,13 @@
         }
       }
     }
+  },
+  "auth": {
+    "aybowfitness3de6a88d": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false
+    }
   }
 }

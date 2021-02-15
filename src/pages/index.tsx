@@ -3,14 +3,14 @@ import { API, graphqlOperation } from 'aws-amplify'
 import nanoid from 'nanoid'
 import produce from 'immer'
 
-import { ListTodosQuery, GetTodoListQuery } from '../src/API'
-import config from '../src/aws-exports'
+import { ListTodosQuery, GetTodoListQuery } from '../API'
+import config from '../aws-exports'
 import {
   createTodo,
   deleteTodo,
   createTodoList,
-} from '../src/graphql/mutations'
-import { getTodoList } from '../src/graphql/queries'
+} from '../graphql/mutations'
+import { getTodoList } from '../graphql/queries'
 
 const MY_ID = nanoid()
 API.configure(config)

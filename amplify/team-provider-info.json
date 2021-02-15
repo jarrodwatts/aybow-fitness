@@ -10,6 +10,11 @@
       "StackName": "amplify-aybowfitness-dev-205104",
       "StackId": "arn:aws:cloudformation:ap-southeast-2:019507542291:stack/amplify-aybowfitness-dev-205104/c77c8200-6f73-11eb-8ffa-0642742c490a",
       "AmplifyAppId": "d3kgjf69njxx70"
+    },
+    "categories": {
+      "auth": {
+        "aybowfitness3de6a88d": {}
+      }
     }
   }
 }

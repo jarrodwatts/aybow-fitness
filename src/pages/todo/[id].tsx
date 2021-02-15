@@ -1,8 +1,8 @@
 import { API, graphqlOperation } from 'aws-amplify'
 
-import { GetTodoQuery, GetTodoListQuery } from '../../src/API'
-import { getTodo, getTodoList } from '../../src/graphql/queries'
-import config from '../../src/aws-exports'
+import { GetTodoQuery, GetTodoListQuery } from '../../API'
+import { getTodo, getTodoList } from '../../graphql/queries'
+import config from '../../aws-exports'
 
 API.configure(config)
 

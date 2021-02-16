@@ -12,8 +12,11 @@
       "AmplifyAppId": "d3kgjf69njxx70"
     },
     "categories": {
+      "function": {
+        "aybowfitness24958a1524958a15PostConfirmation": {}
+      },
       "auth": {
-        "aybowfitness3de6a88d": {}
+        "aybowfitness24958a1524958a15": {}
       }
     }
   }

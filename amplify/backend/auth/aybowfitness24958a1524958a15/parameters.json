@@ -1,8 +1,8 @@
 {
-    "identityPoolName": "aybowfitness3de6a88d_identitypool_3de6a88d",
+    "identityPoolName": "aybowfitness24958a15_identitypool_24958a15",
     "allowUnauthenticatedIdentities": false,
-    "resourceNameTruncated": "aybowf3de6a88d",
-    "userPoolName": "aybowfitness3de6a88d_userpool_3de6a88d",
+    "resourceNameTruncated": "aybowf24958a15",
+    "userPoolName": "aybowfitness24958a15_userpool_24958a15",
     "autoVerifiedAttributes": [
         "email"
     ],
@@ -28,10 +28,10 @@
     "userpoolClientReadAttributes": [
         "email"
     ],
-    "userpoolClientLambdaRole": "aybowf3de6a88d_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "aybowf24958a15_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "3de6a88d",
-    "resourceName": "aybowfitness3de6a88d",
+    "sharedId": "24958a15",
+    "resourceName": "aybowfitness24958a1524958a15",
     "authSelections": "identityPoolAndUserPool",
     "authRoleArn": {
         "Fn::GetAtt": [
@@ -45,9 +45,30 @@
             "Arn"
         ]
     },
-    "useDefault": "default",
-    "userPoolGroupList": [],
+    "useDefault": "manual",
+    "thirdPartyAuth": false,
+    "userPoolGroups": true,
+    "adminQueries": false,
+    "triggers": "{\n  \"PostConfirmation\": [\n    \"custom\"\n  ]\n}",
+    "hostedUI": false,
+    "userPoolGroupList": [
+        "Admin"
+    ],
     "serviceName": "Cognito",
     "usernameCaseSensitive": false,
-    "dependsOn": []
+    "parentStack": {
+        "Ref": "AWS::StackId"
+    },
+    "permissions": [],
+    "dependsOn": [
+        {
+            "category": "function",
+            "resourceName": "aybowfitness24958a1524958a15PostConfirmation",
+            "triggerProvider": "Cognito",
+            "attributes": [
+                "Arn",
+                "Name"
+            ]
+        }
+    ]
 }

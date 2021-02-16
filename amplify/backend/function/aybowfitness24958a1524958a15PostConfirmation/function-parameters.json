@@ -1,0 +1,16 @@
+{
+  "trigger": true,
+  "modules": [
+    "custom"
+  ],
+  "parentResource": "aybowfitness24958a1524958a15",
+  "functionName": "aybowfitness24958a1524958a15PostConfirmation",
+  "resourceName": "aybowfitness24958a1524958a15PostConfirmation",
+  "parentStack": "auth",
+  "triggerEnvs": [],
+  "triggerDir": "C:\\Users\\New\\AppData\\Roaming\\npm\\node_modules\\@aws-amplify\\cli\\node_modules\\amplify-category-auth\\provider-utils\\awscloudformation\\triggers\\PostConfirmation",
+  "triggerTemplate": "PostConfirmation.json.ejs",
+  "roleName": "aybowfitness24958a1524958a15PostConfirmation",
+  "skipEdit": true,
+  "enableCors": false
+}

@@ -2,140 +2,44 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const createTodo = /* GraphQL */ `
-  mutation CreateTodo(
-    $input: CreateTodoInput!
-    $condition: ModelTodoConditionInput
+export const createUser = /* GraphQL */ `
+  mutation CreateUser(
+    $input: CreateUserInput!
+    $condition: ModelUserConditionInput
   ) {
-    createTodo(input: $input, condition: $condition) {
+    createUser(input: $input, condition: $condition) {
       id
-      name
+      username
+      email
       createdAt
-      completed
-      todoList {
-        id
-        createdAt
-        todos {
-          nextToken
-        }
-        updatedAt
-      }
-      userId
       updatedAt
     }
   }
 `;
-export const updateTodo = /* GraphQL */ `
-  mutation UpdateTodo(
-    $input: UpdateTodoInput!
-    $condition: ModelTodoConditionInput
+export const updateUser = /* GraphQL */ `
+  mutation UpdateUser(
+    $input: UpdateUserInput!
+    $condition: ModelUserConditionInput
   ) {
-    updateTodo(input: $input, condition: $condition) {
+    updateUser(input: $input, condition: $condition) {
       id
-      name
+      username
+      email
       createdAt
-      completed
-      todoList {
-        id
-        createdAt
-        todos {
-          nextToken
-        }
-        updatedAt
-      }
-      userId
       updatedAt
     }
   }
 `;
-export const deleteTodo = /* GraphQL */ `
-  mutation DeleteTodo(
-    $input: DeleteTodoInput!
-    $condition: ModelTodoConditionInput
+export const deleteUser = /* GraphQL */ `
+  mutation DeleteUser(
+    $input: DeleteUserInput!
+    $condition: ModelUserConditionInput
   ) {
-    deleteTodo(input: $input, condition: $condition) {
+    deleteUser(input: $input, condition: $condition) {
       id
-      name
+      username
+      email
       createdAt
-      completed
-      todoList {
-        id
-        createdAt
-        todos {
-          nextToken
-        }
-        updatedAt
-      }
-      userId
-      updatedAt
-    }
-  }
-`;
-export const createTodoList = /* GraphQL */ `
-  mutation CreateTodoList(
-    $input: CreateTodoListInput!
-    $condition: ModelTodoListConditionInput
-  ) {
-    createTodoList(input: $input, condition: $condition) {
-      id
-      createdAt
-      todos {
-        items {
-          id
-          name
-          createdAt
-          completed
-          userId
-          updatedAt
-        }
-        nextToken
-      }
-      updatedAt
-    }
-  }
-`;
-export const updateTodoList = /* GraphQL */ `
-  mutation UpdateTodoList(
-    $input: UpdateTodoListInput!
-    $condition: ModelTodoListConditionInput
-  ) {
-    updateTodoList(input: $input, condition: $condition) {
-      id
-      createdAt
-      todos {
-        items {
-          id
-          name
-          createdAt
-          completed
-          userId
-          updatedAt
-        }
-        nextToken
-      }
-      updatedAt
-    }
-  }
-`;
-export const deleteTodoList = /* GraphQL */ `
-  mutation DeleteTodoList(
-    $input: DeleteTodoListInput!
-    $condition: ModelTodoListConditionInput
-  ) {
-    deleteTodoList(input: $input, condition: $condition) {
-      id
-      createdAt
-      todos {
-        items {
-          id
-          name
-          createdAt
-          completed
-          userId
-          updatedAt
-        }
-        nextToken
-      }
       updatedAt
     }
   }

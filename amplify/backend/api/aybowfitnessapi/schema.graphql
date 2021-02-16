@@ -1,15 +1,12 @@
-type Todo @model {
-  # ! means non-null GraphQL fields are allowed to be null by default
+type User
+  @model
+  @auth(
+    rules: [
+      { allow: groups, groups: ["Admin"] }
+      { allow: owner, ownerField: "username", operations: [read] }
+    ]
+  ) {
   id: ID!
-  name: String!
-  createdAt: String!
-  completed: Boolean!
-  todoList: TodoList! @connection(name: "SortedList")
-  userId: String!
-}
-
-type TodoList @model {
-  id: ID!
-  createdAt: String!
-  todos: [Todo] @connection(name: "SortedList", sortField: "createdAt")
+  username: String!
+  email: String!
 }

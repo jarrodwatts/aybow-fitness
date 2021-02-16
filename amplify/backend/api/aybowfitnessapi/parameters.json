@@ -1,5 +1,11 @@
 {
   "AppSyncApiName": "aybowfitnessapi",
   "DynamoDBBillingMode": "PAY_PER_REQUEST",
-  "DynamoDBEnableServerSideEncryption": false
+  "DynamoDBEnableServerSideEncryption": false,
+  "AuthCognitoUserPoolId": {
+    "Fn::GetAtt": [
+      "authaybowfitness24958a1524958a15",
+      "Outputs.UserPoolId"
+    ]
+  }
 }

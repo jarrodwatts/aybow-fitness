@@ -1,177 +1,57 @@
-import { Reducer, useReducer, Dispatch } from 'react'
-import { API, graphqlOperation } from 'aws-amplify'
-import nanoid from 'nanoid'
-import produce from 'immer'
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import { API, graphqlOperation } from "aws-amplify";
+import { listUsers } from "../graphql/queries";
+import { GetStaticProps } from "next";
+import Button from "@material-ui/core/Button";
+import Card from "@material-ui/core/Card";
+import CardActions from "@material-ui/core/CardActions";
+import CardContent from "@material-ui/core/CardContent";
+import CardMedia from "@material-ui/core/CardMedia";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
+import { makeStyles } from "@material-ui/core/styles";
+import Container from "@material-ui/core/Container";
+import RoutineCard from "../components/RoutineCard";
+import Hero from "../components/Hero";
 
-import { ListTodosQuery, GetTodoListQuery } from '../API'
-import config from '../aws-exports'
-import {
-  createTodo,
-  deleteTodo,
-  createTodoList,
-} from '../graphql/mutations'
-import { getTodoList } from '../graphql/queries'
+const useStyles = makeStyles((theme) => ({
+  cardGrid: {
+    paddingTop: theme.spacing(8),
+    paddingBottom: theme.spacing(8),
+  },
+}));
 
-const MY_ID = nanoid()
-API.configure(config)
+const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
-type Todo = Omit<
-  ListTodosQuery['listTodos']['items'][0],
-  '__typename' | 'todoList'
->
-
-type Props = {
-  todos: Todo[]
-}
-
-type State = {
-  todos: Todo[]
-  currentName: string
-}
-
-type Action =
-  | {
-      type: 'add-todo'
-      payload: Todo
-    }
-  | {
-      type: 'delete-todo'
-      payload: string
-    }
-  | {
-      type: 'reset-current'
-    }
-  | { type: 'set-current'; payload: string }
-
-const reducer: Reducer<State, Action> = (state, action) => {
-  switch (action.type) {
-    case 'add-todo': {
-      return produce(state, (draft) => {
-        draft.todos.push(action.payload)
-      })
-    }
-    case 'delete-todo': {
-      const index = state.todos.findIndex(({ id }) => action.payload === id)
-      if (index === -1) return state
-      return produce(state, (draft) => {
-        draft.todos.splice(index, 1)
-      })
-    }
-    case 'reset-current': {
-      return produce(state, (draft) => {
-        draft.currentName = ''
-      })
-    }
-    case 'set-current': {
-      return produce(state, (draft) => {
-        draft.currentName = action.payload
-      })
-    }
-    default: {
-      return state
-    }
-  }
-}
-
-const createToDo = async (dispatch: Dispatch<Action>, currentToDo) => {
-  const todo = {
-    id: nanoid(),
-    name: currentToDo,
-    createdAt: `${Date.now()}`,
-    completed: false,
-    todoTodoListId: 'global',
-    userId: MY_ID,
-  }
-  dispatch({ type: 'add-todo', payload: todo })
-  dispatch({ type: 'reset-current' })
-  try {
-    await API.graphql(graphqlOperation(createTodo, { input: todo }))
-  } catch (err) {
-    dispatch({ type: 'set-current', payload: todo.name })
-    console.warn('Error adding to do ', err)
-  }
-}
-const deleteToDo = async (dispatch: Dispatch<Action>, id: string) => {
-  dispatch({ type: 'delete-todo', payload: id })
-  try {
-    await API.graphql({
-      ...graphqlOperation(deleteTodo),
-      variables: { input: { id } },
-    })
-  } catch (err) {
-    console.warn('Error deleting to do ', err)
-  }
-}
-const App = (props: Props) => {
-  const [state, dispatch] = useReducer(reducer, {
-    todos: props.todos,
-    currentName: '',
-  })
+function Index(props) {
+  const [routines, setRoutines] = useState([]);
+  const classes = useStyles();
+  useEffect(() => {});
   return (
-    <div>
-      <h3>Add a Todo</h3>
-      <form
-        onSubmit={(ev) => {
-          ev.preventDefault()
-          createToDo(dispatch, state.currentName)
-        }}
-      >
-        <input
-          value={state.currentName}
-          onChange={(e) => {
-            dispatch({ type: 'set-current', payload: e.target.value })
-          }}
-        />
-        <button type="submit">Create Todo</button>
-      </form>
-      <h3>Todos List</h3>
-      {state.todos.map((todo, index) => (
-        <p key={index}>
-          <a href={`/todo/${todo.id}`}>{todo.name}</a>
-          <button
-            onClick={() => {
-              deleteToDo(dispatch, todo.id)
-            }}
-          >
-            delete
-          </button>
-        </p>
-      ))}
-    </div>
-  )
+    <React.Fragment>
+      <CssBaseline />
+      <main>
+        <Hero />
+        <Container className={classes.cardGrid} maxWidth="md">
+          <Grid container spacing={4}>
+            {cards.map((card) => (
+              <Grid item key={card} xs={12} sm={6} md={4}>
+                <RoutineCard />
+              </Grid>
+            ))}
+          </Grid>
+        </Container>
+      </main>
+    </React.Fragment>
+  );
 }
 
-export const getStaticProps = async () => {
-  let result = (await API.graphql(
-    graphqlOperation(getTodoList, { id: 'global' })
-  )) as { data: GetTodoListQuery; errors: any[] }
-
-  if (result.errors) {
-    console.error('Failed to fetch todolist.', result.errors)
-    throw new Error(result.errors[0].message)
-  }
-  if (result.data.getTodoList !== null) {
-    return {
-      props: {
-        todos: result.data.getTodoList.todos.items,
-      },
-    }
-  }
-
-  await API.graphql(
-    graphqlOperation(createTodoList, {
-      input: {
-        id: 'global',
-        createdAt: `${Date.now()}`,
-      },
-    })
-  )
-
+export const getStaticProps: GetStaticProps = async (context) => {
   return {
-    props: {
-      todos: [],
-    },
-  }
-}
+    props: {},
+  };
+};
 
-export default App
+export default Index;

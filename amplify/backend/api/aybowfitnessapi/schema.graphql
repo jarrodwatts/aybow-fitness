@@ -2,11 +2,72 @@ type User
   @model
   @auth(
     rules: [
-      { allow: groups, groups: ["Admin"] }
-      { allow: owner, ownerField: "username", operations: [read] }
+      {
+        allow: owner
+        # ownerField: "username"
+        operations: [create, delete, update]
+      }
+      { allow: public, operations: [read] }
     ]
   ) {
   id: ID!
   username: String!
   email: String!
+}
+
+# routine = blog
+type Routine
+  @model
+  @auth(
+    rules: [
+      {
+        allow: owner
+        ownerField: "owner"
+        operations: [create, delete, update]
+      }
+      { allow: public, operations: [read] }
+    ]
+  ) {
+  id: ID!
+  name: String!
+  description: String
+  days: [Day]! @connection(name: "RoutineDays")
+}
+
+# day = post
+type Day
+  @model
+  @auth(
+    rules: [
+      {
+        allow: owner
+        operations: [create, delete, update]
+      }
+      { allow: public, operations: [read] }
+    ]
+  ) {
+  id: ID!
+  name: String
+  routine: Routine @connection(name: "RoutineDays")
+  exercises: [Exercise] @connection(name: "DaysExercises")
+}
+
+# Exercise = comment?
+type Exercise
+  @model
+  @auth(
+    rules: [
+      {
+        allow: owner
+        operations: [create, delete, update]
+      }
+      { allow: public, operations: [read] }
+    ]
+  ) {
+  id: ID!
+  name: String!
+  description: String
+  reps: String!
+  sets: String!
+  day: Day @connection(name: "DaysExercises")
 }

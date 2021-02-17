@@ -9,6 +9,7 @@ export type CreateUserInput = {
 };
 
 export type ModelUserConditionInput = {
+  username?: ModelStringInput | null,
   email?: ModelStringInput | null,
   and?: Array< ModelUserConditionInput | null > | null,
   or?: Array< ModelUserConditionInput | null > | null,
@@ -65,6 +66,85 @@ export type DeleteUserInput = {
   id?: string | null,
 };
 
+export type CreateRoutineInput = {
+  id?: string | null,
+  name: string,
+  description?: string | null,
+};
+
+export type ModelRoutineConditionInput = {
+  name?: ModelStringInput | null,
+  description?: ModelStringInput | null,
+  and?: Array< ModelRoutineConditionInput | null > | null,
+  or?: Array< ModelRoutineConditionInput | null > | null,
+  not?: ModelRoutineConditionInput | null,
+};
+
+export type UpdateRoutineInput = {
+  id: string,
+  name?: string | null,
+  description?: string | null,
+};
+
+export type DeleteRoutineInput = {
+  id?: string | null,
+};
+
+export type CreateDayInput = {
+  id?: string | null,
+  name?: string | null,
+  dayRoutineId?: string | null,
+};
+
+export type ModelDayConditionInput = {
+  name?: ModelStringInput | null,
+  and?: Array< ModelDayConditionInput | null > | null,
+  or?: Array< ModelDayConditionInput | null > | null,
+  not?: ModelDayConditionInput | null,
+};
+
+export type UpdateDayInput = {
+  id: string,
+  name?: string | null,
+  dayRoutineId?: string | null,
+};
+
+export type DeleteDayInput = {
+  id?: string | null,
+};
+
+export type CreateExerciseInput = {
+  id?: string | null,
+  name: string,
+  description?: string | null,
+  reps: string,
+  sets: string,
+  exerciseDayId?: string | null,
+};
+
+export type ModelExerciseConditionInput = {
+  name?: ModelStringInput | null,
+  description?: ModelStringInput | null,
+  reps?: ModelStringInput | null,
+  sets?: ModelStringInput | null,
+  and?: Array< ModelExerciseConditionInput | null > | null,
+  or?: Array< ModelExerciseConditionInput | null > | null,
+  not?: ModelExerciseConditionInput | null,
+};
+
+export type UpdateExerciseInput = {
+  id: string,
+  name?: string | null,
+  description?: string | null,
+  reps?: string | null,
+  sets?: string | null,
+  exerciseDayId?: string | null,
+};
+
+export type DeleteExerciseInput = {
+  id?: string | null,
+};
+
 export type ModelUserFilterInput = {
   id?: ModelIDInput | null,
   username?: ModelStringInput | null,
@@ -90,6 +170,34 @@ export type ModelIDInput = {
   size?: ModelSizeInput | null,
 };
 
+export type ModelRoutineFilterInput = {
+  id?: ModelIDInput | null,
+  name?: ModelStringInput | null,
+  description?: ModelStringInput | null,
+  and?: Array< ModelRoutineFilterInput | null > | null,
+  or?: Array< ModelRoutineFilterInput | null > | null,
+  not?: ModelRoutineFilterInput | null,
+};
+
+export type ModelDayFilterInput = {
+  id?: ModelIDInput | null,
+  name?: ModelStringInput | null,
+  and?: Array< ModelDayFilterInput | null > | null,
+  or?: Array< ModelDayFilterInput | null > | null,
+  not?: ModelDayFilterInput | null,
+};
+
+export type ModelExerciseFilterInput = {
+  id?: ModelIDInput | null,
+  name?: ModelStringInput | null,
+  description?: ModelStringInput | null,
+  reps?: ModelStringInput | null,
+  sets?: ModelStringInput | null,
+  and?: Array< ModelExerciseFilterInput | null > | null,
+  or?: Array< ModelExerciseFilterInput | null > | null,
+  not?: ModelExerciseFilterInput | null,
+};
+
 export type CreateUserMutationVariables = {
   input: CreateUserInput,
   condition?: ModelUserConditionInput | null,
@@ -103,6 +211,7 @@ export type CreateUserMutation = {
     email: string,
     createdAt: string,
     updatedAt: string,
+    owner: string | null,
   } | null,
 };
 
@@ -119,6 +228,7 @@ export type UpdateUserMutation = {
     email: string,
     createdAt: string,
     updatedAt: string,
+    owner: string | null,
   } | null,
 };
 
@@ -135,6 +245,346 @@ export type DeleteUserMutation = {
     email: string,
     createdAt: string,
     updatedAt: string,
+    owner: string | null,
+  } | null,
+};
+
+export type CreateRoutineMutationVariables = {
+  input: CreateRoutineInput,
+  condition?: ModelRoutineConditionInput | null,
+};
+
+export type CreateRoutineMutation = {
+  createRoutine:  {
+    __typename: "Routine",
+    id: string,
+    name: string,
+    description: string | null,
+    days:  {
+      __typename: "ModelDayConnection",
+      items:  Array< {
+        __typename: "Day",
+        id: string,
+        name: string | null,
+        createdAt: string,
+        updatedAt: string,
+        owner: string | null,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    owner: string | null,
+  } | null,
+};
+
+export type UpdateRoutineMutationVariables = {
+  input: UpdateRoutineInput,
+  condition?: ModelRoutineConditionInput | null,
+};
+
+export type UpdateRoutineMutation = {
+  updateRoutine:  {
+    __typename: "Routine",
+    id: string,
+    name: string,
+    description: string | null,
+    days:  {
+      __typename: "ModelDayConnection",
+      items:  Array< {
+        __typename: "Day",
+        id: string,
+        name: string | null,
+        createdAt: string,
+        updatedAt: string,
+        owner: string | null,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    owner: string | null,
+  } | null,
+};
+
+export type DeleteRoutineMutationVariables = {
+  input: DeleteRoutineInput,
+  condition?: ModelRoutineConditionInput | null,
+};
+
+export type DeleteRoutineMutation = {
+  deleteRoutine:  {
+    __typename: "Routine",
+    id: string,
+    name: string,
+    description: string | null,
+    days:  {
+      __typename: "ModelDayConnection",
+      items:  Array< {
+        __typename: "Day",
+        id: string,
+        name: string | null,
+        createdAt: string,
+        updatedAt: string,
+        owner: string | null,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    owner: string | null,
+  } | null,
+};
+
+export type CreateDayMutationVariables = {
+  input: CreateDayInput,
+  condition?: ModelDayConditionInput | null,
+};
+
+export type CreateDayMutation = {
+  createDay:  {
+    __typename: "Day",
+    id: string,
+    name: string | null,
+    routine:  {
+      __typename: "Routine",
+      id: string,
+      name: string,
+      description: string | null,
+      days:  {
+        __typename: "ModelDayConnection",
+        nextToken: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+      owner: string | null,
+    } | null,
+    exercises:  {
+      __typename: "ModelExerciseConnection",
+      items:  Array< {
+        __typename: "Exercise",
+        id: string,
+        name: string,
+        description: string | null,
+        reps: string,
+        sets: string,
+        createdAt: string,
+        updatedAt: string,
+        owner: string | null,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    owner: string | null,
+  } | null,
+};
+
+export type UpdateDayMutationVariables = {
+  input: UpdateDayInput,
+  condition?: ModelDayConditionInput | null,
+};
+
+export type UpdateDayMutation = {
+  updateDay:  {
+    __typename: "Day",
+    id: string,
+    name: string | null,
+    routine:  {
+      __typename: "Routine",
+      id: string,
+      name: string,
+      description: string | null,
+      days:  {
+        __typename: "ModelDayConnection",
+        nextToken: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+      owner: string | null,
+    } | null,
+    exercises:  {
+      __typename: "ModelExerciseConnection",
+      items:  Array< {
+        __typename: "Exercise",
+        id: string,
+        name: string,
+        description: string | null,
+        reps: string,
+        sets: string,
+        createdAt: string,
+        updatedAt: string,
+        owner: string | null,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    owner: string | null,
+  } | null,
+};
+
+export type DeleteDayMutationVariables = {
+  input: DeleteDayInput,
+  condition?: ModelDayConditionInput | null,
+};
+
+export type DeleteDayMutation = {
+  deleteDay:  {
+    __typename: "Day",
+    id: string,
+    name: string | null,
+    routine:  {
+      __typename: "Routine",
+      id: string,
+      name: string,
+      description: string | null,
+      days:  {
+        __typename: "ModelDayConnection",
+        nextToken: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+      owner: string | null,
+    } | null,
+    exercises:  {
+      __typename: "ModelExerciseConnection",
+      items:  Array< {
+        __typename: "Exercise",
+        id: string,
+        name: string,
+        description: string | null,
+        reps: string,
+        sets: string,
+        createdAt: string,
+        updatedAt: string,
+        owner: string | null,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    owner: string | null,
+  } | null,
+};
+
+export type CreateExerciseMutationVariables = {
+  input: CreateExerciseInput,
+  condition?: ModelExerciseConditionInput | null,
+};
+
+export type CreateExerciseMutation = {
+  createExercise:  {
+    __typename: "Exercise",
+    id: string,
+    name: string,
+    description: string | null,
+    reps: string,
+    sets: string,
+    day:  {
+      __typename: "Day",
+      id: string,
+      name: string | null,
+      routine:  {
+        __typename: "Routine",
+        id: string,
+        name: string,
+        description: string | null,
+        createdAt: string,
+        updatedAt: string,
+        owner: string | null,
+      } | null,
+      exercises:  {
+        __typename: "ModelExerciseConnection",
+        nextToken: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+      owner: string | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    owner: string | null,
+  } | null,
+};
+
+export type UpdateExerciseMutationVariables = {
+  input: UpdateExerciseInput,
+  condition?: ModelExerciseConditionInput | null,
+};
+
+export type UpdateExerciseMutation = {
+  updateExercise:  {
+    __typename: "Exercise",
+    id: string,
+    name: string,
+    description: string | null,
+    reps: string,
+    sets: string,
+    day:  {
+      __typename: "Day",
+      id: string,
+      name: string | null,
+      routine:  {
+        __typename: "Routine",
+        id: string,
+        name: string,
+        description: string | null,
+        createdAt: string,
+        updatedAt: string,
+        owner: string | null,
+      } | null,
+      exercises:  {
+        __typename: "ModelExerciseConnection",
+        nextToken: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+      owner: string | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    owner: string | null,
+  } | null,
+};
+
+export type DeleteExerciseMutationVariables = {
+  input: DeleteExerciseInput,
+  condition?: ModelExerciseConditionInput | null,
+};
+
+export type DeleteExerciseMutation = {
+  deleteExercise:  {
+    __typename: "Exercise",
+    id: string,
+    name: string,
+    description: string | null,
+    reps: string,
+    sets: string,
+    day:  {
+      __typename: "Day",
+      id: string,
+      name: string | null,
+      routine:  {
+        __typename: "Routine",
+        id: string,
+        name: string,
+        description: string | null,
+        createdAt: string,
+        updatedAt: string,
+        owner: string | null,
+      } | null,
+      exercises:  {
+        __typename: "ModelExerciseConnection",
+        nextToken: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+      owner: string | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    owner: string | null,
   } | null,
 };
 
@@ -150,6 +600,7 @@ export type GetUserQuery = {
     email: string,
     createdAt: string,
     updatedAt: string,
+    owner: string | null,
   } | null,
 };
 
@@ -169,13 +620,212 @@ export type ListUsersQuery = {
       email: string,
       createdAt: string,
       updatedAt: string,
+      owner: string | null,
     } | null > | null,
     nextToken: string | null,
   } | null,
 };
 
-export type OnCreateUserSubscriptionVariables = {
-  username?: string | null,
+export type GetRoutineQueryVariables = {
+  id: string,
+};
+
+export type GetRoutineQuery = {
+  getRoutine:  {
+    __typename: "Routine",
+    id: string,
+    name: string,
+    description: string | null,
+    days:  {
+      __typename: "ModelDayConnection",
+      items:  Array< {
+        __typename: "Day",
+        id: string,
+        name: string | null,
+        createdAt: string,
+        updatedAt: string,
+        owner: string | null,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    owner: string | null,
+  } | null,
+};
+
+export type ListRoutinesQueryVariables = {
+  filter?: ModelRoutineFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListRoutinesQuery = {
+  listRoutines:  {
+    __typename: "ModelRoutineConnection",
+    items:  Array< {
+      __typename: "Routine",
+      id: string,
+      name: string,
+      description: string | null,
+      days:  {
+        __typename: "ModelDayConnection",
+        nextToken: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+      owner: string | null,
+    } | null > | null,
+    nextToken: string | null,
+  } | null,
+};
+
+export type GetDayQueryVariables = {
+  id: string,
+};
+
+export type GetDayQuery = {
+  getDay:  {
+    __typename: "Day",
+    id: string,
+    name: string | null,
+    routine:  {
+      __typename: "Routine",
+      id: string,
+      name: string,
+      description: string | null,
+      days:  {
+        __typename: "ModelDayConnection",
+        nextToken: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+      owner: string | null,
+    } | null,
+    exercises:  {
+      __typename: "ModelExerciseConnection",
+      items:  Array< {
+        __typename: "Exercise",
+        id: string,
+        name: string,
+        description: string | null,
+        reps: string,
+        sets: string,
+        createdAt: string,
+        updatedAt: string,
+        owner: string | null,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    owner: string | null,
+  } | null,
+};
+
+export type ListDaysQueryVariables = {
+  filter?: ModelDayFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListDaysQuery = {
+  listDays:  {
+    __typename: "ModelDayConnection",
+    items:  Array< {
+      __typename: "Day",
+      id: string,
+      name: string | null,
+      routine:  {
+        __typename: "Routine",
+        id: string,
+        name: string,
+        description: string | null,
+        createdAt: string,
+        updatedAt: string,
+        owner: string | null,
+      } | null,
+      exercises:  {
+        __typename: "ModelExerciseConnection",
+        nextToken: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+      owner: string | null,
+    } | null > | null,
+    nextToken: string | null,
+  } | null,
+};
+
+export type GetExerciseQueryVariables = {
+  id: string,
+};
+
+export type GetExerciseQuery = {
+  getExercise:  {
+    __typename: "Exercise",
+    id: string,
+    name: string,
+    description: string | null,
+    reps: string,
+    sets: string,
+    day:  {
+      __typename: "Day",
+      id: string,
+      name: string | null,
+      routine:  {
+        __typename: "Routine",
+        id: string,
+        name: string,
+        description: string | null,
+        createdAt: string,
+        updatedAt: string,
+        owner: string | null,
+      } | null,
+      exercises:  {
+        __typename: "ModelExerciseConnection",
+        nextToken: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+      owner: string | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    owner: string | null,
+  } | null,
+};
+
+export type ListExercisesQueryVariables = {
+  filter?: ModelExerciseFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListExercisesQuery = {
+  listExercises:  {
+    __typename: "ModelExerciseConnection",
+    items:  Array< {
+      __typename: "Exercise",
+      id: string,
+      name: string,
+      description: string | null,
+      reps: string,
+      sets: string,
+      day:  {
+        __typename: "Day",
+        id: string,
+        name: string | null,
+        createdAt: string,
+        updatedAt: string,
+        owner: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+      owner: string | null,
+    } | null > | null,
+    nextToken: string | null,
+  } | null,
 };
 
 export type OnCreateUserSubscription = {
@@ -186,11 +836,8 @@ export type OnCreateUserSubscription = {
     email: string,
     createdAt: string,
     updatedAt: string,
+    owner: string | null,
   } | null,
-};
-
-export type OnUpdateUserSubscriptionVariables = {
-  username?: string | null,
 };
 
 export type OnUpdateUserSubscription = {
@@ -201,11 +848,8 @@ export type OnUpdateUserSubscription = {
     email: string,
     createdAt: string,
     updatedAt: string,
+    owner: string | null,
   } | null,
-};
-
-export type OnDeleteUserSubscriptionVariables = {
-  username?: string | null,
 };
 
 export type OnDeleteUserSubscription = {
@@ -216,5 +860,300 @@ export type OnDeleteUserSubscription = {
     email: string,
     createdAt: string,
     updatedAt: string,
+    owner: string | null,
+  } | null,
+};
+
+export type OnCreateRoutineSubscription = {
+  onCreateRoutine:  {
+    __typename: "Routine",
+    id: string,
+    name: string,
+    description: string | null,
+    days:  {
+      __typename: "ModelDayConnection",
+      items:  Array< {
+        __typename: "Day",
+        id: string,
+        name: string | null,
+        createdAt: string,
+        updatedAt: string,
+        owner: string | null,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    owner: string | null,
+  } | null,
+};
+
+export type OnUpdateRoutineSubscription = {
+  onUpdateRoutine:  {
+    __typename: "Routine",
+    id: string,
+    name: string,
+    description: string | null,
+    days:  {
+      __typename: "ModelDayConnection",
+      items:  Array< {
+        __typename: "Day",
+        id: string,
+        name: string | null,
+        createdAt: string,
+        updatedAt: string,
+        owner: string | null,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    owner: string | null,
+  } | null,
+};
+
+export type OnDeleteRoutineSubscription = {
+  onDeleteRoutine:  {
+    __typename: "Routine",
+    id: string,
+    name: string,
+    description: string | null,
+    days:  {
+      __typename: "ModelDayConnection",
+      items:  Array< {
+        __typename: "Day",
+        id: string,
+        name: string | null,
+        createdAt: string,
+        updatedAt: string,
+        owner: string | null,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    owner: string | null,
+  } | null,
+};
+
+export type OnCreateDaySubscription = {
+  onCreateDay:  {
+    __typename: "Day",
+    id: string,
+    name: string | null,
+    routine:  {
+      __typename: "Routine",
+      id: string,
+      name: string,
+      description: string | null,
+      days:  {
+        __typename: "ModelDayConnection",
+        nextToken: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+      owner: string | null,
+    } | null,
+    exercises:  {
+      __typename: "ModelExerciseConnection",
+      items:  Array< {
+        __typename: "Exercise",
+        id: string,
+        name: string,
+        description: string | null,
+        reps: string,
+        sets: string,
+        createdAt: string,
+        updatedAt: string,
+        owner: string | null,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    owner: string | null,
+  } | null,
+};
+
+export type OnUpdateDaySubscription = {
+  onUpdateDay:  {
+    __typename: "Day",
+    id: string,
+    name: string | null,
+    routine:  {
+      __typename: "Routine",
+      id: string,
+      name: string,
+      description: string | null,
+      days:  {
+        __typename: "ModelDayConnection",
+        nextToken: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+      owner: string | null,
+    } | null,
+    exercises:  {
+      __typename: "ModelExerciseConnection",
+      items:  Array< {
+        __typename: "Exercise",
+        id: string,
+        name: string,
+        description: string | null,
+        reps: string,
+        sets: string,
+        createdAt: string,
+        updatedAt: string,
+        owner: string | null,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    owner: string | null,
+  } | null,
+};
+
+export type OnDeleteDaySubscription = {
+  onDeleteDay:  {
+    __typename: "Day",
+    id: string,
+    name: string | null,
+    routine:  {
+      __typename: "Routine",
+      id: string,
+      name: string,
+      description: string | null,
+      days:  {
+        __typename: "ModelDayConnection",
+        nextToken: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+      owner: string | null,
+    } | null,
+    exercises:  {
+      __typename: "ModelExerciseConnection",
+      items:  Array< {
+        __typename: "Exercise",
+        id: string,
+        name: string,
+        description: string | null,
+        reps: string,
+        sets: string,
+        createdAt: string,
+        updatedAt: string,
+        owner: string | null,
+      } | null > | null,
+      nextToken: string | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    owner: string | null,
+  } | null,
+};
+
+export type OnCreateExerciseSubscription = {
+  onCreateExercise:  {
+    __typename: "Exercise",
+    id: string,
+    name: string,
+    description: string | null,
+    reps: string,
+    sets: string,
+    day:  {
+      __typename: "Day",
+      id: string,
+      name: string | null,
+      routine:  {
+        __typename: "Routine",
+        id: string,
+        name: string,
+        description: string | null,
+        createdAt: string,
+        updatedAt: string,
+        owner: string | null,
+      } | null,
+      exercises:  {
+        __typename: "ModelExerciseConnection",
+        nextToken: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+      owner: string | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    owner: string | null,
+  } | null,
+};
+
+export type OnUpdateExerciseSubscription = {
+  onUpdateExercise:  {
+    __typename: "Exercise",
+    id: string,
+    name: string,
+    description: string | null,
+    reps: string,
+    sets: string,
+    day:  {
+      __typename: "Day",
+      id: string,
+      name: string | null,
+      routine:  {
+        __typename: "Routine",
+        id: string,
+        name: string,
+        description: string | null,
+        createdAt: string,
+        updatedAt: string,
+        owner: string | null,
+      } | null,
+      exercises:  {
+        __typename: "ModelExerciseConnection",
+        nextToken: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+      owner: string | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    owner: string | null,
+  } | null,
+};
+
+export type OnDeleteExerciseSubscription = {
+  onDeleteExercise:  {
+    __typename: "Exercise",
+    id: string,
+    name: string,
+    description: string | null,
+    reps: string,
+    sets: string,
+    day:  {
+      __typename: "Day",
+      id: string,
+      name: string | null,
+      routine:  {
+        __typename: "Routine",
+        id: string,
+        name: string,
+        description: string | null,
+        createdAt: string,
+        updatedAt: string,
+        owner: string | null,
+      } | null,
+      exercises:  {
+        __typename: "ModelExerciseConnection",
+        nextToken: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+      owner: string | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    owner: string | null,
   } | null,
 };

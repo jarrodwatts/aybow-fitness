@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { API, graphqlOperation } from "aws-amplify";
-import { listUsers } from "../graphql/queries";
+import { listRoutines, listUsers } from "../graphql/queries";
 import { GetStaticProps } from "next";
 import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
@@ -15,6 +15,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import RoutineCard from "../components/RoutineCard";
 import Hero from "../components/Hero";
+import { ListRoutinesQuery } from "../API";
 
 const useStyles = makeStyles((theme) => ({
   cardGrid: {
@@ -25,10 +26,18 @@ const useStyles = makeStyles((theme) => ({
 
 const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
-function Index(props) {
-  const [routines, setRoutines] = useState([]);
+function Index({ routinesList, errors }: { routinesList: any; errors: any[] }) {
+  const [routines, setRoutines] = useState(routinesList);
   const classes = useStyles();
-  useEffect(() => {});
+
+  useEffect(() => {
+    setRoutines(routinesList);
+  }, []);
+  
+  console.log("Routines list:", routinesList);
+  console.log("Routines:", routines);
+  console.log("Errors:", errors);
+
   return (
     <React.Fragment>
       <CssBaseline />
@@ -49,8 +58,28 @@ function Index(props) {
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
+  // Make a call to the graphQL API here to get all todos from a todolist
+  // The todo list will be 'global'
+  const result = (await API.graphql(graphqlOperation(listRoutines))) as {
+    data: ListRoutinesQuery;
+    errors: any[];
+  };
+
+  // If there's no errors return the todos as an array of
+  if (!result.errors) {
+    return {
+      props: {
+        routinesList: result.data.listRoutines.items,
+        errors: [],
+      },
+    };
+  }
+
   return {
-    props: {},
+    props: {
+      routinesList: [],
+      errors: result.errors,
+    },
   };
 };
 

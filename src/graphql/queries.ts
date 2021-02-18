@@ -42,7 +42,23 @@ export const getRoutine = /* GraphQL */ `
       days {
         items {
           id
+          routineID
           name
+          description
+          exercises {
+            items {
+              id
+              dayID
+              name
+              description
+              reps
+              sets
+              createdAt
+              updatedAt
+              owner
+            }
+            nextToken
+          }
           createdAt
           updatedAt
           owner
@@ -67,6 +83,18 @@ export const listRoutines = /* GraphQL */ `
         name
         description
         days {
+          items {
+            id
+            routineID
+            name
+            description
+            exercises {
+              nextToken
+            }
+            createdAt
+            updatedAt
+            owner
+          }
           nextToken
         }
         createdAt
@@ -81,21 +109,13 @@ export const getDay = /* GraphQL */ `
   query GetDay($id: ID!) {
     getDay(id: $id) {
       id
+      routineID
       name
-      routine {
-        id
-        name
-        description
-        days {
-          nextToken
-        }
-        createdAt
-        updatedAt
-        owner
-      }
+      description
       exercises {
         items {
           id
+          dayID
           name
           description
           reps
@@ -121,16 +141,21 @@ export const listDays = /* GraphQL */ `
     listDays(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
+        routineID
         name
-        routine {
-          id
-          name
-          description
-          createdAt
-          updatedAt
-          owner
-        }
+        description
         exercises {
+          items {
+            id
+            dayID
+            name
+            description
+            reps
+            sets
+            createdAt
+            updatedAt
+            owner
+          }
           nextToken
         }
         createdAt
@@ -145,28 +170,11 @@ export const getExercise = /* GraphQL */ `
   query GetExercise($id: ID!) {
     getExercise(id: $id) {
       id
+      dayID
       name
       description
       reps
       sets
-      day {
-        id
-        name
-        routine {
-          id
-          name
-          description
-          createdAt
-          updatedAt
-          owner
-        }
-        exercises {
-          nextToken
-        }
-        createdAt
-        updatedAt
-        owner
-      }
       createdAt
       updatedAt
       owner
@@ -182,17 +190,11 @@ export const listExercises = /* GraphQL */ `
     listExercises(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
+        dayID
         name
         description
         reps
         sets
-        day {
-          id
-          name
-          createdAt
-          updatedAt
-          owner
-        }
         createdAt
         updatedAt
         owner

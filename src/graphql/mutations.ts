@@ -59,7 +59,23 @@ export const createRoutine = /* GraphQL */ `
       days {
         items {
           id
+          routineID
           name
+          description
+          exercises {
+            items {
+              id
+              dayID
+              name
+              description
+              reps
+              sets
+              createdAt
+              updatedAt
+              owner
+            }
+            nextToken
+          }
           createdAt
           updatedAt
           owner
@@ -84,7 +100,23 @@ export const updateRoutine = /* GraphQL */ `
       days {
         items {
           id
+          routineID
           name
+          description
+          exercises {
+            items {
+              id
+              dayID
+              name
+              description
+              reps
+              sets
+              createdAt
+              updatedAt
+              owner
+            }
+            nextToken
+          }
           createdAt
           updatedAt
           owner
@@ -109,7 +141,23 @@ export const deleteRoutine = /* GraphQL */ `
       days {
         items {
           id
+          routineID
           name
+          description
+          exercises {
+            items {
+              id
+              dayID
+              name
+              description
+              reps
+              sets
+              createdAt
+              updatedAt
+              owner
+            }
+            nextToken
+          }
           createdAt
           updatedAt
           owner
@@ -129,21 +177,13 @@ export const createDay = /* GraphQL */ `
   ) {
     createDay(input: $input, condition: $condition) {
       id
+      routineID
       name
-      routine {
-        id
-        name
-        description
-        days {
-          nextToken
-        }
-        createdAt
-        updatedAt
-        owner
-      }
+      description
       exercises {
         items {
           id
+          dayID
           name
           description
           reps
@@ -167,21 +207,13 @@ export const updateDay = /* GraphQL */ `
   ) {
     updateDay(input: $input, condition: $condition) {
       id
+      routineID
       name
-      routine {
-        id
-        name
-        description
-        days {
-          nextToken
-        }
-        createdAt
-        updatedAt
-        owner
-      }
+      description
       exercises {
         items {
           id
+          dayID
           name
           description
           reps
@@ -205,21 +237,13 @@ export const deleteDay = /* GraphQL */ `
   ) {
     deleteDay(input: $input, condition: $condition) {
       id
+      routineID
       name
-      routine {
-        id
-        name
-        description
-        days {
-          nextToken
-        }
-        createdAt
-        updatedAt
-        owner
-      }
+      description
       exercises {
         items {
           id
+          dayID
           name
           description
           reps
@@ -243,28 +267,11 @@ export const createExercise = /* GraphQL */ `
   ) {
     createExercise(input: $input, condition: $condition) {
       id
+      dayID
       name
       description
       reps
       sets
-      day {
-        id
-        name
-        routine {
-          id
-          name
-          description
-          createdAt
-          updatedAt
-          owner
-        }
-        exercises {
-          nextToken
-        }
-        createdAt
-        updatedAt
-        owner
-      }
       createdAt
       updatedAt
       owner
@@ -278,28 +285,11 @@ export const updateExercise = /* GraphQL */ `
   ) {
     updateExercise(input: $input, condition: $condition) {
       id
+      dayID
       name
       description
       reps
       sets
-      day {
-        id
-        name
-        routine {
-          id
-          name
-          description
-          createdAt
-          updatedAt
-          owner
-        }
-        exercises {
-          nextToken
-        }
-        createdAt
-        updatedAt
-        owner
-      }
       createdAt
       updatedAt
       owner
@@ -313,28 +303,11 @@ export const deleteExercise = /* GraphQL */ `
   ) {
     deleteExercise(input: $input, condition: $condition) {
       id
+      dayID
       name
       description
       reps
       sets
-      day {
-        id
-        name
-        routine {
-          id
-          name
-          description
-          createdAt
-          updatedAt
-          owner
-        }
-        exercises {
-          nextToken
-        }
-        createdAt
-        updatedAt
-        owner
-      }
       createdAt
       updatedAt
       owner

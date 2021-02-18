@@ -31,43 +31,40 @@ type Routine
   id: ID!
   name: String!
   description: String
-  days: [Day]! @connection(name: "RoutineDays")
+  days: [Day]! @connection(keyName: "byRoutine", fields: ["id"])
 }
 
 # day = post
 type Day
   @model
+  @key(name: "byRoutine", fields: ["routineID"])
   @auth(
     rules: [
-      {
-        allow: owner
-        operations: [create, delete, update]
-      }
+      { allow: owner, operations: [create, delete, update] }
       { allow: public, operations: [read] }
     ]
   ) {
   id: ID!
+  routineID: ID!
   name: String
-  routine: Routine @connection(name: "RoutineDays")
-  exercises: [Exercise] @connection(name: "DaysExercises")
+  description: String
+  exercises: [Exercise] @connection(keyName: "byDay", fields: ["id"])
 }
 
 # Exercise = comment?
 type Exercise
   @model
+  @key(name: "byDay", fields: ["dayID"])
   @auth(
     rules: [
-      {
-        allow: owner
-        operations: [create, delete, update]
-      }
+      { allow: owner, operations: [create, delete, update] }
       { allow: public, operations: [read] }
     ]
   ) {
   id: ID!
+  dayID: ID!
   name: String!
   description: String
   reps: String!
   sets: String!
-  day: Day @connection(name: "DaysExercises")
 }

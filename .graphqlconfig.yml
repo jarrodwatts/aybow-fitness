@@ -1,6 +1,6 @@
 projects:
   aybowfitnessapi:
-    schemaPath: src/graphql/schema.json
+    schemaPath: amplify/backend/api/aybowfitnessapi/build/schema.graphql
     includes:
       - src/graphql/**/*.ts
     excludes:
@@ -10,6 +10,9 @@ projects:
         codeGenTarget: typescript
         generatedFileName: src/API.ts
         docsFilePath: src/graphql
+        region: ap-southeast-2
+        apiId: null
+        maxDepth: 5
 extensions:
   amplify:
     version: 3

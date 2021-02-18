@@ -6,6 +6,8 @@ import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 const useStyles = makeStyles(() => ({
   card: {
@@ -21,32 +23,33 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const RoutineCard = () => {
+const RoutineCard = ({ routine }) => {
   const classes = useStyles();
+  const router = useRouter();
+  console.log("from comp:", routine);
   return (
     <Card className={classes.card}>
-      <CardMedia
-        className={classes.cardMedia}
-        image="https://source.unsplash.com/random"
-        title="Image title"
-      />
-      <CardContent className={classes.cardContent}>
-        <Typography gutterBottom variant="h5" component="h2">
-          Heading
-        </Typography>
-        <Typography>
-          This is a media card. You can use this section to describe the
-          content.
-        </Typography>
-      </CardContent>
-      <CardActions>
-        <Button size="small" color="primary">
-          View
-        </Button>
-        <Button size="small" color="primary">
-          Edit
-        </Button>
-      </CardActions>
+      <React.Fragment>
+        <CardMedia
+          className={classes.cardMedia}
+          image="https://source.unsplash.com/random"
+          title={routine.name}
+        />
+        <CardContent className={classes.cardContent}>
+          <Typography gutterBottom variant="h5" component="h2">
+            {routine.name}
+          </Typography>
+          <Typography>{routine.description}</Typography>
+        </CardContent>
+        <CardActions>
+          <Button
+            color="primary"
+            onClick={() => router.push(`/routine/${routine.id}`)}
+          >
+            View Routine
+          </Button>
+        </CardActions>
+      </React.Fragment>
     </Card>
   );
 };

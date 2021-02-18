@@ -24,8 +24,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-
 function Index({ routinesList, errors }: { routinesList: any; errors: any[] }) {
   const [routines, setRoutines] = useState(routinesList);
   const classes = useStyles();
@@ -33,7 +31,7 @@ function Index({ routinesList, errors }: { routinesList: any; errors: any[] }) {
   useEffect(() => {
     setRoutines(routinesList);
   }, []);
-  
+
   console.log("Routines list:", routinesList);
   console.log("Routines:", routines);
   console.log("Errors:", errors);
@@ -45,9 +43,9 @@ function Index({ routinesList, errors }: { routinesList: any; errors: any[] }) {
         <Hero />
         <Container className={classes.cardGrid} maxWidth="md">
           <Grid container spacing={4}>
-            {cards.map((card) => (
-              <Grid item key={card} xs={12} sm={6} md={4}>
-                <RoutineCard />
+            {routines.map((routine) => (
+              <Grid item key={routine.id} xs={12} sm={6} md={4}>
+                <RoutineCard routine={routine} />
               </Grid>
             ))}
           </Grid>

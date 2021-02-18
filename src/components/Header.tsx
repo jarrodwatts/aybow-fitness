@@ -11,6 +11,7 @@ import Menu from "@material-ui/core/Menu";
 import Button from "@material-ui/core/Button";
 import AppleIcon from "@material-ui/icons/Apple";
 import { useUser } from "../context/userContext";
+import { useRouter } from "next/router";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -30,6 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function MenuAppBar() {
   const classes = useStyles();
   const [auth, setAuth] = React.useState(false);
+  const router = useRouter();
 
   return (
     <div className={classes.root}>
@@ -40,6 +42,7 @@ export default function MenuAppBar() {
             className={classes.menuButton}
             color="inherit"
             aria-label="menu"
+            onClick={() => router.push("/")}
           >
             <AppleIcon />
           </IconButton>

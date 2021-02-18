@@ -4,6 +4,7 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+import { useRouter } from "next/router";
 
 const useStyles = makeStyles((theme) => ({
   heroContent: {
@@ -17,6 +18,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Hero = () => {
   const classes = useStyles();
+  const router = useRouter();
   return (
     <div className={classes.heroContent}>
       <Container maxWidth="sm">
@@ -27,23 +29,25 @@ const Hero = () => {
           color="textPrimary"
           gutterBottom
         >
-          Album layout
+          Browse Workouts
         </Typography>
         <Typography variant="h5" align="center" color="textSecondary" paragraph>
-          Something short and leading about the collection below—its contents,
-          the creator, etc. Make it short and sweet, but not too short so folks
-          don&apos;t simply skip over it entirely.
+          Find the perfect workout routine for you.
+        </Typography>
+        <Typography
+          variant="h5"
+          align="center"
+          color="textSecondary"
+          paragraph
+          onClick={() => router.push(`/create`)}
+        >
+          Or, create your own:
         </Typography>
         <div className={classes.heroButtons}>
           <Grid container spacing={2} justify="center">
             <Grid item>
               <Button variant="contained" color="primary">
-                Main call to action
-              </Button>
-            </Grid>
-            <Grid item>
-              <Button variant="outlined" color="primary">
-                Secondary action
+                Create Your Own
               </Button>
             </Grid>
           </Grid>

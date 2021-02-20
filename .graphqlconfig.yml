@@ -12,7 +12,7 @@ projects:
         docsFilePath: src/graphql
         region: ap-southeast-2
         apiId: null
-        maxDepth: 5
+        maxDepth: 6
 extensions:
   amplify:
     version: 3

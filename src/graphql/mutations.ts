@@ -57,30 +57,18 @@ export const createRoutine = /* GraphQL */ `
       name
       description
       days {
-        items {
+        id
+        routineID
+        name
+        description
+        exercises {
           id
-          routineID
+          dayID
           name
           description
-          exercises {
-            items {
-              id
-              dayID
-              name
-              description
-              reps
-              sets
-              createdAt
-              updatedAt
-              owner
-            }
-            nextToken
-          }
-          createdAt
-          updatedAt
-          owner
+          reps
+          sets
         }
-        nextToken
       }
       createdAt
       updatedAt
@@ -98,30 +86,18 @@ export const updateRoutine = /* GraphQL */ `
       name
       description
       days {
-        items {
+        id
+        routineID
+        name
+        description
+        exercises {
           id
-          routineID
+          dayID
           name
           description
-          exercises {
-            items {
-              id
-              dayID
-              name
-              description
-              reps
-              sets
-              createdAt
-              updatedAt
-              owner
-            }
-            nextToken
-          }
-          createdAt
-          updatedAt
-          owner
+          reps
+          sets
         }
-        nextToken
       }
       createdAt
       updatedAt
@@ -139,175 +115,19 @@ export const deleteRoutine = /* GraphQL */ `
       name
       description
       days {
-        items {
-          id
-          routineID
-          name
-          description
-          exercises {
-            items {
-              id
-              dayID
-              name
-              description
-              reps
-              sets
-              createdAt
-              updatedAt
-              owner
-            }
-            nextToken
-          }
-          createdAt
-          updatedAt
-          owner
-        }
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
-    }
-  }
-`;
-export const createDay = /* GraphQL */ `
-  mutation CreateDay(
-    $input: CreateDayInput!
-    $condition: ModelDayConditionInput
-  ) {
-    createDay(input: $input, condition: $condition) {
-      id
-      routineID
-      name
-      description
-      exercises {
-        items {
+        id
+        routineID
+        name
+        description
+        exercises {
           id
           dayID
           name
           description
           reps
           sets
-          createdAt
-          updatedAt
-          owner
         }
-        nextToken
       }
-      createdAt
-      updatedAt
-      owner
-    }
-  }
-`;
-export const updateDay = /* GraphQL */ `
-  mutation UpdateDay(
-    $input: UpdateDayInput!
-    $condition: ModelDayConditionInput
-  ) {
-    updateDay(input: $input, condition: $condition) {
-      id
-      routineID
-      name
-      description
-      exercises {
-        items {
-          id
-          dayID
-          name
-          description
-          reps
-          sets
-          createdAt
-          updatedAt
-          owner
-        }
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
-    }
-  }
-`;
-export const deleteDay = /* GraphQL */ `
-  mutation DeleteDay(
-    $input: DeleteDayInput!
-    $condition: ModelDayConditionInput
-  ) {
-    deleteDay(input: $input, condition: $condition) {
-      id
-      routineID
-      name
-      description
-      exercises {
-        items {
-          id
-          dayID
-          name
-          description
-          reps
-          sets
-          createdAt
-          updatedAt
-          owner
-        }
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
-    }
-  }
-`;
-export const createExercise = /* GraphQL */ `
-  mutation CreateExercise(
-    $input: CreateExerciseInput!
-    $condition: ModelExerciseConditionInput
-  ) {
-    createExercise(input: $input, condition: $condition) {
-      id
-      dayID
-      name
-      description
-      reps
-      sets
-      createdAt
-      updatedAt
-      owner
-    }
-  }
-`;
-export const updateExercise = /* GraphQL */ `
-  mutation UpdateExercise(
-    $input: UpdateExerciseInput!
-    $condition: ModelExerciseConditionInput
-  ) {
-    updateExercise(input: $input, condition: $condition) {
-      id
-      dayID
-      name
-      description
-      reps
-      sets
-      createdAt
-      updatedAt
-      owner
-    }
-  }
-`;
-export const deleteExercise = /* GraphQL */ `
-  mutation DeleteExercise(
-    $input: DeleteExerciseInput!
-    $condition: ModelExerciseConditionInput
-  ) {
-    deleteExercise(input: $input, condition: $condition) {
-      id
-      dayID
-      name
-      description
-      reps
-      sets
       createdAt
       updatedAt
       owner

@@ -45,30 +45,18 @@ export const onCreateRoutine = /* GraphQL */ `
       name
       description
       days {
-        items {
+        id
+        routineID
+        name
+        description
+        exercises {
           id
-          routineID
+          dayID
           name
           description
-          exercises {
-            items {
-              id
-              dayID
-              name
-              description
-              reps
-              sets
-              createdAt
-              updatedAt
-              owner
-            }
-            nextToken
-          }
-          createdAt
-          updatedAt
-          owner
+          reps
+          sets
         }
-        nextToken
       }
       createdAt
       updatedAt
@@ -83,30 +71,18 @@ export const onUpdateRoutine = /* GraphQL */ `
       name
       description
       days {
-        items {
+        id
+        routineID
+        name
+        description
+        exercises {
           id
-          routineID
+          dayID
           name
           description
-          exercises {
-            items {
-              id
-              dayID
-              name
-              description
-              reps
-              sets
-              createdAt
-              updatedAt
-              owner
-            }
-            nextToken
-          }
-          createdAt
-          updatedAt
-          owner
+          reps
+          sets
         }
-        nextToken
       }
       createdAt
       updatedAt
@@ -121,157 +97,19 @@ export const onDeleteRoutine = /* GraphQL */ `
       name
       description
       days {
-        items {
-          id
-          routineID
-          name
-          description
-          exercises {
-            items {
-              id
-              dayID
-              name
-              description
-              reps
-              sets
-              createdAt
-              updatedAt
-              owner
-            }
-            nextToken
-          }
-          createdAt
-          updatedAt
-          owner
-        }
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
-    }
-  }
-`;
-export const onCreateDay = /* GraphQL */ `
-  subscription OnCreateDay {
-    onCreateDay {
-      id
-      routineID
-      name
-      description
-      exercises {
-        items {
+        id
+        routineID
+        name
+        description
+        exercises {
           id
           dayID
           name
           description
           reps
           sets
-          createdAt
-          updatedAt
-          owner
         }
-        nextToken
       }
-      createdAt
-      updatedAt
-      owner
-    }
-  }
-`;
-export const onUpdateDay = /* GraphQL */ `
-  subscription OnUpdateDay {
-    onUpdateDay {
-      id
-      routineID
-      name
-      description
-      exercises {
-        items {
-          id
-          dayID
-          name
-          description
-          reps
-          sets
-          createdAt
-          updatedAt
-          owner
-        }
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
-    }
-  }
-`;
-export const onDeleteDay = /* GraphQL */ `
-  subscription OnDeleteDay {
-    onDeleteDay {
-      id
-      routineID
-      name
-      description
-      exercises {
-        items {
-          id
-          dayID
-          name
-          description
-          reps
-          sets
-          createdAt
-          updatedAt
-          owner
-        }
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
-    }
-  }
-`;
-export const onCreateExercise = /* GraphQL */ `
-  subscription OnCreateExercise {
-    onCreateExercise {
-      id
-      dayID
-      name
-      description
-      reps
-      sets
-      createdAt
-      updatedAt
-      owner
-    }
-  }
-`;
-export const onUpdateExercise = /* GraphQL */ `
-  subscription OnUpdateExercise {
-    onUpdateExercise {
-      id
-      dayID
-      name
-      description
-      reps
-      sets
-      createdAt
-      updatedAt
-      owner
-    }
-  }
-`;
-export const onDeleteExercise = /* GraphQL */ `
-  subscription OnDeleteExercise {
-    onDeleteExercise {
-      id
-      dayID
-      name
-      description
-      reps
-      sets
       createdAt
       updatedAt
       owner

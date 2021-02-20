@@ -15,7 +15,6 @@ type User
   email: String!
 }
 
-# routine = blog
 type Routine
   @model
   @auth(
@@ -31,36 +30,18 @@ type Routine
   id: ID!
   name: String!
   description: String
-  days: [Day]! @connection(keyName: "byRoutine", fields: ["id"])
+  days: [Day]!
 }
 
-# day = post
-type Day
-  @model
-  @key(name: "byRoutine", fields: ["routineID"])
-  @auth(
-    rules: [
-      { allow: owner, operations: [create, delete, update] }
-      { allow: public, operations: [read] }
-    ]
-  ) {
+type Day {
   id: ID!
   routineID: ID!
   name: String
   description: String
-  exercises: [Exercise] @connection(keyName: "byDay", fields: ["id"])
+  exercises: [Exercise]
 }
 
-# Exercise = comment?
-type Exercise
-  @model
-  @key(name: "byDay", fields: ["dayID"])
-  @auth(
-    rules: [
-      { allow: owner, operations: [create, delete, update] }
-      { allow: public, operations: [read] }
-    ]
-  ) {
+type Exercise {
   id: ID!
   dayID: ID!
   name: String!

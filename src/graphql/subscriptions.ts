@@ -45,13 +45,9 @@ export const onCreateRoutine = /* GraphQL */ `
       name
       description
       days {
-        id
-        routineID
         name
         description
         exercises {
-          id
-          dayID
           name
           description
           reps
@@ -71,13 +67,9 @@ export const onUpdateRoutine = /* GraphQL */ `
       name
       description
       days {
-        id
-        routineID
         name
         description
         exercises {
-          id
-          dayID
           name
           description
           reps
@@ -97,13 +89,9 @@ export const onDeleteRoutine = /* GraphQL */ `
       name
       description
       days {
-        id
-        routineID
         name
         description
         exercises {
-          id
-          dayID
           name
           description
           reps

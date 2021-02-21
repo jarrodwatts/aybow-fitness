@@ -84,16 +84,12 @@ export type CreateRoutineInput = {
 };
 
 export type DayInput = {
-  id: string,
-  routineID: string,
   name?: string | null,
   description?: string | null,
   exercises?: Array< ExerciseInput | null > | null,
 };
 
 export type ExerciseInput = {
-  id: string,
-  dayID: string,
   name: string,
   description?: string | null,
   reps: string,
@@ -121,8 +117,6 @@ export type Routine = {
 
 export type Day = {
   __typename: "Day",
-  id?: string,
-  routineID?: string,
   name?: string | null,
   description?: string | null,
   exercises?:  Array<Exercise | null > | null,
@@ -130,8 +124,6 @@ export type Day = {
 
 export type Exercise = {
   __typename: "Exercise",
-  id?: string,
-  dayID?: string,
   name?: string,
   description?: string | null,
   reps?: string,
@@ -259,14 +251,10 @@ export type CreateRoutineMutation = {
     description?: string | null,
     days:  Array< {
       __typename: "Day",
-      id: string,
-      routineID: string,
       name?: string | null,
       description?: string | null,
       exercises?:  Array< {
         __typename: "Exercise",
-        id: string,
-        dayID: string,
         name: string,
         description?: string | null,
         reps: string,
@@ -292,14 +280,10 @@ export type UpdateRoutineMutation = {
     description?: string | null,
     days:  Array< {
       __typename: "Day",
-      id: string,
-      routineID: string,
       name?: string | null,
       description?: string | null,
       exercises?:  Array< {
         __typename: "Exercise",
-        id: string,
-        dayID: string,
         name: string,
         description?: string | null,
         reps: string,
@@ -325,14 +309,10 @@ export type DeleteRoutineMutation = {
     description?: string | null,
     days:  Array< {
       __typename: "Day",
-      id: string,
-      routineID: string,
       name?: string | null,
       description?: string | null,
       exercises?:  Array< {
         __typename: "Exercise",
-        id: string,
-        dayID: string,
         name: string,
         description?: string | null,
         reps: string,
@@ -395,14 +375,10 @@ export type GetRoutineQuery = {
     description?: string | null,
     days:  Array< {
       __typename: "Day",
-      id: string,
-      routineID: string,
       name?: string | null,
       description?: string | null,
       exercises?:  Array< {
         __typename: "Exercise",
-        id: string,
-        dayID: string,
         name: string,
         description?: string | null,
         reps: string,
@@ -431,14 +407,10 @@ export type ListRoutinesQuery = {
       description?: string | null,
       days:  Array< {
         __typename: "Day",
-        id: string,
-        routineID: string,
         name?: string | null,
         description?: string | null,
         exercises?:  Array< {
           __typename: "Exercise",
-          id: string,
-          dayID: string,
           name: string,
           description?: string | null,
           reps: string,
@@ -497,14 +469,10 @@ export type OnCreateRoutineSubscription = {
     description?: string | null,
     days:  Array< {
       __typename: "Day",
-      id: string,
-      routineID: string,
       name?: string | null,
       description?: string | null,
       exercises?:  Array< {
         __typename: "Exercise",
-        id: string,
-        dayID: string,
         name: string,
         description?: string | null,
         reps: string,
@@ -525,14 +493,10 @@ export type OnUpdateRoutineSubscription = {
     description?: string | null,
     days:  Array< {
       __typename: "Day",
-      id: string,
-      routineID: string,
       name?: string | null,
       description?: string | null,
       exercises?:  Array< {
         __typename: "Exercise",
-        id: string,
-        dayID: string,
         name: string,
         description?: string | null,
         reps: string,
@@ -553,14 +517,10 @@ export type OnDeleteRoutineSubscription = {
     description?: string | null,
     days:  Array< {
       __typename: "Day",
-      id: string,
-      routineID: string,
       name?: string | null,
       description?: string | null,
       exercises?:  Array< {
         __typename: "Exercise",
-        id: string,
-        dayID: string,
         name: string,
         description?: string | null,
         reps: string,

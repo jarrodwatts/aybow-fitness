@@ -40,13 +40,9 @@ export const getRoutine = /* GraphQL */ `
       name
       description
       days {
-        id
-        routineID
         name
         description
         exercises {
-          id
-          dayID
           name
           description
           reps
@@ -71,13 +67,9 @@ export const listRoutines = /* GraphQL */ `
         name
         description
         days {
-          id
-          routineID
           name
           description
           exercises {
-            id
-            dayID
             name
             description
             reps

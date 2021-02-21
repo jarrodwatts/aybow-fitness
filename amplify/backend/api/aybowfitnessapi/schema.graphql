@@ -34,16 +34,16 @@ type Routine
 }
 
 type Day {
-  id: ID!
-  routineID: ID!
+  # id: ID!
+  # routineID: ID!
   name: String
   description: String
   exercises: [Exercise]
 }
 
 type Exercise {
-  id: ID!
-  dayID: ID!
+  # id: ID!
+  # dayID: ID!
   name: String!
   description: String
   reps: String!

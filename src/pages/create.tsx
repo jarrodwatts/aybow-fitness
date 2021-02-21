@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { API, Storage } from "aws-amplify";
+import { API } from "aws-amplify";
 import { v4 as uuid } from "uuid";
 import { useRouter } from "next/router";
 import { createRoutine } from "../graphql/mutations";
@@ -9,23 +9,18 @@ import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
-import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
-import Box from "@material-ui/core/Box";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { CreateRoutineInput, DayInput, ExerciseInput } from "../API";
-import { Divider, Paper } from "@material-ui/core";
+import { Divider, IconButton, Paper } from "@material-ui/core";
 import { AddCircle } from "@material-ui/icons";
-import IconButton from "@material-ui/core/IconButton";
-import Icon from "@material-ui/core/Icon";
-import SaveIcon from "@material-ui/icons/Save";
-import SearchBox from "../components/SearchBox";
 import exerciseData from "../lib/exerciseData";
+import InputBase from "@material-ui/core/InputBase";
+import SearchIcon from "@material-ui/icons/Search";
+import ExerciseNameBodyPart from "../types/ExerciseNameBodyPart";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -33,6 +28,11 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+  },
+  exercisePaper: {
+    padding: theme.spacing(1),
+    textAlign: "center",
+    color: theme.palette.text.secondary,
   },
   dayPaper: {
     padding: theme.spacing(2),
@@ -53,12 +53,32 @@ const useStyles = makeStyles((theme) => ({
   button: {
     margin: theme.spacing(1),
   },
+  root: {
+    padding: "2px 4px",
+    display: "flex",
+    alignItems: "center",
+  },
+  input: {
+    marginLeft: theme.spacing(1),
+    flex: 1,
+  },
+  iconButton: {
+    padding: 10,
+  },
+  divider: {
+    height: 28,
+    margin: 4,
+  },
 }));
 
 const Create = () => {
   const [routine, setRoutine] = useState<CreateRoutineInput>();
   const [id] = useState<string>(uuid());
   const [days, setDays] = useState<Array<DayInput>>([]);
+  const [filteredExercises, setFilteredExercises] = useState<
+    Array<ExerciseNameBodyPart>
+  >(exerciseData as Array<ExerciseNameBodyPart>);
+  const [] = useState<string>("");
   const router = useRouter();
   const classes = useStyles();
 
@@ -103,12 +123,17 @@ const Create = () => {
 
   async function addDay() {
     setDays([...days, {}]);
-    console.log("Day Added.");
   }
 
-  async function addExerciseToDay(dayIndex: number, exercise: ExerciseInput) {}
+  function handleSearchChange(val: string): void {
+    // Filter out the results from exerciseData
+    setFilteredExercises(
+      exerciseData.filter((ex) =>
+        ex.name.toLowerCase().includes(val.toLowerCase())
+      )
+    );
+  }
 
-  console.log(days);
   return (
     <Container component="main" maxWidth="md">
       <CssBaseline />
@@ -144,7 +169,6 @@ const Create = () => {
                     fullWidth
                     id="routineDescription"
                     label="Routine Description"
-                    autoFocus
                     multiline
                   />
                 </Grid>
@@ -191,17 +215,7 @@ const Create = () => {
                 )}
               </Grid>
             </Grid>
-            {/* <Grid
-              item
-              xs={4}
-              style={{
-                borderStyle: "solid",
-                borderColor: "#767676",
-                borderWidth: "1px",
-                borderRadius: "25px",
-                padding: "24px",
-              }}
-            > */}
+
             <Grid
               container
               item
@@ -217,7 +231,19 @@ const Create = () => {
                 </Grid>
 
                 <Grid item xs={12} style={{ marginBottom: "8px" }}>
-                  <SearchBox />
+                  <Paper className={classes.root}>
+                    <InputBase
+                      className={classes.input}
+                      placeholder="Search for an exercise"
+                      inputProps={{ "aria-label": "search for an exercise" }}
+                      onChange={(event) =>
+                        handleSearchChange(event.target.value)
+                      }
+                    />
+                    <IconButton>
+                      <SearchIcon />
+                    </IconButton>
+                  </Paper>
                 </Grid>
 
                 <Grid
@@ -226,18 +252,23 @@ const Create = () => {
                   style={{
                     height: "480px",
                     overflowY: "scroll",
+                    overflowX: "hidden",
                     whiteSpace: "nowrap",
                   }}
                 >
-                  {exerciseData.map((exerc, key) => (
-                    <p>{exerc.name}</p>
+                  {filteredExercises.map((exerc, key) => (
+                    <Paper
+                      key={key}
+                      style={{ padding: "4px", marginBottom: "2px" }}
+                    >
+                      <Typography>{exerc.name}</Typography>
+                    </Paper>
                   ))}
                 </Grid>
                 <Divider style={{ width: "100%" }} />
               </Grid>
             </Grid>
           </Grid>
-          {/* </Grid> */}
 
           <Button
             type="submit"

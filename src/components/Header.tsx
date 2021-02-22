@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -12,6 +12,7 @@ import Button from "@material-ui/core/Button";
 import AppleIcon from "@material-ui/icons/Apple";
 import { useUser } from "../context/userContext";
 import { useRouter } from "next/router";
+import { Auth } from "aws-amplify";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -30,9 +31,38 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function MenuAppBar() {
   const classes = useStyles();
-  const [auth, setAuth] = React.useState(false);
+  const [auth, setAuth] = useState(null);
   const router = useRouter();
 
+  const { loadingUser, setUser, user } = useUser();
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+
+  const handleChange = (event) => {
+    setAuth(event.target.checked);
+  };
+
+  const handleMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const signUserOut = async () => {
+    handleClose();
+    await Auth.signOut();
+    router.push(`/`);
+  };
+
+  useEffect(() => {
+    // Listen for updates on user
+    setAuth(user);
+  }, [user]);
+
+  console.log(auth);
   return (
     <div className={classes.root}>
       <AppBar position="fixed" elevation={0} color="default">
@@ -44,20 +74,61 @@ export default function MenuAppBar() {
             aria-label="menu"
             onClick={() => router.push("/")}
           >
-            <AppleIcon />
+            💪
           </IconButton>
           <Typography variant="h6" className={classes.title}>
             Aybow Fitness
           </Typography>
 
-          <Button
-            variant="contained"
-            color="primary"
-            style={{ marginRight: "8px" }}
-          >
-            Sign Up
-          </Button>
-          <Button variant="contained">Sign In</Button>
+          {!auth ? (
+            <React.Fragment>
+              <Button
+                variant="contained"
+                color="primary"
+                style={{ marginRight: "8px" }}
+              >
+                Sign Up
+              </Button>
+              <Button variant="contained">Sign In</Button>
+            </React.Fragment>
+          ) : (
+            <React.Fragment>
+              <IconButton
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleMenu}
+                color="inherit"
+              >
+                <AccountCircle />
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                open={open}
+                onClose={handleClose}
+              >
+                <MenuItem
+                  onClick={() => {
+                    handleClose();
+                    router.push(`/profile`);
+                  }}
+                >
+                  Profile
+                </MenuItem>
+                <MenuItem onClick={signUserOut}>Logout</MenuItem>
+              </Menu>
+            </React.Fragment>
+          )}
         </Toolbar>
       </AppBar>
     </div>

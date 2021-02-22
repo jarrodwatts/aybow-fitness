@@ -8,8 +8,8 @@ import { useRouter } from "next/router";
 
 const useStyles = makeStyles((theme) => ({
   heroContent: {
-    backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(8, 0, 6),
+    // backgroundColor: theme.palette.background.paper,
+    marginTop: "128px",
   },
   heroButtons: {
     marginTop: theme.spacing(4),
@@ -29,25 +29,16 @@ const Hero = () => {
           color="textPrimary"
           gutterBottom
         >
-          Browse Workouts
+          Browse Routines
         </Typography>
-        <Typography variant="h5" align="center" color="textSecondary" paragraph>
-          Find the perfect workout routine for you.
-        </Typography>
-        <Typography
-          variant="h5"
-          align="center"
-          color="textSecondary"
-          paragraph
-          onClick={() => router.push(`/create`)}
-        >
-          Or, create your own:
+        <Typography variant="h6" align="center" color="textSecondary" paragraph>
+          Find the perfect workout routine for you. 🏋️
         </Typography>
         <div className={classes.heroButtons}>
           <Grid container spacing={2} justify="center">
             <Grid item>
               <Button variant="contained" color="primary">
-                Create Your Own
+                Create My Own
               </Button>
             </Grid>
           </Grid>

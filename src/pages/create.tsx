@@ -32,8 +32,7 @@ const useStyles = makeStyles((theme) => ({
   },
   exercisePaper: {
     padding: theme.spacing(1),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
+    textAlign: "left",
   },
   dayPaper: {
     padding: theme.spacing(2),
@@ -42,7 +41,8 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
+    backgroundColor: "#f5f5f5",
+    boxShadow: "rgba(0, 0, 0, 0.4)",
   },
   form: {
     width: "100%",
@@ -290,14 +290,12 @@ const Create = () => {
       <CssBaseline />
       <DragDropContext onDragEnd={onDragEnd}>
         <div className={classes.paper}>
-          <Avatar className={classes.avatar}>
-            <LockOutlinedIcon />
-          </Avatar>
+          <Avatar className={classes.avatar}>🏋🏾</Avatar>
           <Typography component="h1" variant="h5">
             Create A Routine
           </Typography>
 
-          <form className={classes.form} noValidate>
+          <form className={classes.form}>
             <Grid container spacing={5} justify="space-between">
               <Grid item xs={8}>
                 <Grid
@@ -455,7 +453,25 @@ const Create = () => {
                                       )}
                                     </Draggable>
                                   ))}
-                                  {provided2.placeholder}
+
+                                  {day.exercises.length === 0 ? (
+                                    <div
+                                      style={{
+                                        borderStyle: "dotted",
+                                        borderWidth: "1px",
+                                        borderColor: "#000",
+                                        padding: "8px",
+                                      }}
+                                    >
+                                      <Typography>
+                                        Search for an exercise and drag them in
+                                        here!
+                                      </Typography>
+                                      {provided2.placeholder}
+                                    </div>
+                                  ) : (
+                                    <div>{provided2.placeholder}</div>
+                                  )}
                                 </Grid>
                               )}
                             </Droppable>
@@ -534,6 +550,7 @@ const Create = () => {
                           >
                             {(provided, snapshot) => (
                               <Paper
+                                className={classes.exercisePaper}
                                 ref={provided.innerRef}
                                 {...provided.draggableProps}
                                 {...provided.dragHandleProps}

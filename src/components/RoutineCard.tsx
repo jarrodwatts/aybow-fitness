@@ -26,16 +26,18 @@ const useStyles = makeStyles(() => ({
 const RoutineCard = ({ routine }) => {
   const classes = useStyles();
   const router = useRouter();
-  console.log("from comp:", routine);
   return (
     <Card className={classes.card}>
       <React.Fragment>
         <CardMedia
           className={classes.cardMedia}
-          image="https://source.unsplash.com/random"
+          image="https://source.unsplash.com/random/?fitness"
           title={routine.name}
         />
-        <CardContent className={classes.cardContent}>
+        <CardContent
+          className={classes.cardContent}
+          style={{ maxHeight: "160px", overflowY: "hidden" }}
+        >
           <Typography gutterBottom variant="h5" component="h2">
             {routine.name}
           </Typography>
@@ -46,7 +48,7 @@ const RoutineCard = ({ routine }) => {
             color="primary"
             onClick={() => router.push(`/routine/${routine.id}`)}
           >
-            View Routine
+            View this Routine
           </Button>
         </CardActions>
       </React.Fragment>

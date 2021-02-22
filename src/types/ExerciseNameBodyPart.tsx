@@ -1,6 +1,6 @@
 type ExerciseNameBodyPart = {
-    name: String
-    bodyPart: String
-}
+  name: string;
+  bodyPart: string;
+};
 
-export default ExerciseNameBodyPart
+export default ExerciseNameBodyPart;

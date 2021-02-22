@@ -21,6 +21,7 @@ import exerciseData from "../lib/exerciseData";
 import InputBase from "@material-ui/core/InputBase";
 import SearchIcon from "@material-ui/icons/Search";
 import ExerciseNameBodyPart from "../types/ExerciseNameBodyPart";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -44,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.secondary.main,
   },
   form: {
-    width: "100%", // Fix IE 11 issue.
+    width: "100%",
     marginTop: theme.spacing(3),
   },
   submit: {
@@ -78,31 +79,9 @@ const Create = () => {
   const [filteredExercises, setFilteredExercises] = useState<
     Array<ExerciseNameBodyPart>
   >(exerciseData as Array<ExerciseNameBodyPart>);
-  const [] = useState<string>("");
+  const [exCap, setExCap] = useState<number>(20);
   const router = useRouter();
   const classes = useStyles();
-
-  useEffect(() => {
-    setRoutine({
-      id: id,
-      name: "Test Routine",
-      description: "Test R description",
-      days: [
-        {
-          name: "Test Day",
-          description: "Test Day description",
-          exercises: [
-            {
-              name: "Test ex",
-              description: "test ex description",
-              reps: "3",
-              sets: "12",
-            },
-          ],
-        },
-      ],
-    });
-  }, []);
 
   async function createNewRoutine(event) {
     // Perform some form validation
@@ -122,7 +101,14 @@ const Create = () => {
   }
 
   async function addDay() {
-    setDays([...days, {}]);
+    setDays([
+      ...days,
+      {
+        name: "",
+        description: "",
+        exercises: [],
+      },
+    ]);
   }
 
   function handleSearchChange(val: string): void {
@@ -134,154 +120,370 @@ const Create = () => {
     );
   }
 
+  // a little function to help us with reordering the result
+  const reorder = (list, startIndex, endIndex) => {
+    const result = Array.from(list);
+    const [removed] = result.splice(startIndex, 1);
+    result.splice(endIndex, 0, removed);
+
+    return result;
+  };
+
+  const onDragEnd = (result) => {
+    const { source, destination } = result;
+    console.log(source, destination);
+    console.log("The dragged item was:");
+
+    // dropped outside the list
+    if (!result.destination) {
+      return;
+    }
+
+    // Reordering a list
+    if (source.droppableId === destination.droppableId) {
+      console.log("moving one thing to the same source");
+
+      // Reordering the exercise list
+      if (destination.droppableId === "exerciseList") {
+        const items = reorder(
+          filteredExercises,
+          result.source.index,
+          result.destination.index
+        );
+        setFilteredExercises(items);
+      }
+      // Reordering a day
+      else {
+        // 1. Get this day's items based on source's index and droppableId
+        // 2. Create a new reordered array of exercises for the specific day
+        // 3. Update state to reflect these changes.
+        const items = reorder(
+          days[destination.droppableId].exercises,
+          result.source.index,
+          result.destination.index
+        );
+
+        let tempStateChanger = days;
+        tempStateChanger[destination.droppableId].exercises = items;
+
+        setDays(tempStateChanger);
+      }
+      return;
+    }
+
+    // Move from day to a different day
+    if (
+      source.droppableId != "exerciseList" &&
+      destination.droppableId != "exerciseList"
+    ) {
+      const movedExercise = days[source.droppableId].exercises[source.index];
+      let tempStateChanger = days;
+
+      tempStateChanger[source.droppableId].exercises = tempStateChanger[
+        source.droppableId
+      ].exercises
+        .slice(0, source.index)
+        .concat(
+          tempStateChanger[source.droppableId].exercises.slice(
+            source.index + 1,
+            tempStateChanger[source.droppableId].exercises.length
+          )
+        );
+
+      tempStateChanger[destination.droppableId].exercises.splice(
+        destination.index,
+        0,
+        {
+          name: movedExercise.name,
+          sets: "0",
+          reps: "0",
+        } as ExerciseInput
+      );
+
+      return;
+    }
+
+    // Moving from a day to back to the exercise list
+    if (destination.droppableId === "exerciseList") {
+      // 1. Get this day's items based on source's index and droppableId.
+      const movedExercise = days[source.droppableId].exercises[source.index];
+
+      let tempStateChanger = days;
+      tempStateChanger[source.droppableId].exercises = tempStateChanger[
+        source.droppableId
+      ].exercises
+        .slice(0, source.index)
+        .concat(
+          tempStateChanger[source.droppableId].exercises.slice(
+            source.index + 1,
+            tempStateChanger[source.droppableId].exercises.length
+          )
+        );
+      return;
+    }
+
+    // Moving from exercise list to a day
+    else {
+      const movedExercise = filteredExercises[source.index];
+
+      let tempStateChanger = days;
+      tempStateChanger[destination.droppableId].exercises.splice(
+        destination.index,
+        0,
+        {
+          name: movedExercise.name,
+          sets: "0",
+          reps: "0",
+        } as ExerciseInput
+      );
+
+      setFilteredExercises(
+        filteredExercises
+          .slice(0, source.index)
+          .concat(
+            filteredExercises.slice(source.index + 1, filteredExercises.length)
+          )
+      );
+
+      setFilteredExercises([...filteredExercises, movedExercise]);
+      return;
+    }
+  };
+
+  const getItemStyle = (isDragging, draggableStyle) => ({
+    // change background colour if dragging
+    background: isDragging ? "lightgreen" : null,
+
+    // styles we need to apply on draggables
+    ...draggableStyle,
+  });
+
+  const getListStyle = (isDraggingOver) => ({
+    background: isDraggingOver ? "lightblue" : "lightgrey",
+  });
+
   return (
     <Container component="main" maxWidth="md">
       <CssBaseline />
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Create A Routine
-        </Typography>
+      <DragDropContext onDragEnd={onDragEnd}>
+        <div className={classes.paper}>
+          <Avatar className={classes.avatar}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Create A Routine
+          </Typography>
 
-        <form className={classes.form} noValidate>
-          <Grid container spacing={5} justify="space-between">
-            <Grid item xs={8}>
-              <Grid container spacing={2} alignItems="center" justify="center">
-                <Grid item xs={12}>
-                  <TextField
-                    name="routineName"
-                    variant="outlined"
-                    required
-                    fullWidth
-                    id="routineName"
-                    label="Routine Name"
-                    autoFocus
-                  />
+          <form className={classes.form} noValidate>
+            <Grid container spacing={5} justify="space-between">
+              <Grid item xs={8}>
+                <Grid
+                  container
+                  spacing={2}
+                  alignItems="center"
+                  justify="center"
+                >
+                  <Grid item xs={12}>
+                    <TextField
+                      name="routineName"
+                      variant="outlined"
+                      required
+                      fullWidth
+                      id="routineName"
+                      label="Routine Name"
+                      autoFocus
+                    />
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <TextField
+                      name="routineDescription"
+                      variant="outlined"
+                      required
+                      fullWidth
+                      id="routineDescription"
+                      label="Routine Description"
+                      multiline
+                    />
+                  </Grid>
+
+                  <Divider style={{ width: "100%", marginTop: "12px" }} />
+
+                  {days.map((day, key) => (
+                    <Grid item xs={12} key={key}>
+                      <Paper elevation={2} className={classes.dayPaper}>
+                        <Grid container spacing={3}>
+                          <Grid item xs={12}>
+                            <TextField
+                              name={"day" + key + "Name"}
+                              variant="outlined"
+                              required
+                              fullWidth
+                              id={"day" + key + "Name"}
+                              label={"Day " + (key + 1) + " Name"}
+                              autoFocus
+                            />
+                          </Grid>
+                          <Grid item xs={12}>
+                            <Droppable
+                              droppableId={key.toString()}
+                              style={{
+                                borderStyle: "solid",
+                                borderWidth: "2px",
+                                borderColor: "#000",
+                                height: "100px",
+                              }}
+                            >
+                              {(provided2, snapshot2) => (
+                                <Grid
+                                  {...provided2.droppableProps}
+                                  ref={provided2.innerRef}
+                                  item
+                                  xs={12}
+                                >
+                                  {day.exercises.map((exercise, exKey) => (
+                                    <Draggable
+                                      key={exKey}
+                                      draggableId={`day${key.toString()}Exercise${exKey.toString()}`}
+                                      index={exKey}
+                                    >
+                                      {(provided, snapshot) => (
+                                        <Paper
+                                          ref={provided.innerRef}
+                                          {...provided.draggableProps}
+                                          {...provided.dragHandleProps}
+                                          style={getItemStyle(
+                                            snapshot.isDragging,
+                                            provided.draggableProps.style
+                                          )}
+                                          key={`day${key.toString()}Exercise${exKey.toString()}`}
+                                        >
+                                          <Typography>
+                                            {exercise.name}
+                                          </Typography>
+                                        </Paper>
+                                      )}
+                                    </Draggable>
+                                  ))}
+                                  {provided2.placeholder}
+                                </Grid>
+                              )}
+                            </Droppable>
+                          </Grid>
+                        </Grid>
+                      </Paper>
+                    </Grid>
+                  ))}
+
+                  {days.length < 7 && (
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      size="small"
+                      className={classes.button}
+                      startIcon={<AddCircle />}
+                      onClick={addDay}
+                    >
+                      Add A Day
+                    </Button>
+                  )}
                 </Grid>
+              </Grid>
 
+              <Grid
+                container
+                item
+                xs={4}
+                spacing={1}
+                justify="center"
+                alignItems="center"
+              >
                 <Grid item xs={12}>
-                  <TextField
-                    name="routineDescription"
-                    variant="outlined"
-                    required
-                    fullWidth
-                    id="routineDescription"
-                    label="Routine Description"
-                    multiline
-                  />
-                </Grid>
+                  <Divider style={{ width: "100%" }} />
+                  <Grid item xs={12}>
+                    <Typography variant="h6">Exercise List</Typography>
+                  </Grid>
 
-                <Divider style={{ width: "100%", marginTop: "12px" }} />
-
-                {days.map((day, key) => (
-                  <Grid item xs={12} key={key}>
-                    <Paper elevation={2} className={classes.dayPaper}>
-                      <Grid container spacing={3}>
-                        <Grid item xs={12}>
-                          <TextField
-                            name={"day" + key + "Name"}
-                            variant="outlined"
-                            required
-                            fullWidth
-                            id={"day" + key + "Name"}
-                            label={"Day " + (key + 1) + " Name"}
-                            autoFocus
-                          />
-                        </Grid>
-                        <Grid item xs={12}>
-                          <Paper className={classes.dayPaper}>xs=12</Paper>
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                          <Paper className={classes.dayPaper}>xs=12 sm=6</Paper>
-                        </Grid>
-                      </Grid>
+                  <Grid item xs={12} style={{ marginBottom: "8px" }}>
+                    <Paper className={classes.root}>
+                      <InputBase
+                        className={classes.input}
+                        placeholder="Search for an exercise"
+                        inputProps={{ "aria-label": "search for an exercise" }}
+                        onChange={(event) =>
+                          handleSearchChange(event.target.value)
+                        }
+                      />
+                      <IconButton>
+                        <SearchIcon />
+                      </IconButton>
                     </Paper>
                   </Grid>
-                ))}
 
-                {days.length < 7 && (
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    size="small"
-                    className={classes.button}
-                    startIcon={<AddCircle />}
-                    onClick={addDay}
-                  >
-                    Add A Day
-                  </Button>
-                )}
+                  {/* Begin List exercises */}
+                  <Droppable droppableId="exerciseList">
+                    {(provided, snapshot) => (
+                      <Grid
+                        {...provided.droppableProps}
+                        ref={provided.innerRef}
+                        item
+                        xs={12}
+                        style={{
+                          height: "480px",
+                          overflowY: "scroll",
+                          overflowX: "hidden",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {filteredExercises.slice(0, exCap).map((exerc, key) => (
+                          <Draggable
+                            key={key}
+                            draggableId={key.toString()}
+                            index={key}
+                            style={{ marginBottom: "2px" }}
+                          >
+                            {(provided, snapshot) => (
+                              <Paper
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                style={{
+                                  ...getItemStyle(
+                                    snapshot.isDragging,
+                                    provided.draggableProps.style
+                                  ),
+                                  marginBottom: "4px",
+                                }}
+                                key={key}
+                              >
+                                <Typography>{exerc.name}</Typography>
+                              </Paper>
+                            )}
+                          </Draggable>
+                        ))}
+                        {provided.placeholder}
+                      </Grid>
+                    )}
+                  </Droppable>
+
+                  <Divider style={{ width: "100%" }} />
+                </Grid>
               </Grid>
             </Grid>
 
-            <Grid
-              container
-              item
-              xs={4}
-              spacing={1}
-              justify="center"
-              alignItems="center"
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+              onClick={(e) => createNewRoutine(e)}
             >
-              <Grid item xs={12}>
-                <Divider style={{ width: "100%" }} />
-                <Grid item xs={12}>
-                  <Typography variant="h6">Exercise List</Typography>
-                </Grid>
-
-                <Grid item xs={12} style={{ marginBottom: "8px" }}>
-                  <Paper className={classes.root}>
-                    <InputBase
-                      className={classes.input}
-                      placeholder="Search for an exercise"
-                      inputProps={{ "aria-label": "search for an exercise" }}
-                      onChange={(event) =>
-                        handleSearchChange(event.target.value)
-                      }
-                    />
-                    <IconButton>
-                      <SearchIcon />
-                    </IconButton>
-                  </Paper>
-                </Grid>
-
-                <Grid
-                  item
-                  xs={12}
-                  style={{
-                    height: "480px",
-                    overflowY: "scroll",
-                    overflowX: "hidden",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {filteredExercises.map((exerc, key) => (
-                    <Paper
-                      key={key}
-                      style={{ padding: "4px", marginBottom: "2px" }}
-                    >
-                      <Typography>{exerc.name}</Typography>
-                    </Paper>
-                  ))}
-                </Grid>
-                <Divider style={{ width: "100%" }} />
-              </Grid>
-            </Grid>
-          </Grid>
-
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-            onClick={(e) => createNewRoutine(e)}
-          >
-            Create Routine
-          </Button>
-        </form>
-      </div>
+              Create Routine
+            </Button>
+          </form>
+        </div>
+      </DragDropContext>
     </Container>
   );
 };

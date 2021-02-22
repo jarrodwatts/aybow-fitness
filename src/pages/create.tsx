@@ -15,7 +15,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { CreateRoutineInput, DayInput, ExerciseInput } from "../API";
-import { Divider, IconButton, Paper } from "@material-ui/core";
+import { Box, Divider, IconButton, Paper } from "@material-ui/core";
 import { AddCircle } from "@material-ui/icons";
 import exerciseData from "../lib/exerciseData";
 import InputBase from "@material-ui/core/InputBase";
@@ -86,12 +86,18 @@ const Create = () => {
   async function createNewRoutine(event) {
     // Perform some form validation
     event.preventDefault();
-    console.log(routine);
+
+    const createRoutineInputValues: CreateRoutineInput = {
+      id: id,
+      name: routine.name,
+      description: routine.description,
+      days: days,
+    };
 
     try {
       await API.graphql({
         query: createRoutine,
-        variables: { input: routine },
+        variables: { input: createRoutineInputValues },
         authMode: GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS,
       });
       router.push(`/routine/${id}`);
@@ -131,8 +137,6 @@ const Create = () => {
 
   const onDragEnd = (result) => {
     const { source, destination } = result;
-    console.log(source, destination);
-    console.log("The dragged item was:");
 
     // dropped outside the list
     if (!result.destination) {
@@ -262,6 +266,25 @@ const Create = () => {
     background: isDraggingOver ? "lightblue" : "lightgrey",
   });
 
+  const changeDayName = (dayIndex: number, name: string): void => {
+    let newDays = days;
+    newDays[dayIndex].name = name;
+    setDays([...newDays]);
+  };
+
+  const changeSetOrRepsValue = (
+    field: string,
+    value: string,
+    exerciseIndex: number,
+    dayIndex: number
+  ): void => {
+    let newDays = days;
+    newDays[dayIndex].exercises[exerciseIndex][field] = value;
+    setDays([...newDays]);
+  };
+
+  console.log("Routine:", routine);
+  console.log("Days:", days);
   return (
     <Container component="main" maxWidth="md">
       <CssBaseline />
@@ -292,6 +315,9 @@ const Create = () => {
                       id="routineName"
                       label="Routine Name"
                       autoFocus
+                      onChange={(e) =>
+                        setRoutine({ ...routine, name: e.target.value })
+                      }
                     />
                   </Grid>
 
@@ -304,6 +330,9 @@ const Create = () => {
                       id="routineDescription"
                       label="Routine Description"
                       multiline
+                      onChange={(e) =>
+                        setRoutine({ ...routine, description: e.target.value })
+                      }
                     />
                   </Grid>
 
@@ -322,6 +351,9 @@ const Create = () => {
                               id={"day" + key + "Name"}
                               label={"Day " + (key + 1) + " Name"}
                               autoFocus
+                              onChange={(e) =>
+                                changeDayName(key, e.target.value)
+                              }
                             />
                           </Grid>
                           <Grid item xs={12}>
@@ -344,23 +376,81 @@ const Create = () => {
                                   {day.exercises.map((exercise, exKey) => (
                                     <Draggable
                                       key={exKey}
-                                      draggableId={`day${key.toString()}Exercise${exKey.toString()}`}
+                                      draggableId={`day${key.toString()}Exercise${exKey.toString()}${exercise.name.toString()}`}
                                       index={exKey}
                                     >
                                       {(provided, snapshot) => (
                                         <Paper
+                                          elevation={3}
                                           ref={provided.innerRef}
                                           {...provided.draggableProps}
                                           {...provided.dragHandleProps}
-                                          style={getItemStyle(
-                                            snapshot.isDragging,
-                                            provided.draggableProps.style
-                                          )}
+                                          className={classes.dayPaper}
+                                          style={{
+                                            ...getItemStyle(
+                                              snapshot.isDragging,
+                                              provided.draggableProps.style
+                                            ),
+                                            marginBottom: "8px",
+                                          }}
                                           key={`day${key.toString()}Exercise${exKey.toString()}`}
                                         >
-                                          <Typography>
-                                            {exercise.name}
-                                          </Typography>
+                                          <Grid
+                                            container
+                                            justify="space-around"
+                                            alignItems="center"
+                                          >
+                                            <Grid item xs={6}>
+                                              <Box>
+                                                <Typography>
+                                                  {`Exercise ${exKey + 1}`}
+                                                </Typography>
+                                                <Typography>
+                                                  <b>{exercise.name}</b>
+                                                </Typography>
+                                              </Box>
+                                            </Grid>
+                                            <Grid item xs={3}>
+                                              <Box>
+                                                <Typography>Sets</Typography>
+                                                <TextField
+                                                  style={{ maxWidth: "64px" }}
+                                                  id={`day${key.toString()}Exercise${exKey}${
+                                                    exercise.name
+                                                  }Sets`}
+                                                  variant="outlined"
+                                                  onChange={(e) =>
+                                                    changeSetOrRepsValue(
+                                                      "sets",
+                                                      e.target.value,
+                                                      exKey,
+                                                      key
+                                                    )
+                                                  }
+                                                />
+                                              </Box>
+                                            </Grid>
+                                            <Grid item xs={3}>
+                                              <Box>
+                                                <Typography>Reps</Typography>
+                                                <TextField
+                                                  style={{ maxWidth: "64px" }}
+                                                  id={`day${key.toString()}Exercise${exKey}${
+                                                    exercise.name
+                                                  }Reps`}
+                                                  variant="outlined"
+                                                  onChange={(e) =>
+                                                    changeSetOrRepsValue(
+                                                      "reps",
+                                                      e.target.value,
+                                                      exKey,
+                                                      key
+                                                    )
+                                                  }
+                                                />
+                                              </Box>
+                                            </Grid>
+                                          </Grid>
                                         </Paper>
                                       )}
                                     </Draggable>

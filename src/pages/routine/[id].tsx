@@ -1,7 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { API, graphqlOperation } from "aws-amplify";
-import { GetRoutineQuery, ListRoutinesQuery } from "../../API";
-import { getRoutine, listRoutines } from "../../graphql/queries";
+import {
+  GetRoutineQuery,
+  GetUserQueryVariables,
+  ListRoutinesQuery,
+} from "../../API";
+import { getRoutine, getUser, listRoutines } from "../../graphql/queries";
 import config from "../../aws-exports";
 import { GetStaticProps, GetStaticPaths } from "next";
 import {
@@ -16,6 +20,11 @@ import Image from "next/image";
 import { makeStyles } from "@material-ui/core/styles";
 import exerciseData from "../../lib/exerciseData";
 import supported from "../../lib/supportedBodyPartImages";
+import { useUser } from "../../context/userContext";
+import { useRouter } from "next/router";
+import { updateUser } from "../../graphql/mutations";
+import { UpdateUserInput, User, GetUserQuery } from "../../API";
+import { GRAPHQL_AUTH_MODE } from "@aws-amplify/api";
 
 API.configure(config);
 
@@ -47,7 +56,29 @@ const IndividualRoutine = (props: {
   routine: GetRoutineQuery["getRoutine"];
 }) => {
   const { routine } = props;
+  const { loadingUser, userAttributes, setUser, user } = useUser();
+  const [alreadySaved, setAlreadySaved] = useState<boolean>(false);
+  const router = useRouter();
   const classes = useStyles();
+
+  useEffect(() => {
+    async function getUserRoutineStatus(): Promise<boolean> {
+      const currentUserData = (await API.graphql({
+        query: getUser,
+        variables: { id: userAttributes.sub },
+        authMode: GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS,
+      })) as {
+        data: GetUserQuery;
+        errors: any[];
+      };
+
+      return currentUserData.data.getUser.savedRoutines.includes(routine.id);
+    }
+
+    if (userAttributes?.sub) {
+      getUserRoutineStatus().then((res) => setAlreadySaved(res));
+    }
+  }, [userAttributes]);
 
   const getBodyPartImage = (ex): string => {
     const relatedBodyPart = exerciseData.find((el) => el.name == ex.name);
@@ -59,6 +90,73 @@ const IndividualRoutine = (props: {
     return "/Default.png";
   };
 
+  const getBodyPart = (ex): String => {
+    return exerciseData.find((el) => el.name == ex.name).bodyPart;
+  };
+
+  const handleSaveUnsave = async () => {
+    setAlreadySaved(!alreadySaved);
+    console.log("userAttributes.sub:", userAttributes.sub);
+
+    const currentUserId: GetUserQueryVariables = {
+      id: userAttributes.sub,
+    };
+
+    const currentUserData = (await API.graphql({
+      query: getUser,
+      variables: { id: currentUserId.id },
+      authMode: GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS,
+    })) as {
+      data: GetUserQuery;
+      errors: any[];
+    };
+
+    function generateNewSavedRoutines(): string[] {
+      // if it already exists...
+      if (
+        currentUserData.data.getUser.savedRoutines &&
+        currentUserData.data.getUser.savedRoutines.includes(routine.id)
+      ) {
+        const newArr = currentUserData.data.getUser.savedRoutines.filter(
+          (rou) => routine.id != rou
+        );
+        return newArr;
+      }
+
+      if (
+        currentUserData.data.getUser.savedRoutines &&
+        currentUserData.data.getUser.savedRoutines.length > 0
+      ) {
+        return [...currentUserData.data.getUser.savedRoutines, routine.id];
+      } else {
+        return [routine.id];
+      }
+    }
+
+    if (!currentUserData.errors) {
+      let updatedUserDetails: UpdateUserInput = {
+        id: userAttributes.sub,
+        savedRoutines: generateNewSavedRoutines(),
+      };
+
+      try {
+        const updatedUser = await API.graphql({
+          query: updateUser,
+          variables: { input: updatedUserDetails },
+          authMode: GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS,
+        });
+        console.log("Success:", updatedUser);
+      } catch (err) {
+        console.log("Err:", err);
+      }
+    } else {
+      // error occurred getting current user
+      console.log("Errors;", currentUserData.errors);
+    }
+  };
+
+  console.log(routine);
+  console.log("routine already saved?:", alreadySaved);
   return (
     <div style={{ marginTop: "64px" }}>
       <div className={classes.heroImage}>
@@ -107,12 +205,31 @@ const IndividualRoutine = (props: {
                 <Typography component="h3" variant="h4">
                   The Routine
                 </Typography>
+                <Typography component="h4" variant="h6">
+                  Made by <b>{routine.owner}</b>
+                </Typography>
               </Grid>
-              <Grid item xs={4}>
-                <Button variant="contained" color="primary">
-                  Save Routine
-                </Button>
-              </Grid>
+              {user ? (
+                <Grid item xs={4}>
+                  <Button
+                    variant="contained"
+                    color={alreadySaved ? "secondary" : "primary"}
+                    onClick={handleSaveUnsave}
+                  >
+                    {alreadySaved ? "Unsave Routine" : "Save Routine"}
+                  </Button>
+                </Grid>
+              ) : (
+                <Grid item xs={4}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => router.push(`/profile`)}
+                  >
+                    Save Routine
+                  </Button>
+                </Grid>
+              )}
               {routine.days.map((day, dayKey) => (
                 <Grid key={dayKey} item xs={12}>
                   <Paper className={classes.paper}>
@@ -141,6 +258,9 @@ const IndividualRoutine = (props: {
                               <Grid item xs={5}>
                                 <Typography>
                                   <b>{ex.name}</b>
+                                </Typography>
+                                <Typography>
+                                  {getBodyPart(ex)} Exercise
                                 </Typography>
                               </Grid>
                               <Grid item xs={3}>

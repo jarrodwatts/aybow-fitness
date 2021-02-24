@@ -11,9 +11,18 @@ export const createUser = /* GraphQL */ `
       id
       username
       email
+      savedRoutines
+      savedWeights {
+        exercise {
+          name
+          description
+          reps
+          sets
+        }
+        weight
+      }
       createdAt
       updatedAt
-      owner
     }
   }
 `;
@@ -26,9 +35,18 @@ export const updateUser = /* GraphQL */ `
       id
       username
       email
+      savedRoutines
+      savedWeights {
+        exercise {
+          name
+          description
+          reps
+          sets
+        }
+        weight
+      }
       createdAt
       updatedAt
-      owner
     }
   }
 `;
@@ -41,9 +59,18 @@ export const deleteUser = /* GraphQL */ `
       id
       username
       email
+      savedRoutines
+      savedWeights {
+        exercise {
+          name
+          description
+          reps
+          sets
+        }
+        weight
+      }
       createdAt
       updatedAt
-      owner
     }
   }
 `;

@@ -6,11 +6,25 @@ export type CreateUserInput = {
   id?: string | null,
   username: string,
   email: string,
+  savedRoutines?: Array< string | null > | null,
+  savedWeights?: Array< RecordedExerciseWithWeightInput | null > | null,
+};
+
+export type RecordedExerciseWithWeightInput = {
+  exercise: ExerciseInput,
+  weight: string,
+};
+
+export type ExerciseInput = {
+  name: string,
+  description?: string | null,
+  reps: string,
+  sets: string,
 };
 
 export type ModelUserConditionInput = {
-  username?: ModelStringInput | null,
   email?: ModelStringInput | null,
+  savedRoutines?: ModelIDInput | null,
   and?: Array< ModelUserConditionInput | null > | null,
   or?: Array< ModelUserConditionInput | null > | null,
   not?: ModelUserConditionInput | null,
@@ -56,20 +70,53 @@ export type ModelSizeInput = {
   between?: Array< number | null > | null,
 };
 
+export type ModelIDInput = {
+  ne?: string | null,
+  eq?: string | null,
+  le?: string | null,
+  lt?: string | null,
+  ge?: string | null,
+  gt?: string | null,
+  contains?: string | null,
+  notContains?: string | null,
+  between?: Array< string | null > | null,
+  beginsWith?: string | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
+  size?: ModelSizeInput | null,
+};
+
 export type User = {
   __typename: "User",
   id?: string,
   username?: string,
   email?: string,
+  savedRoutines?: Array< string | null > | null,
+  savedWeights?:  Array<RecordedExerciseWithWeight | null > | null,
   createdAt?: string,
   updatedAt?: string,
-  owner?: string | null,
+};
+
+export type RecordedExerciseWithWeight = {
+  __typename: "RecordedExerciseWithWeight",
+  exercise?: Exercise,
+  weight?: string,
+};
+
+export type Exercise = {
+  __typename: "Exercise",
+  name?: string,
+  description?: string | null,
+  reps?: string,
+  sets?: string,
 };
 
 export type UpdateUserInput = {
   id: string,
   username?: string | null,
   email?: string | null,
+  savedRoutines?: Array< string | null > | null,
+  savedWeights?: Array< RecordedExerciseWithWeightInput | null > | null,
 };
 
 export type DeleteUserInput = {
@@ -87,13 +134,6 @@ export type DayInput = {
   name?: string | null,
   description?: string | null,
   exercises?: Array< ExerciseInput | null > | null,
-};
-
-export type ExerciseInput = {
-  name: string,
-  description?: string | null,
-  reps: string,
-  sets: string,
 };
 
 export type ModelRoutineConditionInput = {
@@ -122,14 +162,6 @@ export type Day = {
   exercises?:  Array<Exercise | null > | null,
 };
 
-export type Exercise = {
-  __typename: "Exercise",
-  name?: string,
-  description?: string | null,
-  reps?: string,
-  sets?: string,
-};
-
 export type UpdateRoutineInput = {
   id: string,
   name?: string | null,
@@ -145,25 +177,10 @@ export type ModelUserFilterInput = {
   id?: ModelIDInput | null,
   username?: ModelStringInput | null,
   email?: ModelStringInput | null,
+  savedRoutines?: ModelIDInput | null,
   and?: Array< ModelUserFilterInput | null > | null,
   or?: Array< ModelUserFilterInput | null > | null,
   not?: ModelUserFilterInput | null,
-};
-
-export type ModelIDInput = {
-  ne?: string | null,
-  eq?: string | null,
-  le?: string | null,
-  lt?: string | null,
-  ge?: string | null,
-  gt?: string | null,
-  contains?: string | null,
-  notContains?: string | null,
-  between?: Array< string | null > | null,
-  beginsWith?: string | null,
-  attributeExists?: boolean | null,
-  attributeType?: ModelAttributeTypes | null,
-  size?: ModelSizeInput | null,
 };
 
 export type ModelUserConnection = {
@@ -198,9 +215,20 @@ export type CreateUserMutation = {
     id: string,
     username: string,
     email: string,
+    savedRoutines?: Array< string | null > | null,
+    savedWeights?:  Array< {
+      __typename: "RecordedExerciseWithWeight",
+      exercise:  {
+        __typename: "Exercise",
+        name: string,
+        description?: string | null,
+        reps: string,
+        sets: string,
+      },
+      weight: string,
+    } | null > | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -215,9 +243,20 @@ export type UpdateUserMutation = {
     id: string,
     username: string,
     email: string,
+    savedRoutines?: Array< string | null > | null,
+    savedWeights?:  Array< {
+      __typename: "RecordedExerciseWithWeight",
+      exercise:  {
+        __typename: "Exercise",
+        name: string,
+        description?: string | null,
+        reps: string,
+        sets: string,
+      },
+      weight: string,
+    } | null > | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -232,9 +271,20 @@ export type DeleteUserMutation = {
     id: string,
     username: string,
     email: string,
+    savedRoutines?: Array< string | null > | null,
+    savedWeights?:  Array< {
+      __typename: "RecordedExerciseWithWeight",
+      exercise:  {
+        __typename: "Exercise",
+        name: string,
+        description?: string | null,
+        reps: string,
+        sets: string,
+      },
+      weight: string,
+    } | null > | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -335,9 +385,20 @@ export type GetUserQuery = {
     id: string,
     username: string,
     email: string,
+    savedRoutines?: Array< string | null > | null,
+    savedWeights?:  Array< {
+      __typename: "RecordedExerciseWithWeight",
+      exercise:  {
+        __typename: "Exercise",
+        name: string,
+        description?: string | null,
+        reps: string,
+        sets: string,
+      },
+      weight: string,
+    } | null > | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -355,9 +416,20 @@ export type ListUsersQuery = {
       id: string,
       username: string,
       email: string,
+      savedRoutines?: Array< string | null > | null,
+      savedWeights?:  Array< {
+        __typename: "RecordedExerciseWithWeight",
+        exercise:  {
+          __typename: "Exercise",
+          name: string,
+          description?: string | null,
+          reps: string,
+          sets: string,
+        },
+        weight: string,
+      } | null > | null,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null > | null,
     nextToken?: string | null,
   } | null,
@@ -431,9 +503,20 @@ export type OnCreateUserSubscription = {
     id: string,
     username: string,
     email: string,
+    savedRoutines?: Array< string | null > | null,
+    savedWeights?:  Array< {
+      __typename: "RecordedExerciseWithWeight",
+      exercise:  {
+        __typename: "Exercise",
+        name: string,
+        description?: string | null,
+        reps: string,
+        sets: string,
+      },
+      weight: string,
+    } | null > | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -443,9 +526,20 @@ export type OnUpdateUserSubscription = {
     id: string,
     username: string,
     email: string,
+    savedRoutines?: Array< string | null > | null,
+    savedWeights?:  Array< {
+      __typename: "RecordedExerciseWithWeight",
+      exercise:  {
+        __typename: "Exercise",
+        name: string,
+        description?: string | null,
+        reps: string,
+        sets: string,
+      },
+      weight: string,
+    } | null > | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -455,9 +549,20 @@ export type OnDeleteUserSubscription = {
     id: string,
     username: string,
     email: string,
+    savedRoutines?: Array< string | null > | null,
+    savedWeights?:  Array< {
+      __typename: "RecordedExerciseWithWeight",
+      exercise:  {
+        __typename: "Exercise",
+        name: string,
+        description?: string | null,
+        reps: string,
+        sets: string,
+      },
+      weight: string,
+    } | null > | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 

@@ -1,18 +1,27 @@
 type User
   @model
+  @aws_iam
+  @aws_cognito_user_pools
   @auth(
     rules: [
+      # allow all authenticated users ability to create posts
+      # allow owners ability to update and delete their posts
       {
         allow: owner
-        # ownerField: "username"
+        ownerField: "username"
         operations: [create, delete, update]
       }
+      # allow all authenticated users to read posts
+      { allow: private, operations: [read] }
+      # allow all guest users (not authenticated) to read posts
       { allow: public, operations: [read] }
     ]
   ) {
   id: ID!
   username: String!
   email: String!
+  savedRoutines: [ID] # Probably some type of connection i am missing, for now I am just storing the Ids of the saved routines.
+  savedWeights: [RecordedExerciseWithWeight]
 }
 
 type Routine
@@ -24,6 +33,7 @@ type Routine
         ownerField: "owner"
         operations: [create, delete, update]
       }
+      { allow: private, operations: [read] }
       { allow: public, operations: [read] }
     ]
   ) {
@@ -34,18 +44,19 @@ type Routine
 }
 
 type Day {
-  # id: ID!
-  # routineID: ID!
   name: String
   description: String
   exercises: [Exercise]
 }
 
 type Exercise {
-  # id: ID!
-  # dayID: ID!
   name: String!
   description: String
   reps: String!
   sets: String!
+}
+
+type RecordedExerciseWithWeight {
+  exercise: Exercise!
+  weight: String!
 }

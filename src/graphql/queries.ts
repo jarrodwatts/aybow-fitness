@@ -8,9 +8,18 @@ export const getUser = /* GraphQL */ `
       id
       username
       email
+      savedRoutines
+      savedWeights {
+        exercise {
+          name
+          description
+          reps
+          sets
+        }
+        weight
+      }
       createdAt
       updatedAt
-      owner
     }
   }
 `;
@@ -25,9 +34,18 @@ export const listUsers = /* GraphQL */ `
         id
         username
         email
+        savedRoutines
+        savedWeights {
+          exercise {
+            name
+            description
+            reps
+            sets
+          }
+          weight
+        }
         createdAt
         updatedAt
-        owner
       }
       nextToken
     }

@@ -37,7 +37,11 @@ const Hero = () => {
         <div className={classes.heroButtons}>
           <Grid container spacing={2} justify="center">
             <Grid item>
-              <Button variant="contained" color="primary">
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => router.push(`/create`)}
+              >
                 Create My Own
               </Button>
             </Grid>

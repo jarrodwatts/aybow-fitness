@@ -16,7 +16,7 @@ import {
   Avatar,
   Button,
 } from "@material-ui/core";
-import Image from "next/image";
+// import Image from "next/image";
 import { makeStyles } from "@material-ui/core/styles";
 import exerciseData from "../../lib/exerciseData";
 import supported from "../../lib/supportedBodyPartImages";

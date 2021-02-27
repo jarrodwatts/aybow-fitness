@@ -329,6 +329,7 @@ export const getStaticProps: GetStaticProps = async ({ params: { id } }) => {
     props: {
       routine: routine.data.getRoutine,
     },
+    revalidate: 1,
   };
 };
 

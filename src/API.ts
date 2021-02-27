@@ -128,6 +128,7 @@ export type CreateRoutineInput = {
   name: string,
   description?: string | null,
   days: Array< DayInput | null >,
+  owner: string,
 };
 
 export type DayInput = {
@@ -150,9 +151,9 @@ export type Routine = {
   name?: string,
   description?: string | null,
   days?:  Array<Day | null >,
+  owner?: string,
   createdAt?: string,
   updatedAt?: string,
-  owner?: string | null,
 };
 
 export type Day = {
@@ -167,6 +168,7 @@ export type UpdateRoutineInput = {
   name?: string | null,
   description?: string | null,
   days?: Array< DayInput | null > | null,
+  owner?: string | null,
 };
 
 export type DeleteRoutineInput = {
@@ -193,6 +195,7 @@ export type ModelRoutineFilterInput = {
   id?: ModelIDInput | null,
   name?: ModelStringInput | null,
   description?: ModelStringInput | null,
+  owner?: ModelStringInput | null,
   and?: Array< ModelRoutineFilterInput | null > | null,
   or?: Array< ModelRoutineFilterInput | null > | null,
   not?: ModelRoutineFilterInput | null,
@@ -311,9 +314,9 @@ export type CreateRoutineMutation = {
         sets: string,
       } | null > | null,
     } | null >,
+    owner: string,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -340,9 +343,9 @@ export type UpdateRoutineMutation = {
         sets: string,
       } | null > | null,
     } | null >,
+    owner: string,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -369,9 +372,9 @@ export type DeleteRoutineMutation = {
         sets: string,
       } | null > | null,
     } | null >,
+    owner: string,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -457,9 +460,9 @@ export type GetRoutineQuery = {
         sets: string,
       } | null > | null,
     } | null >,
+    owner: string,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -489,9 +492,9 @@ export type ListRoutinesQuery = {
           sets: string,
         } | null > | null,
       } | null >,
+      owner: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null > | null,
     nextToken?: string | null,
   } | null,
@@ -584,9 +587,9 @@ export type OnCreateRoutineSubscription = {
         sets: string,
       } | null > | null,
     } | null >,
+    owner: string,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -608,9 +611,9 @@ export type OnUpdateRoutineSubscription = {
         sets: string,
       } | null > | null,
     } | null >,
+    owner: string,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -632,8 +635,8 @@ export type OnDeleteRoutineSubscription = {
         sets: string,
       } | null > | null,
     } | null >,
+    owner: string,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };

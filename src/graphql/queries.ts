@@ -67,9 +67,9 @@ export const getRoutine = /* GraphQL */ `
           sets
         }
       }
+      owner
       createdAt
       updatedAt
-      owner
     }
   }
 `;
@@ -94,9 +94,9 @@ export const listRoutines = /* GraphQL */ `
             sets
           }
         }
+        owner
         createdAt
         updatedAt
-        owner
       }
       nextToken
     }

@@ -72,7 +72,16 @@ const IndividualRoutine = (props: {
         errors: any[];
       };
 
-      return currentUserData.data.getUser.savedRoutines.includes(routine.id);
+      if (
+        currentUserData &&
+        currentUserData.data &&
+        currentUserData.data.getUser &&
+        currentUserData.data.getUser.savedRoutines
+      ) {
+        return currentUserData.data.getUser.savedRoutines.includes(routine.id);
+      }
+
+      return false;
     }
 
     if (userAttributes?.sub) {
@@ -209,27 +218,30 @@ const IndividualRoutine = (props: {
                   Made by <b>{routine.owner}</b>
                 </Typography>
               </Grid>
-              {user ? (
-                <Grid item xs={4}>
-                  <Button
-                    variant="contained"
-                    color={alreadySaved ? "secondary" : "primary"}
-                    onClick={handleSaveUnsave}
-                  >
-                    {alreadySaved ? "Unsave Routine" : "Save Routine"}
-                  </Button>
-                </Grid>
-              ) : (
-                <Grid item xs={4}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => router.push(`/profile`)}
-                  >
-                    Save Routine
-                  </Button>
-                </Grid>
-              )}
+              {
+                // The user who created the routine shouldn't see the save button
+                user ? (
+                  <Grid item xs={4}>
+                    <Button
+                      variant="contained"
+                      color={alreadySaved ? "secondary" : "primary"}
+                      onClick={handleSaveUnsave}
+                    >
+                      {alreadySaved ? "Unsave Routine" : "Save Routine"}
+                    </Button>
+                  </Grid>
+                ) : (
+                  <Grid item xs={4}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => router.push(`/profile`)}
+                    >
+                      Save Routine
+                    </Button>
+                  </Grid>
+                )
+              }
               {routine.days.map((day, dayKey) => (
                 <Grid key={dayKey} item xs={12}>
                   <Paper className={classes.paper}>
@@ -252,10 +264,10 @@ const IndividualRoutine = (props: {
                               justify="flex-start"
                               alignItems="center"
                             >
-                              <Grid item xs={1}>
+                              <Grid item xs={3} sm={1}>
                                 <Avatar src={getBodyPartImage(ex)}></Avatar>
                               </Grid>
-                              <Grid item xs={5}>
+                              <Grid item xs={9} sm={5}>
                                 <Typography>
                                   <b>{ex.name}</b>
                                 </Typography>
@@ -263,10 +275,13 @@ const IndividualRoutine = (props: {
                                   {getBodyPart(ex)} Exercise
                                 </Typography>
                               </Grid>
-                              <Grid item xs={3}>
+                              <Grid item xs={3} sm={1}>
+                                {/* Empty Spacer for mobile */}
+                              </Grid>
+                              <Grid item xs={3} sm={2}>
                                 <Typography>{ex.sets} Sets</Typography>
                               </Grid>
-                              <Grid item xs={3}>
+                              <Grid item xs={3} sm={2}>
                                 <Typography>{ex.reps} Reps</Typography>
                               </Grid>
                             </Grid>

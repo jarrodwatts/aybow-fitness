@@ -54,7 +54,7 @@ export default function MenuAppBar() {
   const signUserOut = async () => {
     handleClose();
     await Auth.signOut();
-    router.push(`/`);
+    setUser(null);
   };
 
   useEffect(() => {
@@ -77,7 +77,7 @@ export default function MenuAppBar() {
             💪
           </IconButton>
           <Typography variant="h6" className={classes.title}>
-            Aybow Fitness
+            Aybow
           </Typography>
 
           {!auth ? (

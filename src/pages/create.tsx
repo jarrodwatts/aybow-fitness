@@ -22,6 +22,8 @@ import InputBase from "@material-ui/core/InputBase";
 import SearchIcon from "@material-ui/icons/Search";
 import ExerciseNameBodyPart from "../types/ExerciseNameBodyPart";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import authTheme from "../amplifyTheme";
+import { useUser } from "../context/userContext";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -82,12 +84,14 @@ const Create = () => {
   const [exCap, setExCap] = useState<number>(20);
   const router = useRouter();
   const classes = useStyles();
+  const { loadingUser, setUser, user } = useUser();
 
   async function createNewRoutine(event) {
     // Perform some form validation
     event.preventDefault();
 
     const createRoutineInputValues: CreateRoutineInput = {
+      owner: user.getUsername(),
       id: id,
       name: routine.name,
       description: routine.description,
@@ -127,7 +131,7 @@ const Create = () => {
   }
 
   // a little function to help us with reordering the result
-  const reorder = (list, startIndex, endIndex) => {
+  const reorder = (list, startIndex, endIndex): any[] => {
     const result = Array.from(list);
     const [removed] = result.splice(startIndex, 1);
     result.splice(endIndex, 0, removed);
@@ -297,7 +301,7 @@ const Create = () => {
 
           <form className={classes.form}>
             <Grid container spacing={5} justify="space-between">
-              <Grid item xs={8}>
+              <Grid item xs={12} sm={8}>
                 <Grid
                   container
                   spacing={2}
@@ -499,7 +503,8 @@ const Create = () => {
               <Grid
                 container
                 item
-                xs={4}
+                xs={12}
+                sm={4}
                 spacing={1}
                 justify="center"
                 alignItems="center"

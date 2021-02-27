@@ -26,6 +26,7 @@ type User
 
 type Routine
   @model
+  @key(name: "routinesByOwner", fields: ["owner"])
   @auth(
     rules: [
       {
@@ -41,6 +42,7 @@ type Routine
   name: String!
   description: String
   days: [Day]!
+  owner: String!
 }
 
 type Day {

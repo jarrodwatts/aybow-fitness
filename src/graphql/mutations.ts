@@ -93,9 +93,9 @@ export const createRoutine = /* GraphQL */ `
           sets
         }
       }
+      owner
       createdAt
       updatedAt
-      owner
     }
   }
 `;
@@ -118,9 +118,9 @@ export const updateRoutine = /* GraphQL */ `
           sets
         }
       }
+      owner
       createdAt
       updatedAt
-      owner
     }
   }
 `;
@@ -143,9 +143,9 @@ export const deleteRoutine = /* GraphQL */ `
           sets
         }
       }
+      owner
       createdAt
       updatedAt
-      owner
     }
   }
 `;

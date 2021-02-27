@@ -74,6 +74,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
       routinesList: [],
       errors: result.errors,
     },
+    revalidate: 1,
   };
 };
 

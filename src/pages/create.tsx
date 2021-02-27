@@ -104,7 +104,7 @@ const Create = () => {
         variables: { input: createRoutineInputValues },
         authMode: GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS,
       });
-      router.push(`/routine/${id}`);
+      await router.push(`/routine/${id}`);
     } catch (err) {
       // console.error(err);
     }

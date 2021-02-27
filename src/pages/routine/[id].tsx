@@ -61,6 +61,10 @@ const IndividualRoutine = (props: {
   const router = useRouter();
   const classes = useStyles();
 
+  if (router.isFallback) {
+    return <div>Loading...</div>;
+  }
+
   useEffect(() => {
     async function getUserRoutineStatus(): Promise<boolean> {
       const currentUserData = (await API.graphql({
@@ -311,7 +315,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     params: { id },
   }));
 
-  return { paths, fallback: false };
+  return { paths, fallback: true };
 };
 
 export const getStaticProps: GetStaticProps = async ({ params: { id } }) => {

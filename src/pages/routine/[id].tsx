@@ -315,7 +315,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
     params: { id },
   }));
 
-  // Fallback has to be disabled for next export to work
   return { paths, fallback: false };
 };
 

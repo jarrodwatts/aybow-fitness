@@ -315,7 +315,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
     params: { id },
   }));
 
-  return { paths, fallback: true };
+  // Fallback has to be disabled for next export to work
+  return { paths, fallback: false };
 };
 
 export const getStaticProps: GetStaticProps = async ({ params: { id } }) => {

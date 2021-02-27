@@ -105,7 +105,6 @@ const IndividualRoutine = (props: {
 
   const handleSaveUnsave = async () => {
     setAlreadySaved(!alreadySaved);
-    console.log("userAttributes.sub:", userAttributes.sub);
 
     const currentUserId: GetUserQueryVariables = {
       id: userAttributes.sub,
@@ -154,21 +153,19 @@ const IndividualRoutine = (props: {
           variables: { input: updatedUserDetails },
           authMode: GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS,
         });
-        console.log("Success:", updatedUser);
       } catch (err) {
-        console.log("Err:", err);
+        console.error("Err:", err);
       }
     } else {
       // error occurred getting current user
-      console.log("Errors;", currentUserData.errors);
+      console.error("Errors;", currentUserData.errors);
     }
   };
 
-  console.log(routine);
-  console.log("routine already saved?:", alreadySaved);
   return (
     <div style={{ marginTop: "64px" }}>
-      <div className={classes.heroImage}>
+      {/* NEXT IMAGE NOT SUPPORTED ON STATIC GENERATION. =( */}
+      {/* <div className={classes.heroImage}>
         <Image
           className={classes.test}
           alt={routine.name}
@@ -177,7 +174,7 @@ const IndividualRoutine = (props: {
           objectFit="cover"
           quality={100}
         />
-      </div>
+      </div> */}
 
       <Grid container alignItems="center" justify="center">
         <Container maxWidth="md">
@@ -195,14 +192,14 @@ const IndividualRoutine = (props: {
             <Typography
               component="h1"
               variant="h2"
-              style={{ color: "#fff", marginBottom: "8px" }}
+              style={{ marginBottom: "8px" }}
             >
               {routine.name}
             </Typography>
             <Typography
               component="h2"
               variant="body1"
-              style={{ color: "#fff", maxHeight: "13vh", overflowY: "auto" }}
+              style={{ maxHeight: "13vh", overflowY: "auto" }}
             >
               {routine.description}
             </Typography>
@@ -305,8 +302,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
     data: ListRoutinesQuery;
     errors: any[];
   };
-
-  console.log("result:", result);
 
   if (result.errors) {
     console.error("Failed to fetch routines paths.", result.errors);

@@ -32,10 +32,6 @@ function Index({ routinesList, errors }: { routinesList: any; errors: any[] }) {
     setRoutines(routinesList);
   }, []);
 
-  console.log("Routines list:", routinesList);
-  console.log("Routines:", routines);
-  console.log("Errors:", errors);
-
   return (
     <React.Fragment>
       <CssBaseline />

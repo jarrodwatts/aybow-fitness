@@ -62,7 +62,6 @@ export default function MenuAppBar() {
     setAuth(user);
   }, [user]);
 
-  console.log(auth);
   return (
     <div className={classes.root}>
       <AppBar position="fixed" elevation={0} color="default">
@@ -86,10 +85,16 @@ export default function MenuAppBar() {
                 variant="contained"
                 color="primary"
                 style={{ marginRight: "8px" }}
+                onClick={() => router.push(`/profile`)}
               >
                 Sign Up
               </Button>
-              <Button variant="contained">Sign In</Button>
+              <Button
+                variant="contained"
+                onClick={() => router.push(`/profile`)}
+              >
+                Sign In
+              </Button>
             </React.Fragment>
           ) : (
             <React.Fragment>

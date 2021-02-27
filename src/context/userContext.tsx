@@ -47,13 +47,8 @@ export default function UserContextComp({ children }: { children: any }) {
       if (user) {
         setUser(user);
         setUserAttributes(attributes);
-        console.log("user is signed in:", user);
       }
     } catch (error) {
-      console.log(
-        "Error Occurred fetching user, or user is not signed in: \nError was:",
-        error
-      );
       setUser(null);
     } finally {
       setLoadingUser(false);

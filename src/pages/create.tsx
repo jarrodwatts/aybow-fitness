@@ -106,7 +106,7 @@ const Create = () => {
       });
       router.push(`/routine/${id}`);
     } catch (err) {
-      console.log(err);
+      // console.error(err);
     }
   }
 
@@ -149,8 +149,6 @@ const Create = () => {
 
     // Reordering a list
     if (source.droppableId === destination.droppableId) {
-      console.log("moving one thing to the same source");
-
       // Reordering the exercise list
       if (destination.droppableId === "exerciseList") {
         const items = reorder(
@@ -287,8 +285,6 @@ const Create = () => {
     setDays([...newDays]);
   };
 
-  console.log("Routine:", routine);
-  console.log("Days:", days);
   return (
     <Container component="main" maxWidth="md">
       <CssBaseline />

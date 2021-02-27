@@ -58,14 +58,14 @@ function Profile() {
       };
 
       if (userSavedRoutineIds.errors) {
-        console.log(
+        console.error(
           "Errors from getROutineFromId:",
           userSavedRoutineIds.errors
         );
       }
       return userSavedRoutineIds.data.getUser.savedRoutines;
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   }
 
@@ -81,11 +81,11 @@ function Profile() {
       };
 
       if (routine.errors) {
-        console.log("Err:", routine.errors);
+        console.error("Err:", routine.errors);
       }
       return routine.data.getRoutine;
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   }
 
@@ -107,7 +107,7 @@ function Profile() {
       };
 
       if (userCreatedRoutines.errors) {
-        console.log(
+        console.error(
           "Errors from getROutineFromId:",
           userCreatedRoutines.errors
         );
@@ -115,12 +115,11 @@ function Profile() {
 
       return userCreatedRoutines.data.listRoutines.items;
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   }
 
   useEffect(() => {
-    console.log("a");
     async function getRoutinesData() {
       const ids = await getRoutineIds();
       if (ids) {
@@ -146,12 +145,9 @@ function Profile() {
   }, [userAttributes]);
 
   if (!user) {
-    console.log("no user");
     return null;
   }
 
-  console.log("saved:", savedRoutines);
-  console.log("created:", createdRoutines);
   return (
     <Container maxWidth="sm">
       <Grid
@@ -178,58 +174,119 @@ function Profile() {
           <NoRoutinesAvailable />
         ) : (
           <React.Fragment>
-            <Grid item xs={12}>
-              <Typography component="h2" variant="h4">
-                Your Saved Routines
-              </Typography>
-            </Grid>
+            {savedRoutines.length == 0 ? null : (
+              <React.Fragment>
+                <Grid item xs={12}>
+                  <Typography component="h2" variant="h4">
+                    Your Saved Routines
+                  </Typography>
+                </Grid>
 
-            {savedRoutines.map((routine, key) => (
-              <Grid item xs={12} key={routine.id}>
-                <Paper className={classes.paper}>
-                  <Grid container>
-                    <Grid item>
-                      <Typography variant="h6" color="primary">
-                        <Link href={`/routine/${routine.id}`} passHref>
-                          <a>
-                            <b>{routine.name}</b>
-                          </a>
-                        </Link>
-                      </Typography>
-                    </Grid>
-                    <Grid item>
-                      <Typography
-                        style={{ maxHeight: "80px", overflowY: "hidden" }}
-                      >
-                        {routine.description}
-                      </Typography>
-                    </Grid>
-                    <Grid
-                      container
-                      item
-                      alignItems="center"
-                      justify="space-between"
-                      style={{ marginTop: "8px" }}
-                    >
-                      <Grid item>
-                        <Typography>
-                          <b>Routine from {routine.owner}</b>
-                        </Typography>
-                      </Grid>
-                      <Grid item>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={() => console.log("Asasd")}
+                {savedRoutines.map((routine, key) => (
+                  <Grid item xs={12} key={routine.id}>
+                    <Paper className={classes.paper}>
+                      <Grid container>
+                        <Grid item>
+                          <Typography variant="h6" color="primary">
+                            <Link href={`/routine/${routine.id}`} passHref>
+                              <a>
+                                <b>{routine.name}</b>
+                              </a>
+                            </Link>
+                          </Typography>
+                        </Grid>
+                        <Grid item>
+                          <Typography
+                            style={{ maxHeight: "80px", overflowY: "hidden" }}
+                          >
+                            {routine.description}
+                          </Typography>
+                        </Grid>
+                        <Grid
+                          container
+                          item
+                          alignItems="center"
+                          justify="space-between"
+                          style={{ marginTop: "8px" }}
                         >
-                          Use this Routine
-                        </Button>
+                          <Grid item>
+                            <Typography>
+                              <b>Routine from {routine.owner}</b>
+                            </Typography>
+                          </Grid>
+                          <Grid item>
+                            <Button
+                              variant="contained"
+                              color="primary"
+                              onClick={() => console.log("Asasd")}
+                            >
+                              Use this Routine
+                            </Button>
+                          </Grid>
+                        </Grid>
                       </Grid>
-                    </Grid>
+                    </Paper>
                   </Grid>
-                </Paper>
-              </Grid>
-            ))}
+                ))}
+              </React.Fragment>
+            )}
+
+            {createdRoutines.length == 0 ? null : (
+              <React.Fragment>
+                <Grid item xs={12}>
+                  <Typography component="h2" variant="h4">
+                    Your Created Routines
+                  </Typography>
+                </Grid>
+
+                {createdRoutines.map((routine, key) => (
+                  <Grid item xs={12} key={routine.id}>
+                    <Paper className={classes.paper}>
+                      <Grid container>
+                        <Grid item>
+                          <Typography variant="h6" color="primary">
+                            <Link href={`/routine/${routine.id}`} passHref>
+                              <a>
+                                <b>{routine.name}</b>
+                              </a>
+                            </Link>
+                          </Typography>
+                        </Grid>
+                        <Grid item>
+                          <Typography
+                            style={{ maxHeight: "80px", overflowY: "hidden" }}
+                          >
+                            {routine.description}
+                          </Typography>
+                        </Grid>
+                        <Grid
+                          container
+                          item
+                          alignItems="center"
+                          justify="space-between"
+                          style={{ marginTop: "8px" }}
+                        >
+                          <Grid item>
+                            <Typography>
+                              <b>Routine from {routine.owner}</b>
+                            </Typography>
+                          </Grid>
+                          <Grid item>
+                            <Button
+                              variant="contained"
+                              color="secondary"
+                              onClick={() => console.log("Edit Routine")}
+                            >
+                              Edit Routine
+                            </Button>
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                    </Paper>
+                  </Grid>
+                ))}
+              </React.Fragment>
+            )}
           </React.Fragment>
         )}
       </Grid>

@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build && next export",
+    "dev": "next",
+    "build": "next build",
     "start": "next start"
   },
   "keywords": [],

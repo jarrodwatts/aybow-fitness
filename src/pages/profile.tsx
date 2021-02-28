@@ -185,12 +185,16 @@ function Profile() {
                 {savedRoutines.map((routine) => (
                   <UseRoutineCard routine={routine} />
                 ))}
+
+                <Divider
+                  style={{
+                    width: "100%",
+                    marginTop: "16px",
+                    marginBottom: "16px",
+                  }}
+                />
               </React.Fragment>
             )}
-
-            <Divider
-              style={{ width: "100%", marginTop: "16px", marginBottom: "16px" }}
-            />
 
             {createdRoutines.length == 0 ? null : (
               <React.Fragment>

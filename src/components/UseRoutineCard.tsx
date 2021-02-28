@@ -17,43 +17,45 @@ const useStyles = makeStyles((theme) => ({
 
 const UseRoutineCard = ({ routine }) => {
   const classes = useStyles();
-  return (
-    <Grid item xs={12} key={routine.id}>
-      <Paper className={classes.paper}>
-        <Grid
-          container
-          direction="column"
-          alignItems="flex-start"
-          justify="center"
-        >
-          <Grid item>
-            <Typography variant="h6" color="primary">
-              <Link href={`/routine/${routine.id}`} passHref>
-                <a style={{ color: "inherit", textDecoration: "none" }}>
-                  <b>{routine.name}</b>
-                </a>
-              </Link>
-            </Typography>
-          </Grid>
-          <Grid item>
-            <Typography style={{ maxHeight: "80px", overflowY: "hidden" }}>
-              {routine.description}
-            </Typography>
-          </Grid>
+
+  if (routine) {
+    return (
+      <Grid item xs={12} key={routine?.id}>
+        <Paper className={classes.paper}>
           <Grid
             container
-            item
-            alignItems="center"
-            justify="space-between"
-            style={{ marginTop: "8px" }}
+            direction="column"
+            alignItems="flex-start"
+            justify="center"
           >
             <Grid item>
-              <Typography>
-                <b>Routine from {routine.owner}</b>
+              <Typography variant="h6" color="primary">
+                <Link href={`/routine/${routine.id}`} passHref>
+                  <a style={{ color: "inherit", textDecoration: "none" }}>
+                    <b>{routine.name}</b>
+                  </a>
+                </Link>
               </Typography>
             </Grid>
-            {/* TODO: Implement use this routine feature */}
-            {/* <Grid item>
+            <Grid item>
+              <Typography style={{ maxHeight: "80px", overflowY: "hidden" }}>
+                {routine.description}
+              </Typography>
+            </Grid>
+            <Grid
+              container
+              item
+              alignItems="center"
+              justify="space-between"
+              style={{ marginTop: "8px" }}
+            >
+              <Grid item>
+                <Typography>
+                  <b>Routine from {routine.owner}</b>
+                </Typography>
+              </Grid>
+              {/* TODO: Implement use this routine feature */}
+              {/* <Grid item>
               <Button
                 variant="contained"
                 color="primary"
@@ -62,11 +64,15 @@ const UseRoutineCard = ({ routine }) => {
                 Use this Routine
               </Button>
             </Grid> */}
+            </Grid>
           </Grid>
-        </Grid>
-      </Paper>
-    </Grid>
-  );
+        </Paper>
+      </Grid>
+    );
+  } else {
+    // TODO: Routine has been deleted
+    return <div></div>;
+  }
 };
 
 export default UseRoutineCard;

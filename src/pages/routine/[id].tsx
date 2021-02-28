@@ -7,7 +7,7 @@ import {
 } from "../../API";
 import { getRoutine, getUser, listRoutines } from "../../graphql/queries";
 import config from "../../aws-exports";
-import { GetStaticProps, GetStaticPaths } from "next";
+import { GetServerSideProps } from "next";
 import {
   Container,
   Grid,
@@ -16,7 +16,7 @@ import {
   Avatar,
   Button,
 } from "@material-ui/core";
-// import Image from "next/image";
+import Image from "next/image";
 import { makeStyles } from "@material-ui/core/styles";
 import exerciseData from "../../lib/exerciseData";
 import supported from "../../lib/supportedBodyPartImages";
@@ -168,8 +168,7 @@ const IndividualRoutine = (props: {
 
   return (
     <div style={{ marginTop: "64px" }}>
-      {/* NEXT IMAGE NOT SUPPORTED ON STATIC GENERATION. =( */}
-      {/* <div className={classes.heroImage}>
+      <div className={classes.heroImage}>
         <Image
           className={classes.test}
           alt={routine.name}
@@ -178,7 +177,7 @@ const IndividualRoutine = (props: {
           objectFit="cover"
           quality={100}
         />
-      </div> */}
+      </div>
 
       <Grid container alignItems="center" justify="center">
         <Container maxWidth="md">
@@ -196,14 +195,14 @@ const IndividualRoutine = (props: {
             <Typography
               component="h1"
               variant="h2"
-              style={{ marginBottom: "8px" }}
+              style={{ color: "#fff", marginBottom: "8px" }}
             >
               {routine.name}
             </Typography>
             <Typography
               component="h2"
               variant="body1"
-              style={{ maxHeight: "13vh", overflowY: "auto" }}
+              style={{ color: "#fff", maxHeight: "13vh", overflowY: "auto" }}
             >
               {routine.description}
             </Typography>
@@ -301,24 +300,26 @@ const IndividualRoutine = (props: {
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  let result = (await API.graphql(graphqlOperation(listRoutines))) as {
-    data: ListRoutinesQuery;
-    errors: any[];
-  };
+// export const getStaticPaths: GetStaticPaths = async () => {
+//   let result = (await API.graphql(graphqlOperation(listRoutines))) as {
+//     data: ListRoutinesQuery;
+//     errors: any[];
+//   };
 
-  if (result.errors) {
-    console.error("Failed to fetch routines paths.", result.errors);
-    throw new Error(result.errors[0].message);
-  }
-  const paths = result.data.listRoutines.items.map(({ id }) => ({
-    params: { id },
-  }));
+//   if (result.errors) {
+//     console.error("Failed to fetch routines paths.", result.errors);
+//     throw new Error(result.errors[0].message);
+//   }
+//   const paths = result.data.listRoutines.items.map(({ id }) => ({
+//     params: { id },
+//   }));
 
-  return { paths, fallback: false };
-};
+//   return { paths };
+// };
 
-export const getStaticProps: GetStaticProps = async ({ params: { id } }) => {
+export const getServerSideProps: GetServerSideProps = async ({
+  params: { id },
+}) => {
   const routine = (await API.graphql({
     ...graphqlOperation(getRoutine),
     variables: { id },
@@ -333,7 +334,7 @@ export const getStaticProps: GetStaticProps = async ({ params: { id } }) => {
     props: {
       routine: routine.data.getRoutine,
     },
-    revalidate: 1,
+    // revalidate: 1,
   };
 };
 

@@ -25,6 +25,7 @@ import {
 import { getRoutine, getUser, listRoutines } from "../graphql/queries";
 import Link from "next/link";
 import NoRoutinesAvailable from "../components/NoRoutinesAvailable";
+import UseRoutineCard from "../components/UseRoutineCard";
 
 Amplify.configure(awsconfig);
 
@@ -181,55 +182,15 @@ function Profile() {
                     Your Saved Routines
                   </Typography>
                 </Grid>
-
-                {savedRoutines.map((routine, key) => (
-                  <Grid item xs={12} key={routine.id}>
-                    <Paper className={classes.paper}>
-                      <Grid container>
-                        <Grid item>
-                          <Typography variant="h6" color="primary">
-                            <Link href={`/routine/${routine.id}`} passHref>
-                              <a>
-                                <b>{routine.name}</b>
-                              </a>
-                            </Link>
-                          </Typography>
-                        </Grid>
-                        <Grid item>
-                          <Typography
-                            style={{ maxHeight: "80px", overflowY: "hidden" }}
-                          >
-                            {routine.description}
-                          </Typography>
-                        </Grid>
-                        <Grid
-                          container
-                          item
-                          alignItems="center"
-                          justify="space-between"
-                          style={{ marginTop: "8px" }}
-                        >
-                          <Grid item>
-                            <Typography>
-                              <b>Routine from {routine.owner}</b>
-                            </Typography>
-                          </Grid>
-                          <Grid item>
-                            <Button
-                              variant="contained"
-                              color="primary"
-                              onClick={() => console.log("Asasd")}
-                            >
-                              Use this Routine
-                            </Button>
-                          </Grid>
-                        </Grid>
-                      </Grid>
-                    </Paper>
-                  </Grid>
+                {savedRoutines.map((routine) => (
+                  <UseRoutineCard routine={routine} />
                 ))}
               </React.Fragment>
             )}
+
+            <Divider
+              style={{ width: "100%", marginTop: "16px", marginBottom: "16px" }}
+            />
 
             {createdRoutines.length == 0 ? null : (
               <React.Fragment>
@@ -238,52 +199,8 @@ function Profile() {
                     Your Created Routines
                   </Typography>
                 </Grid>
-
-                {createdRoutines.map((routine, key) => (
-                  <Grid item xs={12} key={routine.id}>
-                    <Paper className={classes.paper}>
-                      <Grid container>
-                        <Grid item>
-                          <Typography variant="h6" color="primary">
-                            <Link href={`/routine/${routine.id}`} passHref>
-                              <a>
-                                <b>{routine.name}</b>
-                              </a>
-                            </Link>
-                          </Typography>
-                        </Grid>
-                        <Grid item>
-                          <Typography
-                            style={{ maxHeight: "80px", overflowY: "hidden" }}
-                          >
-                            {routine.description}
-                          </Typography>
-                        </Grid>
-                        <Grid
-                          container
-                          item
-                          alignItems="center"
-                          justify="space-between"
-                          style={{ marginTop: "8px" }}
-                        >
-                          <Grid item>
-                            <Typography>
-                              <b>Routine from {routine.owner}</b>
-                            </Typography>
-                          </Grid>
-                          <Grid item>
-                            <Button
-                              variant="contained"
-                              color="secondary"
-                              onClick={() => console.log("Edit Routine")}
-                            >
-                              Edit Routine
-                            </Button>
-                          </Grid>
-                        </Grid>
-                      </Grid>
-                    </Paper>
-                  </Grid>
+                {createdRoutines.map((routine) => (
+                  <UseRoutineCard routine={routine} />
                 ))}
               </React.Fragment>
             )}

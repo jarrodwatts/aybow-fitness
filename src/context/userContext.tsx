@@ -11,6 +11,8 @@ import { CognitoUser } from "@aws-amplify/auth";
 // Also initialize Amplify, since this is being used
 // In _app.tsx it will be initialized for every page
 import awsconfig from "../aws-exports";
+import { AuthState, onAuthUIStateChange } from "@aws-amplify/ui-components";
+
 Amplify.configure(awsconfig);
 
 type UserContextType = {
@@ -34,10 +36,19 @@ export const UserContext = createContext<UserContextType>(null);
 export default function UserContextComp({ children }: { children: any }) {
   const [user, setUser] = useState<CognitoUser>(null);
   const [userAttributes, setUserAttributes] = useState(null);
+  const [authState, setAuthState] = useState<AuthState>();
   const [loadingUser, setLoadingUser] = useState<boolean>(true); // Helpful, to update the UI accordingly.
 
   useEffect(() => {
     checkUser();
+  }, []);
+
+  // Listen for updates
+  useEffect(() => {
+    return onAuthUIStateChange((nextAuthState, authData) => {
+      setAuthState(authState);
+      setUser(authData as CognitoUser);
+    });
   }, []);
 
   async function checkUser() {

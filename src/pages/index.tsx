@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { API, graphqlOperation } from "aws-amplify";
 import { listRoutines, listUsers } from "../graphql/queries";
-import { GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
@@ -51,7 +51,7 @@ function Index({ routinesList, errors }: { routinesList: any; errors: any[] }) {
   );
 }
 
-export const getStaticProps: GetStaticProps = async (context) => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   // Make a call to the graphQL API here to get all todos from a todolist
   // The todo list will be 'global'
   const result = (await API.graphql(graphqlOperation(listRoutines))) as {
@@ -74,7 +74,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
       routinesList: [],
       errors: result.errors,
     },
-    revalidate: 1,
+    // revalidate: 1,
   };
 };
 

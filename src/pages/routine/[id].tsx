@@ -56,7 +56,7 @@ const IndividualRoutine = (props: {
   routine: GetRoutineQuery["getRoutine"];
 }) => {
   const { routine } = props;
-  const { loadingUser, userAttributes, setUser, user } = useUser();
+  const { userAttributes, user } = useUser();
   const [alreadySaved, setAlreadySaved] = useState<boolean>(false);
   const router = useRouter();
   const classes = useStyles();

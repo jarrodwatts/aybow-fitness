@@ -34,7 +34,7 @@ export default function MenuAppBar() {
   const [auth, setAuth] = useState(null);
   const router = useRouter();
 
-  const { loadingUser, setUser, user } = useUser();
+  const { setUser, setUserAttributes, user } = useUser();
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -55,6 +55,8 @@ export default function MenuAppBar() {
     handleClose();
     await Auth.signOut();
     setUser(null);
+    setUserAttributes(null);
+    router.push(`/`);
   };
 
   useEffect(() => {

@@ -84,7 +84,7 @@ const Create = () => {
   const [exCap, setExCap] = useState<number>(20);
   const router = useRouter();
   const classes = useStyles();
-  const { loadingUser, setUser, user } = useUser();
+  const { user } = useUser();
 
   async function createNewRoutine(event) {
     // Perform some form validation

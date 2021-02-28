@@ -19,6 +19,7 @@ type UserContextType = {
   user: CognitoUser;
   userAttributes: CognitoUserAttributes;
   setUser: Dispatch<SetStateAction<CognitoUser>>;
+  setUserAttributes: Dispatch<any>;
   loadingUser: boolean;
 };
 
@@ -48,6 +49,8 @@ export default function UserContextComp({ children }: { children: any }) {
     return onAuthUIStateChange((nextAuthState, authData) => {
       setAuthState(authState);
       setUser(authData as CognitoUser);
+      // TODO: this is unsafe
+      setUserAttributes(authData?.attributes as CognitoUserAttributes);
     });
   }, []);
 
@@ -61,6 +64,7 @@ export default function UserContextComp({ children }: { children: any }) {
       }
     } catch (error) {
       setUser(null);
+      setUserAttributes(null);
     } finally {
       setLoadingUser(false);
     }
@@ -68,7 +72,7 @@ export default function UserContextComp({ children }: { children: any }) {
 
   return (
     <UserContext.Provider
-      value={{ user, userAttributes, setUser, loadingUser }}
+      value={{ user, userAttributes, setUser, setUserAttributes, loadingUser }}
     >
       {children}
     </UserContext.Provider>

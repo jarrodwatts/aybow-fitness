@@ -182,8 +182,10 @@ function Profile() {
                     Your Saved Routines
                   </Typography>
                 </Grid>
-                {savedRoutines.map((routine) => (
-                  <UseRoutineCard routine={routine} />
+                {savedRoutines.map((routine, key) => (
+                  <React.Fragment key={key}>
+                    <UseRoutineCard routine={routine} />
+                  </React.Fragment>
                 ))}
 
                 <Divider
@@ -203,8 +205,10 @@ function Profile() {
                     Your Created Routines
                   </Typography>
                 </Grid>
-                {createdRoutines.map((routine) => (
-                  <UseRoutineCard routine={routine} />
+                {createdRoutines.map((routine, key) => (
+                  <React.Fragment key={key}>
+                    <UseRoutineCard routine={routine} />
+                  </React.Fragment>
                 ))}
               </React.Fragment>
             )}

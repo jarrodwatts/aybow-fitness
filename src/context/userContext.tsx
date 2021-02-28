@@ -46,12 +46,19 @@ export default function UserContextComp({ children }: { children: any }) {
 
   // Listen for updates
   useEffect(() => {
-    return onAuthUIStateChange((nextAuthState, authData) => {
-      setAuthState(authState);
-      setUser(authData as CognitoUser);
-      // TODO: this is unsafe
-      setUserAttributes(authData?.attributes as CognitoUserAttributes);
-    });
+    return onAuthUIStateChange(
+      async (nextAuthState: AuthState, authData: CognitoUser) => {
+        setAuthState(authState);
+        setUser(authData as CognitoUser);
+        // TODO: this is unsafe
+        try {
+          const { attributes } = await Auth.currentAuthenticatedUser();
+          setUserAttributes(attributes);
+        } catch (err) {
+          setUserAttributes(null);
+        }
+      }
+    );
   }, []);
 
   async function checkUser() {

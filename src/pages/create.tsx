@@ -24,6 +24,8 @@ import ExerciseNameBodyPart from "../types/ExerciseNameBodyPart";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import authTheme from "../amplifyTheme";
 import { useUser } from "../context/userContext";
+import ExerciseInExerciseListDraggable from "../components/DragAndDrop/ExerciseInExerciseListDraggable";
+import DayEditableContainer from "../components/DragAndDrop/DayEditableContainer";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -31,15 +33,6 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-  },
-  exercisePaper: {
-    padding: theme.spacing(1),
-    textAlign: "left",
-  },
-  dayPaper: {
-    padding: theme.spacing(2),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
   },
   avatar: {
     margin: theme.spacing(1),
@@ -64,13 +57,6 @@ const useStyles = makeStyles((theme) => ({
   input: {
     marginLeft: theme.spacing(1),
     flex: 1,
-  },
-  iconButton: {
-    padding: 10,
-  },
-  divider: {
-    height: 28,
-    margin: 4,
   },
 }));
 
@@ -256,14 +242,6 @@ const Create = () => {
     }
   };
 
-  const getItemStyle = (isDragging, draggableStyle) => ({
-    // change background colour if dragging
-    background: isDragging ? "lightgreen" : null,
-
-    // styles we need to apply on draggables
-    ...draggableStyle,
-  });
-
   const getListStyle = (isDraggingOver) => ({
     background: isDraggingOver ? "lightblue" : "lightgrey",
   });
@@ -338,146 +316,12 @@ const Create = () => {
 
                   {days.map((day, key) => (
                     <Grid item xs={12} key={key}>
-                      <Paper elevation={2} className={classes.dayPaper}>
-                        <Grid container spacing={3}>
-                          <Grid item xs={12}>
-                            <TextField
-                              name={"day" + key + "Name"}
-                              variant="outlined"
-                              required
-                              fullWidth
-                              id={"day" + key + "Name"}
-                              label={"Day " + (key + 1) + " Name"}
-                              autoFocus
-                              onChange={(e) =>
-                                changeDayName(key, e.target.value)
-                              }
-                            />
-                          </Grid>
-                          <Grid item xs={12}>
-                            <Droppable
-                              droppableId={key.toString()}
-                              style={{
-                                borderStyle: "solid",
-                                borderWidth: "2px",
-                                borderColor: "#000",
-                                height: "100px",
-                              }}
-                            >
-                              {(provided2, snapshot2) => (
-                                <Grid
-                                  {...provided2.droppableProps}
-                                  ref={provided2.innerRef}
-                                  item
-                                  xs={12}
-                                >
-                                  {day.exercises.map((exercise, exKey) => (
-                                    <Draggable
-                                      key={exKey}
-                                      draggableId={`day${key.toString()}Exercise${exKey.toString()}${exercise.name.toString()}`}
-                                      index={exKey}
-                                    >
-                                      {(provided, snapshot) => (
-                                        <Paper
-                                          elevation={3}
-                                          ref={provided.innerRef}
-                                          {...provided.draggableProps}
-                                          {...provided.dragHandleProps}
-                                          className={classes.dayPaper}
-                                          style={{
-                                            ...getItemStyle(
-                                              snapshot.isDragging,
-                                              provided.draggableProps.style
-                                            ),
-                                            marginBottom: "8px",
-                                          }}
-                                          key={`day${key.toString()}Exercise${exKey.toString()}`}
-                                        >
-                                          <Grid
-                                            container
-                                            justify="space-around"
-                                            alignItems="center"
-                                          >
-                                            <Grid item xs={6}>
-                                              <Box>
-                                                <Typography>
-                                                  {`Exercise ${exKey + 1}`}
-                                                </Typography>
-                                                <Typography>
-                                                  <b>{exercise.name}</b>
-                                                </Typography>
-                                              </Box>
-                                            </Grid>
-                                            <Grid item xs={3}>
-                                              <Box>
-                                                <Typography>Sets</Typography>
-                                                <TextField
-                                                  style={{ maxWidth: "64px" }}
-                                                  id={`day${key.toString()}Exercise${exKey}${
-                                                    exercise.name
-                                                  }Sets`}
-                                                  variant="outlined"
-                                                  onChange={(e) =>
-                                                    changeSetOrRepsValue(
-                                                      "sets",
-                                                      e.target.value,
-                                                      exKey,
-                                                      key
-                                                    )
-                                                  }
-                                                />
-                                              </Box>
-                                            </Grid>
-                                            <Grid item xs={3}>
-                                              <Box>
-                                                <Typography>Reps</Typography>
-                                                <TextField
-                                                  style={{ maxWidth: "64px" }}
-                                                  id={`day${key.toString()}Exercise${exKey}${
-                                                    exercise.name
-                                                  }Reps`}
-                                                  variant="outlined"
-                                                  onChange={(e) =>
-                                                    changeSetOrRepsValue(
-                                                      "reps",
-                                                      e.target.value,
-                                                      exKey,
-                                                      key
-                                                    )
-                                                  }
-                                                />
-                                              </Box>
-                                            </Grid>
-                                          </Grid>
-                                        </Paper>
-                                      )}
-                                    </Draggable>
-                                  ))}
-
-                                  {day.exercises.length === 0 ? (
-                                    <div
-                                      style={{
-                                        borderStyle: "dotted",
-                                        borderWidth: "1px",
-                                        borderColor: "#000",
-                                        padding: "8px",
-                                      }}
-                                    >
-                                      <Typography>
-                                        Search for an exercise and drag them in
-                                        here!
-                                      </Typography>
-                                      {provided2.placeholder}
-                                    </div>
-                                  ) : (
-                                    <div>{provided2.placeholder}</div>
-                                  )}
-                                </Grid>
-                              )}
-                            </Droppable>
-                          </Grid>
-                        </Grid>
-                      </Paper>
+                      <DayEditableContainer
+                        day={day}
+                        changeDayName={changeDayName}
+                        changeSetOrRepsValue={changeSetOrRepsValue}
+                        keyProp={key}
+                      />
                     </Grid>
                   ))}
 
@@ -543,31 +387,11 @@ const Create = () => {
                         }}
                       >
                         {filteredExercises.slice(0, exCap).map((exerc, key) => (
-                          <Draggable
+                          <ExerciseInExerciseListDraggable
+                            exerc={exerc}
                             key={key}
-                            draggableId={key.toString()}
-                            index={key}
-                            style={{ marginBottom: "2px" }}
-                          >
-                            {(provided, snapshot) => (
-                              <Paper
-                                className={classes.exercisePaper}
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                style={{
-                                  ...getItemStyle(
-                                    snapshot.isDragging,
-                                    provided.draggableProps.style
-                                  ),
-                                  marginBottom: "4px",
-                                }}
-                                key={key}
-                              >
-                                <Typography>{exerc.name}</Typography>
-                              </Paper>
-                            )}
-                          </Draggable>
+                            keyProp={key}
+                          />
                         ))}
                         {provided.placeholder}
                       </Grid>

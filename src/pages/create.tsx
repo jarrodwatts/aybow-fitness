@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { API } from "aws-amplify";
 import { v4 as uuid } from "uuid";
 import { useRouter } from "next/router";
@@ -10,19 +10,17 @@ import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { CreateRoutineInput, DayInput, ExerciseInput } from "../API";
-import { Box, Divider, IconButton, Paper } from "@material-ui/core";
+import { Divider, IconButton, Paper } from "@material-ui/core";
 import { AddCircle } from "@material-ui/icons";
 import exerciseData from "../lib/exerciseData";
 import InputBase from "@material-ui/core/InputBase";
 import SearchIcon from "@material-ui/icons/Search";
 import ExerciseNameBodyPart from "../types/ExerciseNameBodyPart";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import authTheme from "../amplifyTheme";
+import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import { useUser } from "../context/userContext";
 import ExerciseInExerciseListDraggable from "../components/DragAndDrop/ExerciseInExerciseListDraggable";
 import DayEditableContainer from "../components/DragAndDrop/DayEditableContainer";
@@ -67,7 +65,7 @@ const Create = () => {
   const [filteredExercises, setFilteredExercises] = useState<
     Array<ExerciseNameBodyPart>
   >(exerciseData as Array<ExerciseNameBodyPart>);
-  const [exCap, setExCap] = useState<number>(20);
+  const [exCap] = useState<number>(20);
   const router = useRouter();
   const classes = useStyles();
   const { user } = useUser();
@@ -198,7 +196,6 @@ const Create = () => {
     // Moving from a day to back to the exercise list
     if (destination.droppableId === "exerciseList") {
       // 1. Get this day's items based on source's index and droppableId.
-      const movedExercise = days[source.droppableId].exercises[source.index];
 
       let tempStateChanger = days;
       tempStateChanger[source.droppableId].exercises = tempStateChanger[
@@ -241,10 +238,6 @@ const Create = () => {
       return;
     }
   };
-
-  const getListStyle = (isDraggingOver) => ({
-    background: isDraggingOver ? "lightblue" : "lightgrey",
-  });
 
   const changeDayName = (dayIndex: number, name: string): void => {
     let newDays = days;
@@ -373,7 +366,7 @@ const Create = () => {
 
                   {/* Begin List exercises */}
                   <Droppable droppableId="exerciseList">
-                    {(provided, snapshot) => (
+                    {(provided) => (
                       <Grid
                         {...provided.droppableProps}
                         ref={provided.innerRef}

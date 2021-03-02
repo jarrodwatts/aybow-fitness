@@ -1,29 +1,24 @@
-import { withAuthenticator, AmplifySignOut } from "@aws-amplify/ui-react";
+import { withAuthenticator } from "@aws-amplify/ui-react";
 import React, { useState, useEffect } from "react";
 import { useUser } from "../context/userContext";
-import router from "next/router";
 import { makeStyles } from "@material-ui/core/styles";
 import Amplify, { API } from "aws-amplify";
 import awsconfig from "../aws-exports";
 import { GRAPHQL_AUTH_MODE } from "@aws-amplify/api";
 import {
   Container,
-  Paper,
   Avatar,
   Grid,
   Typography,
   Divider,
-  Button,
 } from "@material-ui/core";
 import {
   GetRoutineQuery,
   GetUserQuery,
   Routine,
-  GetUserQueryVariables,
   ListRoutinesQuery,
 } from "../API";
 import { getRoutine, getUser, listRoutines } from "../graphql/queries";
-import Link from "next/link";
 import NoRoutinesAvailable from "../components/NoRoutinesAvailable";
 import UseRoutineCard from "../components/UseRoutineCard";
 
@@ -42,8 +37,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Profile() {
-  const classes = useStyles();
-  const { loadingUser, user, userAttributes } = useUser();
+  const { user, userAttributes } = useUser();
   const [savedRoutines, setSavedRoutines] = useState<Array<Routine>>([]);
   const [createdRoutines, setCreatedRoutines] = useState<Array<Routine>>([]);
 

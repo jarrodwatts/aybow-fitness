@@ -62,6 +62,8 @@ const DayEditableContainer = ({
                     dayKey={keyProp}
                     key={key}
                     changeSetOrRepsValue={changeSetOrRepsValue}
+                    setsVal={day.exercises[key].sets}
+                    repsVal={day.exercises[key].reps}
                   />
                 ))}
 

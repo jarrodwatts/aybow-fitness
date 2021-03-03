@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "A web application for finding and creating workout routines.",
   "scripts": {
-    "dev": "next",
+    "dev": "NODE_OPTIONS='--inspect' next",
     "build": "next build",
     "start": "next start",
     "type-check": "tsc --pretty --noEmit",

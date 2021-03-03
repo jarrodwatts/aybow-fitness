@@ -24,6 +24,9 @@ import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import { useUser } from "../context/userContext";
 import ExerciseInExerciseListDraggable from "../components/DragAndDrop/ExerciseInExerciseListDraggable";
 import DayEditableContainer from "../components/DragAndDrop/DayEditableContainer";
+import reorderExercisesInDay from "../lib/createHelpers/reorderExercisesInDay";
+import DragDropEvent from "../types/DragDropEvent";
+import reorder from "../lib/createHelpers/reorder";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -114,19 +117,13 @@ const Create = () => {
     );
   }
 
-  // a little function to help us with reordering the result
-  const reorder = (list, startIndex, endIndex): any[] => {
-    const result = Array.from(list);
-    const [removed] = result.splice(startIndex, 1);
-    result.splice(endIndex, 0, removed);
-
-    return result;
-  };
-
   const onDragEnd = (result) => {
-    const { source, destination } = result;
+    const {
+      source,
+      destination,
+    }: { source: DragDropEvent; destination: DragDropEvent } = result;
 
-    // dropped outside the list
+    // Dropped outside a list
     if (!result.destination) {
       return;
     }
@@ -142,23 +139,21 @@ const Create = () => {
         );
         setFilteredExercises(items);
       }
+
       // Reordering a day
       else {
-        // 1. Get this day's items based on source's index and droppableId
-        // 2. Create a new reordered array of exercises for the specific day
-        // 3. Update state to reflect these changes.
-        const items = reorder(
+        const newExerciseOrderForDay = reorderExercisesInDay(
           days[destination.droppableId].exercises,
-          result.source.index,
-          result.destination.index
+          source,
+          destination
         );
 
-        let tempStateChanger = days;
-        tempStateChanger[destination.droppableId].exercises = items;
+        const newState = [...days];
+        newState[destination.droppableId].exercises = newExerciseOrderForDay;
 
-        setDays(tempStateChanger);
+        setDays([...newState]);
+        return;
       }
-      return;
     }
 
     // Move from day to a different day
@@ -185,8 +180,8 @@ const Create = () => {
         0,
         {
           name: movedExercise.name,
-          sets: "0",
-          reps: "0",
+          sets: movedExercise.sets,
+          reps: movedExercise.reps,
         } as ExerciseInput
       );
 

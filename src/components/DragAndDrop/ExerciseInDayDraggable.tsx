@@ -19,6 +19,8 @@ const ExerciseInDayDraggable = ({
   exKey,
   dayKey,
   changeSetOrRepsValue,
+  setsVal,
+  repsVal,
 }) => {
   const classes = useStyles();
 
@@ -70,6 +72,7 @@ const ExerciseInDayDraggable = ({
                   onChange={(e) =>
                     changeSetOrRepsValue("sets", e.target.value, exKey, dayKey)
                   }
+                  value={setsVal}
                 />
               </Box>
             </Grid>
@@ -85,6 +88,7 @@ const ExerciseInDayDraggable = ({
                   onChange={(e) =>
                     changeSetOrRepsValue("reps", e.target.value, exKey, dayKey)
                   }
+                  value={repsVal}
                 />
               </Box>
             </Grid>

@@ -27,6 +27,11 @@ import DayEditableContainer from "../components/DragAndDrop/DayEditableContainer
 import reorderExercisesInDay from "../lib/createHelpers/reorderExercisesInDay";
 import DragDropEvent from "../types/DragDropEvent";
 import reorder from "../lib/createHelpers/reorder";
+import deepCopy from "../lib/deepCopy";
+import changeDays from "../lib/createHelpers/changeDays";
+import reorderExerciseList from "../lib/createHelpers/reorderExerciseList";
+import removeFromDay from "../lib/createHelpers/removeFromDay";
+import addToDay from "../lib/createHelpers/addToDay";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -128,16 +133,16 @@ const Create = () => {
       return;
     }
 
-    // Reordering a list
     if (source.droppableId === destination.droppableId) {
       // Reordering the exercise list
       if (destination.droppableId === "exerciseList") {
-        const items = reorder(
+        const items = reorderExerciseList(
           filteredExercises,
-          result.source.index,
-          result.destination.index
+          source,
+          destination
         );
         setFilteredExercises(items);
+        return;
       }
 
       // Reordering a day
@@ -147,11 +152,14 @@ const Create = () => {
           source,
           destination
         );
+        const newDays: DayInput[] = days.map((day: DayInput, key: number) => {
+          // Key is the day index
+          return key.toString() === source.droppableId
+            ? { ...day, exercises: newExerciseOrderForDay }
+            : day;
+        });
 
-        const newState = [...days];
-        newState[destination.droppableId].exercises = newExerciseOrderForDay;
-
-        setDays([...newState]);
+        setDays([...newDays]);
         return;
       }
     }
@@ -161,48 +169,15 @@ const Create = () => {
       source.droppableId != "exerciseList" &&
       destination.droppableId != "exerciseList"
     ) {
-      const movedExercise = days[source.droppableId].exercises[source.index];
-      let tempStateChanger = days;
-
-      tempStateChanger[source.droppableId].exercises = tempStateChanger[
-        source.droppableId
-      ].exercises
-        .slice(0, source.index)
-        .concat(
-          tempStateChanger[source.droppableId].exercises.slice(
-            source.index + 1,
-            tempStateChanger[source.droppableId].exercises.length
-          )
-        );
-
-      tempStateChanger[destination.droppableId].exercises.splice(
-        destination.index,
-        0,
-        {
-          name: movedExercise.name,
-          sets: movedExercise.sets,
-          reps: movedExercise.reps,
-        } as ExerciseInput
-      );
-
+      const tempStateChanger = changeDays(days, source, destination);
+      setDays(tempStateChanger);
       return;
     }
 
     // Moving from a day to back to the exercise list
     if (destination.droppableId === "exerciseList") {
-      // 1. Get this day's items based on source's index and droppableId.
-
-      let tempStateChanger = days;
-      tempStateChanger[source.droppableId].exercises = tempStateChanger[
-        source.droppableId
-      ].exercises
-        .slice(0, source.index)
-        .concat(
-          tempStateChanger[source.droppableId].exercises.slice(
-            source.index + 1,
-            tempStateChanger[source.droppableId].exercises.length
-          )
-        );
+      const tempStateChanger = removeFromDay(days, source);
+      setDays(tempStateChanger);
       return;
     }
 
@@ -210,16 +185,9 @@ const Create = () => {
     else {
       const movedExercise = filteredExercises[source.index];
 
-      let tempStateChanger = days;
-      tempStateChanger[destination.droppableId].exercises.splice(
-        destination.index,
-        0,
-        {
-          name: movedExercise.name,
-          sets: "0",
-          reps: "0",
-        } as ExerciseInput
-      );
+      const tempStateChanger = addToDay(days, movedExercise, destination);
+
+      setDays(tempStateChanger);
 
       setFilteredExercises(
         filteredExercises
@@ -235,7 +203,7 @@ const Create = () => {
   };
 
   const changeDayName = (dayIndex: number, name: string): void => {
-    let newDays = days;
+    const newDays = deepCopy(days) as DayInput[];
     newDays[dayIndex].name = name;
     setDays([...newDays]);
   };
@@ -246,7 +214,7 @@ const Create = () => {
     exerciseIndex: number,
     dayIndex: number
   ): void => {
-    let newDays = days;
+    const newDays = deepCopy(days) as DayInput[];
     newDays[dayIndex].exercises[exerciseIndex][field] = value;
     setDays([...newDays]);
   };

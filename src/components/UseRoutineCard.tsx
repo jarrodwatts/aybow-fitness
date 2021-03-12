@@ -1,7 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Paper, Grid, Typography, Button } from "@material-ui/core";
 import Link from "next/link";
+import { Routine } from "../API";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import IconButton from "@material-ui/core/IconButton";
+import Icon from "@material-ui/core/Icon";
+import { useRouter } from "next/router";
 
 const useStyles = makeStyles((theme) => ({
   large: {
@@ -10,13 +15,15 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     padding: theme.spacing(2),
-    textAlign: "center",
+    // textAlign: "center",
     color: theme.palette.text.secondary,
   },
 }));
 
-const UseRoutineCard = ({ routine }) => {
+const UseRoutineCard = ({ routine }: { routine: Routine }): any => {
   const classes = useStyles();
+  const [showDays, setShowDays] = useState<boolean>(false);
+  const router = useRouter();
 
   if (routine) {
     return (
@@ -27,6 +34,7 @@ const UseRoutineCard = ({ routine }) => {
             direction="column"
             alignItems="flex-start"
             justify="center"
+            spacing={1}
           >
             <Grid item>
               <Typography variant="h6" color="primary">
@@ -38,7 +46,13 @@ const UseRoutineCard = ({ routine }) => {
               </Typography>
             </Grid>
             <Grid item>
-              <Typography style={{ maxHeight: "80px", overflowY: "hidden" }}>
+              <Typography
+                style={{
+                  maxHeight: "80px",
+                  overflowY: "hidden",
+                  textAlign: "left",
+                }}
+              >
                 {routine.description}
               </Typography>
             </Grid>
@@ -54,18 +68,52 @@ const UseRoutineCard = ({ routine }) => {
                   <b>Routine from {routine.owner}</b>
                 </Typography>
               </Grid>
-              {/* TODO: Implement use this routine feature */}
-              {/* <Grid item>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => console.log("Asasd")}
-              >
-                Use this Routine
-              </Button>
-            </Grid> */}
+
+              <Grid item>
+                <Button
+                  variant="text"
+                  color="secondary"
+                  endIcon={<ExpandMoreIcon />}
+                  onClick={() => setShowDays(!showDays)}
+                >
+                  View Days
+                </Button>
+              </Grid>
             </Grid>
           </Grid>
+          {showDays && (
+            <Grid container style={{ marginTop: "4px" }}>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  {routine.days.map((day, key) => (
+                    <Grid item xs={12} key={key}>
+                      <Paper className={classes.paper}>
+                        <Grid
+                          container
+                          direction="row"
+                          alignItems="center"
+                          justify="space-between"
+                        >
+                          <Typography variant="h6">
+                            Day {key + 1} : <b>{day.name}</b>
+                          </Typography>
+                          <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={() =>
+                              router.push(`/use/${routine.id}/${key}`)
+                            }
+                          >
+                            Start Day
+                          </Button>
+                        </Grid>
+                      </Paper>
+                    </Grid>
+                  ))}
+                </Grid>
+              </Grid>
+            </Grid>
+          )}
         </Paper>
       </Grid>
     );

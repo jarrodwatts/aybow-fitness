@@ -13,7 +13,10 @@
     },
     "categories": {
       "function": {
-        "aybowfitness24958a1524958a15PostConfirmation": {}
+        "aybowfitness24958a1524958a15PostConfirmation": {
+          "deploymentBucketName": "amplify-aybowfitness-dev-205104-deployment",
+          "s3Key": "amplify-builds/aybowfitness24958a1524958a15PostConfirmation-75456d2b396467414465-build.zip"
+        }
       },
       "auth": {
         "aybowfitness24958a1524958a15": {}

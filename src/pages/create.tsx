@@ -13,7 +13,7 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import { CreateRoutineInput, DayInput, ExerciseInput } from "../API";
+import { CreateRoutineInput, DayInput } from "../API";
 import { Divider, IconButton, Paper } from "@material-ui/core";
 import { AddCircle } from "@material-ui/icons";
 import exerciseData from "../lib/exerciseData";
@@ -26,7 +26,6 @@ import ExerciseInExerciseListDraggable from "../components/DragAndDrop/ExerciseI
 import DayEditableContainer from "../components/DragAndDrop/DayEditableContainer";
 import reorderExercisesInDay from "../lib/createHelpers/reorderExercisesInDay";
 import DragDropEvent from "../types/DragDropEvent";
-import reorder from "../lib/createHelpers/reorder";
 import deepCopy from "../lib/deepCopy";
 import changeDays from "../lib/createHelpers/changeDays";
 import reorderExerciseList from "../lib/createHelpers/reorderExerciseList";

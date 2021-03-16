@@ -21,7 +21,8 @@ type User
   username: String!
   email: String!
   savedRoutines: [ID] # Probably some type of connection i am missing, for now I am just storing the Ids of the saved routines.
-  savedWeights: [RecordedExerciseWithWeight]
+  savedWeights: [RecordedExerciseWithWeight] 
+    @connection(keyName: "byUser", fields: ["id"])
 }
 
 type Routine
@@ -58,7 +59,28 @@ type Exercise {
   sets: String!
 }
 
-type RecordedExerciseWithWeight {
+type RecordedExerciseWithWeight
+  @model
+  @key(name: "byUser", fields: ["ownerID", "weight"])
+  @auth(
+    rules: [
+      # allow all authenticated users ability to create posts
+      # allow owners ability to update and delete their posts
+      {
+        allow: owner
+        ownerField: "username"
+        operations: [create, delete, update, read]
+      }
+      # allow all authenticated users to read posts
+      { allow: private, operations: [read] }
+      # allow all guest users (not authenticated) to read posts
+      { allow: public, operations: [read] }
+    ]
+  )
+  {
+  id: ID!
+  ownerID: ID!
   exercise: Exercise!
   weight: String!
+  createdAt: AWSDateTime
 }

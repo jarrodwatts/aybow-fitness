@@ -7,19 +7,6 @@ export type CreateUserInput = {
   username: string,
   email: string,
   savedRoutines?: Array< string | null > | null,
-  savedWeights?: Array< RecordedExerciseWithWeightInput | null > | null,
-};
-
-export type RecordedExerciseWithWeightInput = {
-  exercise: ExerciseInput,
-  weight: string,
-};
-
-export type ExerciseInput = {
-  name: string,
-  description?: string | null,
-  reps: string,
-  sets: string,
 };
 
 export type ModelUserConditionInput = {
@@ -92,15 +79,26 @@ export type User = {
   username?: string,
   email?: string,
   savedRoutines?: Array< string | null > | null,
-  savedWeights?:  Array<RecordedExerciseWithWeight | null > | null,
   createdAt?: string,
   updatedAt?: string,
+  savedWeights?: ModelRecordedExerciseWithWeightConnection,
+};
+
+export type ModelRecordedExerciseWithWeightConnection = {
+  __typename: "ModelRecordedExerciseWithWeightConnection",
+  items?:  Array<RecordedExerciseWithWeight | null > | null,
+  nextToken?: string | null,
 };
 
 export type RecordedExerciseWithWeight = {
   __typename: "RecordedExerciseWithWeight",
+  id?: string,
+  ownerID?: string,
   exercise?: Exercise,
   weight?: string,
+  createdAt?: string | null,
+  updatedAt?: string,
+  username?: string | null,
 };
 
 export type Exercise = {
@@ -116,7 +114,6 @@ export type UpdateUserInput = {
   username?: string | null,
   email?: string | null,
   savedRoutines?: Array< string | null > | null,
-  savedWeights?: Array< RecordedExerciseWithWeightInput | null > | null,
 };
 
 export type DeleteUserInput = {
@@ -135,6 +132,13 @@ export type DayInput = {
   name?: string | null,
   description?: string | null,
   exercises?: Array< ExerciseInput | null > | null,
+};
+
+export type ExerciseInput = {
+  name: string,
+  description?: string | null,
+  reps: string,
+  sets: string,
 };
 
 export type ModelRoutineConditionInput = {
@@ -175,6 +179,35 @@ export type DeleteRoutineInput = {
   id?: string | null,
 };
 
+export type CreateRecordedExerciseWithWeightInput = {
+  id?: string | null,
+  ownerID: string,
+  exercise: ExerciseInput,
+  weight: string,
+  createdAt?: string | null,
+};
+
+export type ModelRecordedExerciseWithWeightConditionInput = {
+  ownerID?: ModelIDInput | null,
+  weight?: ModelStringInput | null,
+  createdAt?: ModelStringInput | null,
+  and?: Array< ModelRecordedExerciseWithWeightConditionInput | null > | null,
+  or?: Array< ModelRecordedExerciseWithWeightConditionInput | null > | null,
+  not?: ModelRecordedExerciseWithWeightConditionInput | null,
+};
+
+export type UpdateRecordedExerciseWithWeightInput = {
+  id: string,
+  ownerID?: string | null,
+  exercise?: ExerciseInput | null,
+  weight?: string | null,
+  createdAt?: string | null,
+};
+
+export type DeleteRecordedExerciseWithWeightInput = {
+  id?: string | null,
+};
+
 export type ModelUserFilterInput = {
   id?: ModelIDInput | null,
   username?: ModelStringInput | null,
@@ -207,6 +240,16 @@ export type ModelRoutineConnection = {
   nextToken?: string | null,
 };
 
+export type ModelRecordedExerciseWithWeightFilterInput = {
+  id?: ModelIDInput | null,
+  ownerID?: ModelIDInput | null,
+  weight?: ModelStringInput | null,
+  createdAt?: ModelStringInput | null,
+  and?: Array< ModelRecordedExerciseWithWeightFilterInput | null > | null,
+  or?: Array< ModelRecordedExerciseWithWeightFilterInput | null > | null,
+  not?: ModelRecordedExerciseWithWeightFilterInput | null,
+};
+
 export type CreateUserMutationVariables = {
   input?: CreateUserInput,
   condition?: ModelUserConditionInput | null,
@@ -219,19 +262,28 @@ export type CreateUserMutation = {
     username: string,
     email: string,
     savedRoutines?: Array< string | null > | null,
-    savedWeights?:  Array< {
-      __typename: "RecordedExerciseWithWeight",
-      exercise:  {
-        __typename: "Exercise",
-        name: string,
-        description?: string | null,
-        reps: string,
-        sets: string,
-      },
-      weight: string,
-    } | null > | null,
     createdAt: string,
     updatedAt: string,
+    savedWeights?:  {
+      __typename: "ModelRecordedExerciseWithWeightConnection",
+      items?:  Array< {
+        __typename: "RecordedExerciseWithWeight",
+        id: string,
+        ownerID: string,
+        exercise:  {
+          __typename: "Exercise",
+          name: string,
+          description?: string | null,
+          reps: string,
+          sets: string,
+        },
+        weight: string,
+        createdAt?: string | null,
+        updatedAt: string,
+        username?: string | null,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
   } | null,
 };
 
@@ -247,19 +299,28 @@ export type UpdateUserMutation = {
     username: string,
     email: string,
     savedRoutines?: Array< string | null > | null,
-    savedWeights?:  Array< {
-      __typename: "RecordedExerciseWithWeight",
-      exercise:  {
-        __typename: "Exercise",
-        name: string,
-        description?: string | null,
-        reps: string,
-        sets: string,
-      },
-      weight: string,
-    } | null > | null,
     createdAt: string,
     updatedAt: string,
+    savedWeights?:  {
+      __typename: "ModelRecordedExerciseWithWeightConnection",
+      items?:  Array< {
+        __typename: "RecordedExerciseWithWeight",
+        id: string,
+        ownerID: string,
+        exercise:  {
+          __typename: "Exercise",
+          name: string,
+          description?: string | null,
+          reps: string,
+          sets: string,
+        },
+        weight: string,
+        createdAt?: string | null,
+        updatedAt: string,
+        username?: string | null,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
   } | null,
 };
 
@@ -275,19 +336,28 @@ export type DeleteUserMutation = {
     username: string,
     email: string,
     savedRoutines?: Array< string | null > | null,
-    savedWeights?:  Array< {
-      __typename: "RecordedExerciseWithWeight",
-      exercise:  {
-        __typename: "Exercise",
-        name: string,
-        description?: string | null,
-        reps: string,
-        sets: string,
-      },
-      weight: string,
-    } | null > | null,
     createdAt: string,
     updatedAt: string,
+    savedWeights?:  {
+      __typename: "ModelRecordedExerciseWithWeightConnection",
+      items?:  Array< {
+        __typename: "RecordedExerciseWithWeight",
+        id: string,
+        ownerID: string,
+        exercise:  {
+          __typename: "Exercise",
+          name: string,
+          description?: string | null,
+          reps: string,
+          sets: string,
+        },
+        weight: string,
+        createdAt?: string | null,
+        updatedAt: string,
+        username?: string | null,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
   } | null,
 };
 
@@ -378,6 +448,78 @@ export type DeleteRoutineMutation = {
   } | null,
 };
 
+export type CreateRecordedExerciseWithWeightMutationVariables = {
+  input?: CreateRecordedExerciseWithWeightInput,
+  condition?: ModelRecordedExerciseWithWeightConditionInput | null,
+};
+
+export type CreateRecordedExerciseWithWeightMutation = {
+  createRecordedExerciseWithWeight?:  {
+    __typename: "RecordedExerciseWithWeight",
+    id: string,
+    ownerID: string,
+    exercise:  {
+      __typename: "Exercise",
+      name: string,
+      description?: string | null,
+      reps: string,
+      sets: string,
+    },
+    weight: string,
+    createdAt?: string | null,
+    updatedAt: string,
+    username?: string | null,
+  } | null,
+};
+
+export type UpdateRecordedExerciseWithWeightMutationVariables = {
+  input?: UpdateRecordedExerciseWithWeightInput,
+  condition?: ModelRecordedExerciseWithWeightConditionInput | null,
+};
+
+export type UpdateRecordedExerciseWithWeightMutation = {
+  updateRecordedExerciseWithWeight?:  {
+    __typename: "RecordedExerciseWithWeight",
+    id: string,
+    ownerID: string,
+    exercise:  {
+      __typename: "Exercise",
+      name: string,
+      description?: string | null,
+      reps: string,
+      sets: string,
+    },
+    weight: string,
+    createdAt?: string | null,
+    updatedAt: string,
+    username?: string | null,
+  } | null,
+};
+
+export type DeleteRecordedExerciseWithWeightMutationVariables = {
+  input?: DeleteRecordedExerciseWithWeightInput,
+  condition?: ModelRecordedExerciseWithWeightConditionInput | null,
+};
+
+export type DeleteRecordedExerciseWithWeightMutation = {
+  deleteRecordedExerciseWithWeight?:  {
+    __typename: "RecordedExerciseWithWeight",
+    id: string,
+    ownerID: string,
+    exercise:  {
+      __typename: "Exercise",
+      name: string,
+      description?: string | null,
+      reps: string,
+      sets: string,
+    },
+    weight: string,
+    createdAt?: string | null,
+    updatedAt: string,
+    username?: string | null,
+  } | null,
+};
+
 export type GetUserQueryVariables = {
   id?: string,
 };
@@ -389,19 +531,28 @@ export type GetUserQuery = {
     username: string,
     email: string,
     savedRoutines?: Array< string | null > | null,
-    savedWeights?:  Array< {
-      __typename: "RecordedExerciseWithWeight",
-      exercise:  {
-        __typename: "Exercise",
-        name: string,
-        description?: string | null,
-        reps: string,
-        sets: string,
-      },
-      weight: string,
-    } | null > | null,
     createdAt: string,
     updatedAt: string,
+    savedWeights?:  {
+      __typename: "ModelRecordedExerciseWithWeightConnection",
+      items?:  Array< {
+        __typename: "RecordedExerciseWithWeight",
+        id: string,
+        ownerID: string,
+        exercise:  {
+          __typename: "Exercise",
+          name: string,
+          description?: string | null,
+          reps: string,
+          sets: string,
+        },
+        weight: string,
+        createdAt?: string | null,
+        updatedAt: string,
+        username?: string | null,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
   } | null,
 };
 
@@ -420,19 +571,28 @@ export type ListUsersQuery = {
       username: string,
       email: string,
       savedRoutines?: Array< string | null > | null,
-      savedWeights?:  Array< {
-        __typename: "RecordedExerciseWithWeight",
-        exercise:  {
-          __typename: "Exercise",
-          name: string,
-          description?: string | null,
-          reps: string,
-          sets: string,
-        },
-        weight: string,
-      } | null > | null,
       createdAt: string,
       updatedAt: string,
+      savedWeights?:  {
+        __typename: "ModelRecordedExerciseWithWeightConnection",
+        items?:  Array< {
+          __typename: "RecordedExerciseWithWeight",
+          id: string,
+          ownerID: string,
+          exercise:  {
+            __typename: "Exercise",
+            name: string,
+            description?: string | null,
+            reps: string,
+            sets: string,
+          },
+          weight: string,
+          createdAt?: string | null,
+          updatedAt: string,
+          username?: string | null,
+        } | null > | null,
+        nextToken?: string | null,
+      } | null,
     } | null > | null,
     nextToken?: string | null,
   } | null,
@@ -500,15 +660,42 @@ export type ListRoutinesQuery = {
   } | null,
 };
 
-export type OnCreateUserSubscription = {
-  onCreateUser?:  {
-    __typename: "User",
+export type GetRecordedExerciseWithWeightQueryVariables = {
+  id?: string,
+};
+
+export type GetRecordedExerciseWithWeightQuery = {
+  getRecordedExerciseWithWeight?:  {
+    __typename: "RecordedExerciseWithWeight",
     id: string,
-    username: string,
-    email: string,
-    savedRoutines?: Array< string | null > | null,
-    savedWeights?:  Array< {
+    ownerID: string,
+    exercise:  {
+      __typename: "Exercise",
+      name: string,
+      description?: string | null,
+      reps: string,
+      sets: string,
+    },
+    weight: string,
+    createdAt?: string | null,
+    updatedAt: string,
+    username?: string | null,
+  } | null,
+};
+
+export type ListRecordedExerciseWithWeightsQueryVariables = {
+  filter?: ModelRecordedExerciseWithWeightFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListRecordedExerciseWithWeightsQuery = {
+  listRecordedExerciseWithWeights?:  {
+    __typename: "ModelRecordedExerciseWithWeightConnection",
+    items?:  Array< {
       __typename: "RecordedExerciseWithWeight",
+      id: string,
+      ownerID: string,
       exercise:  {
         __typename: "Exercise",
         name: string,
@@ -517,9 +704,43 @@ export type OnCreateUserSubscription = {
         sets: string,
       },
       weight: string,
+      createdAt?: string | null,
+      updatedAt: string,
+      username?: string | null,
     } | null > | null,
+    nextToken?: string | null,
+  } | null,
+};
+
+export type OnCreateUserSubscription = {
+  onCreateUser?:  {
+    __typename: "User",
+    id: string,
+    username: string,
+    email: string,
+    savedRoutines?: Array< string | null > | null,
     createdAt: string,
     updatedAt: string,
+    savedWeights?:  {
+      __typename: "ModelRecordedExerciseWithWeightConnection",
+      items?:  Array< {
+        __typename: "RecordedExerciseWithWeight",
+        id: string,
+        ownerID: string,
+        exercise:  {
+          __typename: "Exercise",
+          name: string,
+          description?: string | null,
+          reps: string,
+          sets: string,
+        },
+        weight: string,
+        createdAt?: string | null,
+        updatedAt: string,
+        username?: string | null,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
   } | null,
 };
 
@@ -530,19 +751,28 @@ export type OnUpdateUserSubscription = {
     username: string,
     email: string,
     savedRoutines?: Array< string | null > | null,
-    savedWeights?:  Array< {
-      __typename: "RecordedExerciseWithWeight",
-      exercise:  {
-        __typename: "Exercise",
-        name: string,
-        description?: string | null,
-        reps: string,
-        sets: string,
-      },
-      weight: string,
-    } | null > | null,
     createdAt: string,
     updatedAt: string,
+    savedWeights?:  {
+      __typename: "ModelRecordedExerciseWithWeightConnection",
+      items?:  Array< {
+        __typename: "RecordedExerciseWithWeight",
+        id: string,
+        ownerID: string,
+        exercise:  {
+          __typename: "Exercise",
+          name: string,
+          description?: string | null,
+          reps: string,
+          sets: string,
+        },
+        weight: string,
+        createdAt?: string | null,
+        updatedAt: string,
+        username?: string | null,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
   } | null,
 };
 
@@ -553,19 +783,28 @@ export type OnDeleteUserSubscription = {
     username: string,
     email: string,
     savedRoutines?: Array< string | null > | null,
-    savedWeights?:  Array< {
-      __typename: "RecordedExerciseWithWeight",
-      exercise:  {
-        __typename: "Exercise",
-        name: string,
-        description?: string | null,
-        reps: string,
-        sets: string,
-      },
-      weight: string,
-    } | null > | null,
     createdAt: string,
     updatedAt: string,
+    savedWeights?:  {
+      __typename: "ModelRecordedExerciseWithWeightConnection",
+      items?:  Array< {
+        __typename: "RecordedExerciseWithWeight",
+        id: string,
+        ownerID: string,
+        exercise:  {
+          __typename: "Exercise",
+          name: string,
+          description?: string | null,
+          reps: string,
+          sets: string,
+        },
+        weight: string,
+        createdAt?: string | null,
+        updatedAt: string,
+        username?: string | null,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
   } | null,
 };
 
@@ -638,5 +877,62 @@ export type OnDeleteRoutineSubscription = {
     owner: string,
     createdAt: string,
     updatedAt: string,
+  } | null,
+};
+
+export type OnCreateRecordedExerciseWithWeightSubscription = {
+  onCreateRecordedExerciseWithWeight?:  {
+    __typename: "RecordedExerciseWithWeight",
+    id: string,
+    ownerID: string,
+    exercise:  {
+      __typename: "Exercise",
+      name: string,
+      description?: string | null,
+      reps: string,
+      sets: string,
+    },
+    weight: string,
+    createdAt?: string | null,
+    updatedAt: string,
+    username?: string | null,
+  } | null,
+};
+
+export type OnUpdateRecordedExerciseWithWeightSubscription = {
+  onUpdateRecordedExerciseWithWeight?:  {
+    __typename: "RecordedExerciseWithWeight",
+    id: string,
+    ownerID: string,
+    exercise:  {
+      __typename: "Exercise",
+      name: string,
+      description?: string | null,
+      reps: string,
+      sets: string,
+    },
+    weight: string,
+    createdAt?: string | null,
+    updatedAt: string,
+    username?: string | null,
+  } | null,
+};
+
+export type OnDeleteRecordedExerciseWithWeightSubscription = {
+  onDeleteRecordedExerciseWithWeight?:  {
+    __typename: "RecordedExerciseWithWeight",
+    id: string,
+    ownerID: string,
+    exercise:  {
+      __typename: "Exercise",
+      name: string,
+      description?: string | null,
+      reps: string,
+      sets: string,
+    },
+    weight: string,
+    createdAt?: string | null,
+    updatedAt: string,
+    username?: string | null,
   } | null,
 };

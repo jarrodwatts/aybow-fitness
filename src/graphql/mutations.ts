@@ -12,17 +12,25 @@ export const createUser = /* GraphQL */ `
       username
       email
       savedRoutines
-      savedWeights {
-        exercise {
-          name
-          description
-          reps
-          sets
-        }
-        weight
-      }
       createdAt
       updatedAt
+      savedWeights {
+        items {
+          id
+          ownerID
+          exercise {
+            name
+            description
+            reps
+            sets
+          }
+          weight
+          createdAt
+          updatedAt
+          username
+        }
+        nextToken
+      }
     }
   }
 `;
@@ -36,17 +44,25 @@ export const updateUser = /* GraphQL */ `
       username
       email
       savedRoutines
-      savedWeights {
-        exercise {
-          name
-          description
-          reps
-          sets
-        }
-        weight
-      }
       createdAt
       updatedAt
+      savedWeights {
+        items {
+          id
+          ownerID
+          exercise {
+            name
+            description
+            reps
+            sets
+          }
+          weight
+          createdAt
+          updatedAt
+          username
+        }
+        nextToken
+      }
     }
   }
 `;
@@ -60,17 +76,25 @@ export const deleteUser = /* GraphQL */ `
       username
       email
       savedRoutines
-      savedWeights {
-        exercise {
-          name
-          description
-          reps
-          sets
-        }
-        weight
-      }
       createdAt
       updatedAt
+      savedWeights {
+        items {
+          id
+          ownerID
+          exercise {
+            name
+            description
+            reps
+            sets
+          }
+          weight
+          createdAt
+          updatedAt
+          username
+        }
+        nextToken
+      }
     }
   }
 `;
@@ -146,6 +170,69 @@ export const deleteRoutine = /* GraphQL */ `
       owner
       createdAt
       updatedAt
+    }
+  }
+`;
+export const createRecordedExerciseWithWeight = /* GraphQL */ `
+  mutation CreateRecordedExerciseWithWeight(
+    $input: CreateRecordedExerciseWithWeightInput!
+    $condition: ModelRecordedExerciseWithWeightConditionInput
+  ) {
+    createRecordedExerciseWithWeight(input: $input, condition: $condition) {
+      id
+      ownerID
+      exercise {
+        name
+        description
+        reps
+        sets
+      }
+      weight
+      createdAt
+      updatedAt
+      username
+    }
+  }
+`;
+export const updateRecordedExerciseWithWeight = /* GraphQL */ `
+  mutation UpdateRecordedExerciseWithWeight(
+    $input: UpdateRecordedExerciseWithWeightInput!
+    $condition: ModelRecordedExerciseWithWeightConditionInput
+  ) {
+    updateRecordedExerciseWithWeight(input: $input, condition: $condition) {
+      id
+      ownerID
+      exercise {
+        name
+        description
+        reps
+        sets
+      }
+      weight
+      createdAt
+      updatedAt
+      username
+    }
+  }
+`;
+export const deleteRecordedExerciseWithWeight = /* GraphQL */ `
+  mutation DeleteRecordedExerciseWithWeight(
+    $input: DeleteRecordedExerciseWithWeightInput!
+    $condition: ModelRecordedExerciseWithWeightConditionInput
+  ) {
+    deleteRecordedExerciseWithWeight(input: $input, condition: $condition) {
+      id
+      ownerID
+      exercise {
+        name
+        description
+        reps
+        sets
+      }
+      weight
+      createdAt
+      updatedAt
+      username
     }
   }
 `;

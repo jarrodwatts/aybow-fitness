@@ -9,17 +9,25 @@ export const getUser = /* GraphQL */ `
       username
       email
       savedRoutines
-      savedWeights {
-        exercise {
-          name
-          description
-          reps
-          sets
-        }
-        weight
-      }
       createdAt
       updatedAt
+      savedWeights {
+        items {
+          id
+          ownerID
+          exercise {
+            name
+            description
+            reps
+            sets
+          }
+          weight
+          createdAt
+          updatedAt
+          username
+        }
+        nextToken
+      }
     }
   }
 `;
@@ -35,17 +43,25 @@ export const listUsers = /* GraphQL */ `
         username
         email
         savedRoutines
-        savedWeights {
-          exercise {
-            name
-            description
-            reps
-            sets
-          }
-          weight
-        }
         createdAt
         updatedAt
+        savedWeights {
+          items {
+            id
+            ownerID
+            exercise {
+              name
+              description
+              reps
+              sets
+            }
+            weight
+            createdAt
+            updatedAt
+            username
+          }
+          nextToken
+        }
       }
       nextToken
     }
@@ -97,6 +113,53 @@ export const listRoutines = /* GraphQL */ `
         owner
         createdAt
         updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getRecordedExerciseWithWeight = /* GraphQL */ `
+  query GetRecordedExerciseWithWeight($id: ID!) {
+    getRecordedExerciseWithWeight(id: $id) {
+      id
+      ownerID
+      exercise {
+        name
+        description
+        reps
+        sets
+      }
+      weight
+      createdAt
+      updatedAt
+      username
+    }
+  }
+`;
+export const listRecordedExerciseWithWeights = /* GraphQL */ `
+  query ListRecordedExerciseWithWeights(
+    $filter: ModelRecordedExerciseWithWeightFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listRecordedExerciseWithWeights(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        ownerID
+        exercise {
+          name
+          description
+          reps
+          sets
+        }
+        weight
+        createdAt
+        updatedAt
+        username
       }
       nextToken
     }

@@ -26,6 +26,7 @@ import NoRoutinesAvailable from "../components/NoRoutinesAvailable";
 import UseRoutineCard from "../components/UseRoutineCard";
 import { getUserSavedWeightsSortByDate } from "../graphql/custom/customQueries";
 import CompletedExerciseCard from "../components/CompletedExerciseCard";
+import EditRoutineCard from "../components/EditRoutineCard";
 
 Amplify.configure(awsconfig);
 
@@ -256,7 +257,7 @@ function Profile() {
                     </Grid>
                     {createdRoutines.map((routine, key) => (
                       <React.Fragment key={key}>
-                        <UseRoutineCard routine={routine} />
+                        <EditRoutineCard routine={routine} />
                       </React.Fragment>
                     ))}
                   </React.Fragment>
@@ -266,9 +267,11 @@ function Profile() {
             :
             // Past Exercises
             <React.Fragment>
-              <Typography component="h2" variant="h4">
-                Your Saved Exercises
+              <Grid item xs={12} style={{ textAlign: 'left' }}>
+                <Typography component="h2" variant="h4">
+                  Your Saved Exercises
               </Typography>
+              </Grid>
               {
                 savedWeights.map((weight) => (
                   <Grid item xs={12} key={weight.id}>

@@ -41,6 +41,7 @@ const DayEditableContainer = ({
             <TextField
               name={"day" + keyProp + "Name"}
               variant="outlined"
+              defaultValue={day.name ? day.name : ""}
               required
               fullWidth
               id={"day" + keyProp + "Name"}

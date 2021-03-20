@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
 
 const IndividualRoutine = (props: {
   routine: GetRoutineQuery["getRoutine"];
-}) => {
+}): any => {
   const { routine } = props;
   const { userAttributes, user } = useUser();
   const [alreadySaved, setAlreadySaved] = useState<boolean>(false);
@@ -120,7 +120,7 @@ const IndividualRoutine = (props: {
     }
 
     if (!currentUserData.errors) {
-      let updatedUserDetails: UpdateUserInput = {
+      const updatedUserDetails: UpdateUserInput = {
         id: userAttributes.sub,
         savedRoutines: generateNewSavedRoutines(),
       };

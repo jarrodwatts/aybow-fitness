@@ -1,8 +1,7 @@
 import React from "react";
 import { Grid, Paper, Typography, Avatar } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import supported from "../lib/supportedBodyPartImages";
-import exerciseData from "../lib/exerciseData";
+import { getBodyPartImage, getBodyPart } from "../lib/bodyPartHelpers";
 
 const useStyles = makeStyles((theme) => ({
   heroImage: {
@@ -31,17 +30,7 @@ const useStyles = makeStyles((theme) => ({
 const DayView = ({ day, dayKey }) => {
   const classes = useStyles();
 
-  const getBodyPartImage = (ex): string => {
-    const relatedBodyPart = exerciseData.find((el) => el.name == ex.name);
-    if (supported.includes(relatedBodyPart.bodyPart)) {
-      return `/${relatedBodyPart.bodyPart}.png`;
-    }
-    return "/Default.png";
-  };
 
-  const getBodyPart = (ex): String => {
-    return exerciseData.find((el) => el.name == ex.name)?.bodyPart;
-  };
 
   return (
     <Paper className={classes.paper}>

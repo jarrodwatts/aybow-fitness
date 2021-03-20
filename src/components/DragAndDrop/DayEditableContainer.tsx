@@ -2,10 +2,12 @@ import React from "react";
 import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-import { Paper } from "@material-ui/core";
+import { IconButton, Paper, Tooltip } from "@material-ui/core";
 import { Droppable } from "react-beautiful-dnd";
 import ExerciseInDayDraggable from "./ExerciseInDayDraggable";
 import { makeStyles } from "@material-ui/core/styles";
+import { DayInput } from "../../API";
+import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 
 const useStyles = makeStyles((theme) => ({
   dayPaper: {
@@ -19,25 +21,45 @@ const DayEditableContainer = ({
   day,
   changeDayName,
   changeSetOrRepsValue,
+  removeDay,
   keyProp,
-}) => {
+}: {
+  day: DayInput,
+  changeDayName: (dayIndex: number, name: string) => void,
+  changeSetOrRepsValue: (field: string, value: string, exerciseIndex: number, dayIndex: number) => void,
+  removeDay: (index: number) => Promise<void>,
+  keyProp: number
+}): any => {
   const classes = useStyles();
 
   return (
     <Paper elevation={2} className={classes.dayPaper}>
       <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <TextField
-            name={"day" + keyProp + "Name"}
-            variant="outlined"
-            required
-            fullWidth
-            id={"day" + keyProp + "Name"}
-            label={"Day " + (keyProp + 1) + " Name"}
-            autoFocus
-            onChange={(e) => changeDayName(keyProp, e.target.value)}
-          />
+        <Grid container item xs={12} direction="row" alignItems="center">
+
+          <Grid item xs={11}>
+            <TextField
+              name={"day" + keyProp + "Name"}
+              variant="outlined"
+              required
+              fullWidth
+              id={"day" + keyProp + "Name"}
+              label={"Day " + (keyProp + 1) + " Name"}
+              autoFocus
+              onChange={(e) => changeDayName(keyProp, e.target.value)}
+            />
+          </Grid>
+
+          <Grid item xs={1}>
+            <Tooltip title="Delete Day" aria-label="delete">
+              <IconButton aria-label="delete"
+                onClick={() => removeDay(keyProp)}>
+                <RemoveCircleIcon color="error" />
+              </IconButton>
+            </Tooltip>
+          </Grid>
         </Grid>
+
         <Grid item xs={12}>
           <Droppable
             droppableId={keyProp.toString()}

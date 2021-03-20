@@ -101,7 +101,7 @@ const Create = () => {
     }
   }
 
-  async function addDay() {
+  async function addDay(): Promise<void> {
     setDays([
       ...days,
       {
@@ -110,6 +110,10 @@ const Create = () => {
         exercises: [],
       },
     ]);
+  }
+
+  async function removeDay(index: number): Promise<void> {
+    setDays(days.filter((day) => days.indexOf(day) != index))
   }
 
   function handleSearchChange(val: string): void {
@@ -275,6 +279,7 @@ const Create = () => {
                         day={day}
                         changeDayName={changeDayName}
                         changeSetOrRepsValue={changeSetOrRepsValue}
+                        removeDay={removeDay}
                         keyProp={key}
                       />
                     </Grid>

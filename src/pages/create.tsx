@@ -233,7 +233,7 @@ const Create = () => {
           </Typography>
 
           <form className={classes.form}>
-            <Grid container spacing={5} justify="space-between">
+            <Grid container spacing={5} >
               <Grid item xs={12} sm={8}>
                 <Grid
                   container
@@ -305,61 +305,64 @@ const Create = () => {
                 item
                 xs={12}
                 sm={4}
-                spacing={1}
-                justify="center"
-                alignItems="center"
-              >
+                spacing={1}>
                 <Grid item xs={12}>
-                  <Divider style={{ width: "100%" }} />
-                  <Grid item xs={12}>
-                    <Typography variant="h6">Exercise List</Typography>
-                  </Grid>
+                  <div style={{
+                    position: "sticky",
+                    top: "128px",
+                  }}>
+                    <Divider style={{ width: "100%" }} />
+                    <Grid item xs={12}>
+                      <Typography variant="h6">Exercise List</Typography>
+                    </Grid>
 
-                  <Grid item xs={12} style={{ marginBottom: "8px" }}>
-                    <Paper className={classes.root}>
-                      <InputBase
-                        className={classes.input}
-                        placeholder="Search for an exercise"
-                        inputProps={{ "aria-label": "search for an exercise" }}
-                        onChange={(event) =>
-                          handleSearchChange(event.target.value)
-                        }
-                      />
-                      <IconButton>
-                        <SearchIcon />
-                      </IconButton>
-                    </Paper>
-                  </Grid>
+                    <Grid item xs={12} style={{ marginBottom: "8px" }}>
+                      <Paper className={classes.root}>
+                        <InputBase
+                          className={classes.input}
+                          placeholder="Search for an exercise"
+                          inputProps={{ "aria-label": "search for an exercise" }}
+                          onChange={(event) =>
+                            handleSearchChange(event.target.value)
+                          }
+                        />
+                        <IconButton>
+                          <SearchIcon />
+                        </IconButton>
+                      </Paper>
+                    </Grid>
 
-                  {/* Begin List exercises */}
-                  <Droppable droppableId="exerciseList">
-                    {(provided) => (
-                      <Grid
-                        {...provided.droppableProps}
-                        ref={provided.innerRef}
-                        item
-                        xs={12}
-                        style={{
-                          height: "480px",
-                          overflowY: "scroll",
-                          overflowX: "hidden",
-                          whiteSpace: "nowrap",
-                        }}
-                      >
-                        {filteredExercises.slice(0, exCap).map((exerc, key) => (
-                          <ExerciseInExerciseListDraggable
-                            exerc={exerc}
-                            key={key}
-                            keyProp={key}
-                          />
-                        ))}
-                        {provided.placeholder}
-                      </Grid>
-                    )}
-                  </Droppable>
+                    {/* Begin List exercises */}
+                    <Droppable droppableId="exerciseList">
+                      {(provided) => (
+                        <Grid
+                          {...provided.droppableProps}
+                          ref={provided.innerRef}
+                          item
+                          xs={12}
+                          style={{
+                            height: "480px",
+                            overflowY: "scroll",
+                            overflowX: "hidden",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          {filteredExercises.slice(0, exCap).map((exerc, key) => (
+                            <ExerciseInExerciseListDraggable
+                              exerc={exerc}
+                              key={key}
+                              keyProp={key}
+                            />
+                          ))}
+                          {provided.placeholder}
+                        </Grid>
+                      )}
+                    </Droppable>
 
-                  <Divider style={{ width: "100%" }} />
+                    <Divider style={{ width: "100%" }} />
+                  </div>
                 </Grid>
+
               </Grid>
             </Grid>
 

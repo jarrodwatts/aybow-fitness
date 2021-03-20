@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Hero = () => {
+const Hero = (): any => {
   const classes = useStyles();
   const router = useRouter();
   return (

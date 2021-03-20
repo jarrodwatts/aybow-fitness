@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { API, graphqlOperation } from "aws-amplify";
-import { Day, GetRoutineQuery } from "../../../API";
+import { CreateRecordedExerciseWithWeightInput, Day, ExerciseInput, GetRoutineQuery } from "../../../API";
 import { getRoutine } from "../../../graphql/queries";
 import { GetServerSideProps } from "next";
 import {
@@ -15,6 +15,8 @@ import { useUser } from "../../../context/userContext";
 import { useRouter } from "next/router";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
+import { createRecordedExerciseWithWeight } from "../../../graphql/mutations";
+import { GRAPHQL_AUTH_MODE } from "@aws-amplify/api";
 
 const useStyles = makeStyles((theme) => ({
   heroImage: {
@@ -39,8 +41,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const dayIndex = ({ day }: { day: Day }) => {
-  const { setUser, setUserAttributes, user } = useUser();
+const dayIndex = ({ day }: { day: Day }): any => {
+  const { userAttributes } = useUser();
   const router = useRouter();
   const classes = useStyles();
 
@@ -58,14 +60,50 @@ const dayIndex = ({ day }: { day: Day }) => {
     setWeightMap({ ...weightMap, [name]: weight });
   };
 
-  const submitWeights = () => {
-    console.log("testeeeets");
-    
+  const lookupExByName = (exName: string): ExerciseInput => {
+    const { description, reps, sets } = day.exercises.filter((ex) => ex.name == exName)[0]
+    return {
+      name: exName,
+      description: description,
+      reps: reps,
+      sets: sets,
+    }
+  }
 
+  const createWeightForSave = async (exName: string, exWeight: string) => {
+    const exerciseInput = lookupExByName(exName);
+
+    const input: CreateRecordedExerciseWithWeightInput = {
+      ownerID: userAttributes.sub,
+      exercise: exerciseInput,
+      weight: exWeight,
+    }
+
+    try {
+      await API.graphql({
+        query: createRecordedExerciseWithWeight,
+        variables: { input: input },
+        authMode: GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS,
+      });
+
+    } catch (err) {
+      console.error(err);
+    }
+
+  }
+
+  const submitWeights = async () => {
+
+    Object.entries(weightMap).forEach(
+      ([exName, exWeight]) => {
+        if (exWeight != "") {
+          createWeightForSave(exName, exWeight as string)
+        }
+      }
+    );
+    router.push(`/profile`)
   };
 
-  console.log(day);
-  console.log(weightMap);
   return (
     <Container maxWidth="sm">
       <Grid
@@ -76,7 +114,7 @@ const dayIndex = ({ day }: { day: Day }) => {
         spacing={3}
       >
         <Grid item>
-          <Typography component="h1" variant="h3">
+          <Typography component="h1" variant="h3" style={{ marginBottom: '16px' }}>
             {day.name}
           </Typography>
 

@@ -11,16 +11,21 @@ import {
   Grid,
   Typography,
   Divider,
+  Tabs,
+  Tab,
 } from "@material-ui/core";
 import {
   GetRoutineQuery,
   GetUserQuery,
   Routine,
   ListRoutinesQuery,
+  RecordedExerciseWithWeight,
 } from "../API";
 import { getRoutine, getUser, listRoutines } from "../graphql/queries";
 import NoRoutinesAvailable from "../components/NoRoutinesAvailable";
 import UseRoutineCard from "../components/UseRoutineCard";
+import { getUserSavedWeightsSortByDate } from "../graphql/custom/customQueries";
+import CompletedExerciseCard from "../components/CompletedExerciseCard";
 
 Amplify.configure(awsconfig);
 
@@ -34,12 +39,22 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
     color: theme.palette.text.secondary,
   },
+  root: {
+    flexGrow: 1,
+  },
 }));
 
 function Profile() {
   const { user, userAttributes } = useUser();
   const [savedRoutines, setSavedRoutines] = useState<Array<Routine>>([]);
   const [createdRoutines, setCreatedRoutines] = useState<Array<Routine>>([]);
+  const [savedWeights, setSavedWeights] = useState<Array<RecordedExerciseWithWeight>>([]);
+  const classes = useStyles();
+  const [tabValue, setTabValue] = useState(0);
+
+  const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+    setTabValue(newValue);
+  };
 
   async function getRoutineIds(): Promise<string[]> {
     try {
@@ -114,6 +129,24 @@ function Profile() {
     }
   }
 
+  async function getSavedWeights(): Promise<Array<RecordedExerciseWithWeight>> {
+    try {
+      const userSavedWeights = (await API.graphql({
+        query: getUserSavedWeightsSortByDate,
+        variables: { id: userAttributes.sub },
+        authMode: GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS,
+      })) as {
+        data: GetUserQuery;
+        errors: any[];
+      };
+
+      return userSavedWeights.data.getUser.savedWeights.items
+
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   useEffect(() => {
     async function getRoutinesData() {
       const ids = await getRoutineIds();
@@ -131,12 +164,20 @@ function Profile() {
       setCreatedRoutines(createdRoutines);
     }
 
+    async function fetchSavedWeights() {
+      const weights = await getSavedWeights();
+      setSavedWeights(weights)
+    }
+
     try {
       if (userAttributes) {
         getRoutinesData();
         fetchCreatedRoutines();
+        fetchSavedWeights();
       }
-    } catch (err) {}
+    } catch (err) {
+      console.error(err)
+    }
   }, [userAttributes]);
 
   if (!user) {
@@ -161,53 +202,83 @@ function Profile() {
           </Typography>
         </Grid>
 
+        <Tabs className={classes.root}
+          value={tabValue}
+          onChange={handleChange}
+          indicatorColor="primary"
+          textColor="primary"
+          centered
+        >
+          <Tab label="My Routines" />
+          <Tab label="My Exercises" />
+        </Tabs>
+
         <Divider
           style={{ width: "100%", marginTop: "16px", marginBottom: "16px" }}
         />
 
-        {savedRoutines.length === 0 && createdRoutines.length === 0 ? (
-          <NoRoutinesAvailable />
-        ) : (
-          <React.Fragment>
-            {savedRoutines.length == 0 ? null : (
+        {
+          tabValue === 0 ?
+            // Saved Routines and Created Routines
+            savedRoutines.length === 0 && createdRoutines.length === 0 ? (
+              <NoRoutinesAvailable />
+            ) : (
               <React.Fragment>
-                <Grid item xs={12}>
-                  <Typography component="h2" variant="h4">
-                    Your Saved Routines
-                  </Typography>
-                </Grid>
-                {savedRoutines.map((routine, key) => (
-                  <React.Fragment key={key}>
-                    <UseRoutineCard routine={routine} />
-                  </React.Fragment>
-                ))}
+                {savedRoutines.length == 0 ? null : (
+                  <React.Fragment>
+                    <Grid item xs={12}>
+                      <Typography component="h2" variant="h4">
+                        Your Saved Routines
+                      </Typography>
+                    </Grid>
+                    {savedRoutines.map((routine, key) => (
+                      <React.Fragment key={key}>
+                        <UseRoutineCard routine={routine} />
+                      </React.Fragment>
+                    ))}
 
-                <Divider
-                  style={{
-                    width: "100%",
-                    marginTop: "16px",
-                    marginBottom: "16px",
-                  }}
-                />
-              </React.Fragment>
-            )}
-
-            {createdRoutines.length == 0 ? null : (
-              <React.Fragment>
-                <Grid item xs={12}>
-                  <Typography component="h2" variant="h4">
-                    Your Created Routines
-                  </Typography>
-                </Grid>
-                {createdRoutines.map((routine, key) => (
-                  <React.Fragment key={key}>
-                    <UseRoutineCard routine={routine} />
+                    <Divider
+                      style={{
+                        width: "100%",
+                        marginTop: "16px",
+                        marginBottom: "16px",
+                      }}
+                    />
                   </React.Fragment>
-                ))}
+                )}
+
+                {createdRoutines.length == 0 ? null : (
+                  <React.Fragment>
+                    <Grid item xs={12}>
+                      <Typography component="h2" variant="h4">
+                        Your Created Routines
+                  </Typography>
+                    </Grid>
+                    {createdRoutines.map((routine, key) => (
+                      <React.Fragment key={key}>
+                        <UseRoutineCard routine={routine} />
+                      </React.Fragment>
+                    ))}
+                  </React.Fragment>
+                )}
               </React.Fragment>
-            )}
-          </React.Fragment>
-        )}
+            )
+            :
+            // Past Exercises
+            <React.Fragment>
+              <Typography component="h2" variant="h4">
+                Your Saved Exercises
+              </Typography>
+              {
+                savedWeights.map((weight) => (
+                  <Grid item xs={12} key={weight.id}>
+                    <CompletedExerciseCard
+                      weightEntry={weight}
+                    />
+                  </Grid>
+                ))}
+            </React.Fragment>
+        }
       </Grid>
     </Container>
   );

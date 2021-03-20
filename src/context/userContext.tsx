@@ -12,7 +12,7 @@ Amplify.configure(awsconfig);
 
 export const UserContext = createContext<UserContextType>(null);
 
-export default function UserContextComp({ children }: { children: any }) {
+export default function UserContextComp({ children }: { children: any }): any {
   const [user, setUser] = useState<CognitoUser>(null);
   const [userAttributes, setUserAttributes] = useState(null);
   const [authState, setAuthState] = useState<AuthState>();
@@ -65,4 +65,4 @@ export default function UserContextComp({ children }: { children: any }) {
 }
 
 // Custom hook that shorthands the context
-export const useUser = () => useContext(UserContext);
+export const useUser = (): any => useContext(UserContext);

@@ -61,7 +61,7 @@ type Exercise {
 
 type RecordedExerciseWithWeight
   @model
-  @key(name: "byUser", fields: ["ownerID", "weight"])
+  @key(name: "byUser", fields: ["ownerID", "createdAt"])
   @auth(
     rules: [
       # allow all authenticated users ability to create posts

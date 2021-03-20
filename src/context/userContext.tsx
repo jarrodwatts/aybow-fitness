@@ -1,13 +1,8 @@
-import {
-  useState,
-  useEffect,
-  createContext,
-  useContext,
-  Dispatch,
-  SetStateAction,
-} from "react";
+import { useState, useEffect, createContext, useContext } from "react";
 import Amplify, { Auth } from "aws-amplify";
 import { CognitoUser } from "@aws-amplify/auth";
+import UserContextType from "../types/UserContextType";
+
 // Also initialize Amplify, since this is being used
 // In _app.tsx it will be initialized for every page
 import awsconfig from "../aws-exports";
@@ -15,26 +10,9 @@ import { AuthState, onAuthUIStateChange } from "@aws-amplify/ui-components";
 
 Amplify.configure(awsconfig);
 
-type UserContextType = {
-  user: CognitoUser;
-  userAttributes: CognitoUserAttributes;
-  setUser: Dispatch<SetStateAction<CognitoUser>>;
-  setUserAttributes: Dispatch<any>;
-  loadingUser: boolean;
-};
-
-// Can't figure out what type this is so i'm making one
-type CognitoUserAttributes = {
-  email: string;
-  email_verified: boolean;
-  phone_number: string;
-  phone_number_verified: boolean;
-  sub: string;
-};
-
 export const UserContext = createContext<UserContextType>(null);
 
-export default function UserContextComp({ children }: { children: any }) {
+export default function UserContextComp({ children }: { children: any }): any {
   const [user, setUser] = useState<CognitoUser>(null);
   const [userAttributes, setUserAttributes] = useState(null);
   const [authState, setAuthState] = useState<AuthState>();
@@ -50,7 +28,7 @@ export default function UserContextComp({ children }: { children: any }) {
       async (nextAuthState: AuthState, authData: CognitoUser) => {
         setAuthState(authState);
         setUser(authData as CognitoUser);
-        // TODO: this is unsafe
+        // TODO: this is unsafe?
         try {
           const { attributes } = await Auth.currentAuthenticatedUser();
           setUserAttributes(attributes);
@@ -87,4 +65,4 @@ export default function UserContextComp({ children }: { children: any }) {
 }
 
 // Custom hook that shorthands the context
-export const useUser = () => useContext(UserContext);
+export const useUser = (): any => useContext(UserContext);

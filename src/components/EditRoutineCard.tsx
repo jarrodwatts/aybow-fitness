@@ -13,12 +13,11 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     padding: theme.spacing(2),
-    // textAlign: "center",
     color: theme.palette.text.secondary,
   },
 }));
 
-const UseRoutineCard = ({ routine }: { routine: Routine }): any => {
+const EditRoutineCard = ({ routine }: { routine: Routine }): any => {
   const classes = useStyles();
   const [showDays, setShowDays] = useState<boolean>(false);
   const router = useRouter();
@@ -62,9 +61,11 @@ const UseRoutineCard = ({ routine }: { routine: Routine }): any => {
               style={{ marginTop: "8px" }}
             >
               <Grid item>
-                <Typography>
-                  <b>Routine from {routine.owner}</b>
-                </Typography>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={() => router.push(`/edit/${routine.id}`)}
+                >Edit Routine</Button>
               </Grid>
 
               <Grid item>
@@ -121,4 +122,4 @@ const UseRoutineCard = ({ routine }: { routine: Routine }): any => {
   }
 };
 
-export default UseRoutineCard;
+export default EditRoutineCard;

@@ -1,21 +1,16 @@
 import React, { useState, useEffect } from "react";
-import Link from "next/link";
-import { API, graphqlOperation } from "aws-amplify";
-import { listRoutines, listUsers } from "../graphql/queries";
+import { API } from "aws-amplify";
+import { listRoutines } from "../graphql/queries";
 import { GetServerSideProps } from "next";
-import Button from "@material-ui/core/Button";
-import Card from "@material-ui/core/Card";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
-import CardMedia from "@material-ui/core/CardMedia";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+import Button from "@material-ui/core/Button";
 import RoutineCard from "../components/RoutineCard";
 import Hero from "../components/Hero";
-import { ListRoutinesQuery } from "../API";
+import { ListRoutinesQuery, Routine } from "../API";
+import RoutinesWithNextToken from '../types/RoutinesWithNextToken'
 
 const useStyles = makeStyles((theme) => ({
   cardGrid: {
@@ -24,9 +19,41 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Index({ routinesList, errors }: { routinesList: any; errors: any[] }) {
-  const [routines, setRoutines] = useState(routinesList);
+function Index({ routinesList, nextToken, errors, }: { routinesList: any; nextToken: string | null, errors: any[]; }): any {
+  const [routines, setRoutines] = useState<Array<Routine>>(routinesList);
+  const [stateToken, setNextToken] = useState<string>(nextToken);
   const classes = useStyles();
+
+  const updateRoutinesState = async (): Promise<void> => {
+    const newRoutines = await loadMoreRoutines()
+    setRoutines([...routines, ...newRoutines.moreRoutines])
+  }
+
+  const loadMoreRoutines = async (): Promise<RoutinesWithNextToken> => {
+    const result = (await API.graphql({
+      query: listRoutines,
+      variables: {
+        limit: 12,
+        nextToken: stateToken
+      }
+    })) as {
+      data: ListRoutinesQuery;
+      errors: any[];
+    };
+
+    // re calculate token here
+    if (result.data.listRoutines.nextToken) {
+      setNextToken(result.data.listRoutines.nextToken)
+    }
+    else {
+      setNextToken(null)
+    }
+
+    return {
+      moreRoutines: result.data.listRoutines.items as Routine[],
+      token: result.data.listRoutines.nextToken,
+    }
+  }
 
   useEffect(() => {
     setRoutines(routinesList);
@@ -45,25 +72,38 @@ function Index({ routinesList, errors }: { routinesList: any; errors: any[] }) {
               </Grid>
             ))}
           </Grid>
+          <Grid container direction="row" alignItems="center" justify="center" style={{ marginTop: '32px' }}>
+            {
+              stateToken &&
+              <Button variant="outlined" color="primary" onClick={() => updateRoutinesState()}>
+                Load More
+            </Button>
+            }
+          </Grid>
         </Container>
       </main>
     </React.Fragment>
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  // Make a call to the graphQL API here to get all todos from a todolist
-  // The todo list will be 'global'
-  const result = (await API.graphql(graphqlOperation(listRoutines))) as {
+export const getServerSideProps: GetServerSideProps = async () => {
+  const result = (await API.graphql(
+    {
+      query: listRoutines,
+      variables: {
+        limit: 12,
+      }
+    })
+  ) as {
     data: ListRoutinesQuery;
     errors: any[];
   };
 
-  // If there's no errors return the todos as an array of
   if (!result.errors) {
     return {
       props: {
-        routinesList: result.data.listRoutines.items,
+        routinesList: result.data.listRoutines.items as Array<Routine>,
+        nextToken: result.data.listRoutines.nextToken,
         errors: [],
       },
     };
@@ -72,9 +112,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   return {
     props: {
       routinesList: [],
+      nextToken: null,
       errors: result.errors,
     },
-    // revalidate: 1,
   };
 };
 

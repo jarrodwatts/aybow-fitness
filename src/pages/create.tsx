@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { API } from "aws-amplify";
 import { v4 as uuid } from "uuid";
 import { useRouter } from "next/router";
@@ -10,20 +10,27 @@ import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import { CreateRoutineInput, DayInput, ExerciseInput } from "../API";
-import { Box, Divider, IconButton, Paper } from "@material-ui/core";
+import { CreateRoutineInput, DayInput } from "../API";
+import { Divider, IconButton, Paper } from "@material-ui/core";
 import { AddCircle } from "@material-ui/icons";
 import exerciseData from "../lib/exerciseData";
 import InputBase from "@material-ui/core/InputBase";
 import SearchIcon from "@material-ui/icons/Search";
 import ExerciseNameBodyPart from "../types/ExerciseNameBodyPart";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import authTheme from "../amplifyTheme";
+import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import { useUser } from "../context/userContext";
+import ExerciseInExerciseListDraggable from "../components/DragAndDrop/ExerciseInExerciseListDraggable";
+import DayEditableContainer from "../components/DragAndDrop/DayEditableContainer";
+import reorderExercisesInDay from "../lib/createHelpers/reorderExercisesInDay";
+import DragDropEvent from "../types/DragDropEvent";
+import deepCopy from "../lib/deepCopy";
+import changeDays from "../lib/createHelpers/changeDays";
+import reorderExerciseList from "../lib/createHelpers/reorderExerciseList";
+import removeFromDay from "../lib/createHelpers/removeFromDay";
+import addToDay from "../lib/createHelpers/addToDay";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -31,15 +38,6 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-  },
-  exercisePaper: {
-    padding: theme.spacing(1),
-    textAlign: "left",
-  },
-  dayPaper: {
-    padding: theme.spacing(2),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
   },
   avatar: {
     margin: theme.spacing(1),
@@ -65,13 +63,6 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(1),
     flex: 1,
   },
-  iconButton: {
-    padding: 10,
-  },
-  divider: {
-    height: 28,
-    margin: 4,
-  },
 }));
 
 const Create = () => {
@@ -81,7 +72,7 @@ const Create = () => {
   const [filteredExercises, setFilteredExercises] = useState<
     Array<ExerciseNameBodyPart>
   >(exerciseData as Array<ExerciseNameBodyPart>);
-  const [exCap, setExCap] = useState<number>(20);
+  const [exCap] = useState<number>(20);
   const router = useRouter();
   const classes = useStyles();
   const { user } = useUser();
@@ -110,7 +101,7 @@ const Create = () => {
     }
   }
 
-  async function addDay() {
+  async function addDay(): Promise<void> {
     setDays([
       ...days,
       {
@@ -119,6 +110,10 @@ const Create = () => {
         exercises: [],
       },
     ]);
+  }
+
+  async function removeDay(index: number): Promise<void> {
+    setDays(days.filter((day) => days.indexOf(day) != index))
   }
 
   function handleSearchChange(val: string): void {
@@ -130,51 +125,46 @@ const Create = () => {
     );
   }
 
-  // a little function to help us with reordering the result
-  const reorder = (list, startIndex, endIndex): any[] => {
-    const result = Array.from(list);
-    const [removed] = result.splice(startIndex, 1);
-    result.splice(endIndex, 0, removed);
-
-    return result;
-  };
-
   const onDragEnd = (result) => {
-    const { source, destination } = result;
+    const {
+      source,
+      destination,
+    }: { source: DragDropEvent; destination: DragDropEvent } = result;
 
-    // dropped outside the list
+    // Dropped outside a list
     if (!result.destination) {
       return;
     }
 
-    // Reordering a list
     if (source.droppableId === destination.droppableId) {
       // Reordering the exercise list
       if (destination.droppableId === "exerciseList") {
-        const items = reorder(
+        const items = reorderExerciseList(
           filteredExercises,
-          result.source.index,
-          result.destination.index
+          source,
+          destination
         );
         setFilteredExercises(items);
+        return;
       }
+
       // Reordering a day
       else {
-        // 1. Get this day's items based on source's index and droppableId
-        // 2. Create a new reordered array of exercises for the specific day
-        // 3. Update state to reflect these changes.
-        const items = reorder(
+        const newExerciseOrderForDay = reorderExercisesInDay(
           days[destination.droppableId].exercises,
-          result.source.index,
-          result.destination.index
+          source,
+          destination
         );
+        const newDays: DayInput[] = days.map((day: DayInput, key: number) => {
+          // Key is the day index
+          return key.toString() === source.droppableId
+            ? { ...day, exercises: newExerciseOrderForDay }
+            : day;
+        });
 
-        let tempStateChanger = days;
-        tempStateChanger[destination.droppableId].exercises = items;
-
-        setDays(tempStateChanger);
+        setDays([...newDays]);
+        return;
       }
-      return;
     }
 
     // Move from day to a different day
@@ -182,49 +172,15 @@ const Create = () => {
       source.droppableId != "exerciseList" &&
       destination.droppableId != "exerciseList"
     ) {
-      const movedExercise = days[source.droppableId].exercises[source.index];
-      let tempStateChanger = days;
-
-      tempStateChanger[source.droppableId].exercises = tempStateChanger[
-        source.droppableId
-      ].exercises
-        .slice(0, source.index)
-        .concat(
-          tempStateChanger[source.droppableId].exercises.slice(
-            source.index + 1,
-            tempStateChanger[source.droppableId].exercises.length
-          )
-        );
-
-      tempStateChanger[destination.droppableId].exercises.splice(
-        destination.index,
-        0,
-        {
-          name: movedExercise.name,
-          sets: "0",
-          reps: "0",
-        } as ExerciseInput
-      );
-
+      const tempStateChanger = changeDays(days, source, destination);
+      setDays(tempStateChanger);
       return;
     }
 
     // Moving from a day to back to the exercise list
     if (destination.droppableId === "exerciseList") {
-      // 1. Get this day's items based on source's index and droppableId.
-      const movedExercise = days[source.droppableId].exercises[source.index];
-
-      let tempStateChanger = days;
-      tempStateChanger[source.droppableId].exercises = tempStateChanger[
-        source.droppableId
-      ].exercises
-        .slice(0, source.index)
-        .concat(
-          tempStateChanger[source.droppableId].exercises.slice(
-            source.index + 1,
-            tempStateChanger[source.droppableId].exercises.length
-          )
-        );
+      const tempStateChanger = removeFromDay(days, source);
+      setDays(tempStateChanger);
       return;
     }
 
@@ -232,16 +188,9 @@ const Create = () => {
     else {
       const movedExercise = filteredExercises[source.index];
 
-      let tempStateChanger = days;
-      tempStateChanger[destination.droppableId].exercises.splice(
-        destination.index,
-        0,
-        {
-          name: movedExercise.name,
-          sets: "0",
-          reps: "0",
-        } as ExerciseInput
-      );
+      const tempStateChanger = addToDay(days, movedExercise, destination);
+
+      setDays(tempStateChanger);
 
       setFilteredExercises(
         filteredExercises
@@ -256,20 +205,8 @@ const Create = () => {
     }
   };
 
-  const getItemStyle = (isDragging, draggableStyle) => ({
-    // change background colour if dragging
-    background: isDragging ? "lightgreen" : null,
-
-    // styles we need to apply on draggables
-    ...draggableStyle,
-  });
-
-  const getListStyle = (isDraggingOver) => ({
-    background: isDraggingOver ? "lightblue" : "lightgrey",
-  });
-
   const changeDayName = (dayIndex: number, name: string): void => {
-    let newDays = days;
+    const newDays = deepCopy(days) as DayInput[];
     newDays[dayIndex].name = name;
     setDays([...newDays]);
   };
@@ -280,7 +217,7 @@ const Create = () => {
     exerciseIndex: number,
     dayIndex: number
   ): void => {
-    let newDays = days;
+    const newDays = deepCopy(days) as DayInput[];
     newDays[dayIndex].exercises[exerciseIndex][field] = value;
     setDays([...newDays]);
   };
@@ -296,7 +233,7 @@ const Create = () => {
           </Typography>
 
           <form className={classes.form}>
-            <Grid container spacing={5} justify="space-between">
+            <Grid container spacing={5} >
               <Grid item xs={12} sm={8}>
                 <Grid
                   container
@@ -338,146 +275,13 @@ const Create = () => {
 
                   {days.map((day, key) => (
                     <Grid item xs={12} key={key}>
-                      <Paper elevation={2} className={classes.dayPaper}>
-                        <Grid container spacing={3}>
-                          <Grid item xs={12}>
-                            <TextField
-                              name={"day" + key + "Name"}
-                              variant="outlined"
-                              required
-                              fullWidth
-                              id={"day" + key + "Name"}
-                              label={"Day " + (key + 1) + " Name"}
-                              autoFocus
-                              onChange={(e) =>
-                                changeDayName(key, e.target.value)
-                              }
-                            />
-                          </Grid>
-                          <Grid item xs={12}>
-                            <Droppable
-                              droppableId={key.toString()}
-                              style={{
-                                borderStyle: "solid",
-                                borderWidth: "2px",
-                                borderColor: "#000",
-                                height: "100px",
-                              }}
-                            >
-                              {(provided2, snapshot2) => (
-                                <Grid
-                                  {...provided2.droppableProps}
-                                  ref={provided2.innerRef}
-                                  item
-                                  xs={12}
-                                >
-                                  {day.exercises.map((exercise, exKey) => (
-                                    <Draggable
-                                      key={exKey}
-                                      draggableId={`day${key.toString()}Exercise${exKey.toString()}${exercise.name.toString()}`}
-                                      index={exKey}
-                                    >
-                                      {(provided, snapshot) => (
-                                        <Paper
-                                          elevation={3}
-                                          ref={provided.innerRef}
-                                          {...provided.draggableProps}
-                                          {...provided.dragHandleProps}
-                                          className={classes.dayPaper}
-                                          style={{
-                                            ...getItemStyle(
-                                              snapshot.isDragging,
-                                              provided.draggableProps.style
-                                            ),
-                                            marginBottom: "8px",
-                                          }}
-                                          key={`day${key.toString()}Exercise${exKey.toString()}`}
-                                        >
-                                          <Grid
-                                            container
-                                            justify="space-around"
-                                            alignItems="center"
-                                          >
-                                            <Grid item xs={6}>
-                                              <Box>
-                                                <Typography>
-                                                  {`Exercise ${exKey + 1}`}
-                                                </Typography>
-                                                <Typography>
-                                                  <b>{exercise.name}</b>
-                                                </Typography>
-                                              </Box>
-                                            </Grid>
-                                            <Grid item xs={3}>
-                                              <Box>
-                                                <Typography>Sets</Typography>
-                                                <TextField
-                                                  style={{ maxWidth: "64px" }}
-                                                  id={`day${key.toString()}Exercise${exKey}${
-                                                    exercise.name
-                                                  }Sets`}
-                                                  variant="outlined"
-                                                  onChange={(e) =>
-                                                    changeSetOrRepsValue(
-                                                      "sets",
-                                                      e.target.value,
-                                                      exKey,
-                                                      key
-                                                    )
-                                                  }
-                                                />
-                                              </Box>
-                                            </Grid>
-                                            <Grid item xs={3}>
-                                              <Box>
-                                                <Typography>Reps</Typography>
-                                                <TextField
-                                                  style={{ maxWidth: "64px" }}
-                                                  id={`day${key.toString()}Exercise${exKey}${
-                                                    exercise.name
-                                                  }Reps`}
-                                                  variant="outlined"
-                                                  onChange={(e) =>
-                                                    changeSetOrRepsValue(
-                                                      "reps",
-                                                      e.target.value,
-                                                      exKey,
-                                                      key
-                                                    )
-                                                  }
-                                                />
-                                              </Box>
-                                            </Grid>
-                                          </Grid>
-                                        </Paper>
-                                      )}
-                                    </Draggable>
-                                  ))}
-
-                                  {day.exercises.length === 0 ? (
-                                    <div
-                                      style={{
-                                        borderStyle: "dotted",
-                                        borderWidth: "1px",
-                                        borderColor: "#000",
-                                        padding: "8px",
-                                      }}
-                                    >
-                                      <Typography>
-                                        Search for an exercise and drag them in
-                                        here!
-                                      </Typography>
-                                      {provided2.placeholder}
-                                    </div>
-                                  ) : (
-                                    <div>{provided2.placeholder}</div>
-                                  )}
-                                </Grid>
-                              )}
-                            </Droppable>
-                          </Grid>
-                        </Grid>
-                      </Paper>
+                      <DayEditableContainer
+                        day={day}
+                        changeDayName={changeDayName}
+                        changeSetOrRepsValue={changeSetOrRepsValue}
+                        removeDay={removeDay}
+                        keyProp={key}
+                      />
                     </Grid>
                   ))}
 
@@ -501,81 +305,64 @@ const Create = () => {
                 item
                 xs={12}
                 sm={4}
-                spacing={1}
-                justify="center"
-                alignItems="center"
-              >
+                spacing={1}>
                 <Grid item xs={12}>
-                  <Divider style={{ width: "100%" }} />
-                  <Grid item xs={12}>
-                    <Typography variant="h6">Exercise List</Typography>
-                  </Grid>
+                  <div style={{
+                    position: "sticky",
+                    top: "128px",
+                  }}>
+                    <Divider style={{ width: "100%" }} />
+                    <Grid item xs={12}>
+                      <Typography variant="h6">Exercise List</Typography>
+                    </Grid>
 
-                  <Grid item xs={12} style={{ marginBottom: "8px" }}>
-                    <Paper className={classes.root}>
-                      <InputBase
-                        className={classes.input}
-                        placeholder="Search for an exercise"
-                        inputProps={{ "aria-label": "search for an exercise" }}
-                        onChange={(event) =>
-                          handleSearchChange(event.target.value)
-                        }
-                      />
-                      <IconButton>
-                        <SearchIcon />
-                      </IconButton>
-                    </Paper>
-                  </Grid>
+                    <Grid item xs={12} style={{ marginBottom: "8px" }}>
+                      <Paper className={classes.root}>
+                        <InputBase
+                          className={classes.input}
+                          placeholder="Search for an exercise"
+                          inputProps={{ "aria-label": "search for an exercise" }}
+                          onChange={(event) =>
+                            handleSearchChange(event.target.value)
+                          }
+                        />
+                        <IconButton>
+                          <SearchIcon />
+                        </IconButton>
+                      </Paper>
+                    </Grid>
 
-                  {/* Begin List exercises */}
-                  <Droppable droppableId="exerciseList">
-                    {(provided, snapshot) => (
-                      <Grid
-                        {...provided.droppableProps}
-                        ref={provided.innerRef}
-                        item
-                        xs={12}
-                        style={{
-                          height: "480px",
-                          overflowY: "scroll",
-                          overflowX: "hidden",
-                          whiteSpace: "nowrap",
-                        }}
-                      >
-                        {filteredExercises.slice(0, exCap).map((exerc, key) => (
-                          <Draggable
-                            key={key}
-                            draggableId={key.toString()}
-                            index={key}
-                            style={{ marginBottom: "2px" }}
-                          >
-                            {(provided, snapshot) => (
-                              <Paper
-                                className={classes.exercisePaper}
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                style={{
-                                  ...getItemStyle(
-                                    snapshot.isDragging,
-                                    provided.draggableProps.style
-                                  ),
-                                  marginBottom: "4px",
-                                }}
-                                key={key}
-                              >
-                                <Typography>{exerc.name}</Typography>
-                              </Paper>
-                            )}
-                          </Draggable>
-                        ))}
-                        {provided.placeholder}
-                      </Grid>
-                    )}
-                  </Droppable>
+                    {/* Begin List exercises */}
+                    <Droppable droppableId="exerciseList">
+                      {(provided) => (
+                        <Grid
+                          {...provided.droppableProps}
+                          ref={provided.innerRef}
+                          item
+                          xs={12}
+                          style={{
+                            height: "480px",
+                            overflowY: "scroll",
+                            overflowX: "hidden",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          {filteredExercises.slice(0, exCap).map((exerc, key) => (
+                            <ExerciseInExerciseListDraggable
+                              exerc={exerc}
+                              key={key}
+                              keyProp={key}
+                            />
+                          ))}
+                          {provided.placeholder}
+                        </Grid>
+                      )}
+                    </Droppable>
 
-                  <Divider style={{ width: "100%" }} />
+                    <Divider style={{ width: "100%" }} />
+                  </div>
                 </Grid>
+
               </Grid>
             </Grid>
 

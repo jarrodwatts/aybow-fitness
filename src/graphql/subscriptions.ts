@@ -9,17 +9,25 @@ export const onCreateUser = /* GraphQL */ `
       username
       email
       savedRoutines
-      savedWeights {
-        exercise {
-          name
-          description
-          reps
-          sets
-        }
-        weight
-      }
       createdAt
       updatedAt
+      savedWeights {
+        items {
+          id
+          ownerID
+          exercise {
+            name
+            description
+            reps
+            sets
+          }
+          weight
+          createdAt
+          updatedAt
+          username
+        }
+        nextToken
+      }
     }
   }
 `;
@@ -30,17 +38,25 @@ export const onUpdateUser = /* GraphQL */ `
       username
       email
       savedRoutines
-      savedWeights {
-        exercise {
-          name
-          description
-          reps
-          sets
-        }
-        weight
-      }
       createdAt
       updatedAt
+      savedWeights {
+        items {
+          id
+          ownerID
+          exercise {
+            name
+            description
+            reps
+            sets
+          }
+          weight
+          createdAt
+          updatedAt
+          username
+        }
+        nextToken
+      }
     }
   }
 `;
@@ -51,17 +67,25 @@ export const onDeleteUser = /* GraphQL */ `
       username
       email
       savedRoutines
-      savedWeights {
-        exercise {
-          name
-          description
-          reps
-          sets
-        }
-        weight
-      }
       createdAt
       updatedAt
+      savedWeights {
+        items {
+          id
+          ownerID
+          exercise {
+            name
+            description
+            reps
+            sets
+          }
+          weight
+          createdAt
+          updatedAt
+          username
+        }
+        nextToken
+      }
     }
   }
 `;
@@ -128,6 +152,60 @@ export const onDeleteRoutine = /* GraphQL */ `
       owner
       createdAt
       updatedAt
+    }
+  }
+`;
+export const onCreateRecordedExerciseWithWeight = /* GraphQL */ `
+  subscription OnCreateRecordedExerciseWithWeight {
+    onCreateRecordedExerciseWithWeight {
+      id
+      ownerID
+      exercise {
+        name
+        description
+        reps
+        sets
+      }
+      weight
+      createdAt
+      updatedAt
+      username
+    }
+  }
+`;
+export const onUpdateRecordedExerciseWithWeight = /* GraphQL */ `
+  subscription OnUpdateRecordedExerciseWithWeight {
+    onUpdateRecordedExerciseWithWeight {
+      id
+      ownerID
+      exercise {
+        name
+        description
+        reps
+        sets
+      }
+      weight
+      createdAt
+      updatedAt
+      username
+    }
+  }
+`;
+export const onDeleteRecordedExerciseWithWeight = /* GraphQL */ `
+  subscription OnDeleteRecordedExerciseWithWeight {
+    onDeleteRecordedExerciseWithWeight {
+      id
+      ownerID
+      exercise {
+        name
+        description
+        reps
+        sets
+      }
+      weight
+      createdAt
+      updatedAt
+      username
     }
   }
 `;

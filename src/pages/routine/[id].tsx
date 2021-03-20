@@ -1,30 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { API, graphqlOperation } from "aws-amplify";
-import {
-  GetRoutineQuery,
-  GetUserQueryVariables,
-  ListRoutinesQuery,
-} from "../../API";
-import { getRoutine, getUser, listRoutines } from "../../graphql/queries";
+import { GetRoutineQuery, GetUserQueryVariables } from "../../API";
+import { getRoutine, getUser } from "../../graphql/queries";
 import config from "../../aws-exports";
 import { GetServerSideProps } from "next";
-import {
-  Container,
-  Grid,
-  Paper,
-  Typography,
-  Avatar,
-  Button,
-} from "@material-ui/core";
+import { Container, Grid, Typography, Button } from "@material-ui/core";
 import Image from "next/image";
 import { makeStyles } from "@material-ui/core/styles";
-import exerciseData from "../../lib/exerciseData";
-import supported from "../../lib/supportedBodyPartImages";
 import { useUser } from "../../context/userContext";
 import { useRouter } from "next/router";
 import { updateUser } from "../../graphql/mutations";
-import { UpdateUserInput, User, GetUserQuery } from "../../API";
+import { UpdateUserInput, GetUserQuery } from "../../API";
 import { GRAPHQL_AUTH_MODE } from "@aws-amplify/api";
+import DayView from "../../components/DayView";
 
 API.configure(config);
 
@@ -54,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
 
 const IndividualRoutine = (props: {
   routine: GetRoutineQuery["getRoutine"];
-}) => {
+}): any => {
   const { routine } = props;
   const { userAttributes, user } = useUser();
   const [alreadySaved, setAlreadySaved] = useState<boolean>(false);
@@ -92,20 +80,6 @@ const IndividualRoutine = (props: {
       getUserRoutineStatus().then((res) => setAlreadySaved(res));
     }
   }, [userAttributes]);
-
-  const getBodyPartImage = (ex): string => {
-    const relatedBodyPart = exerciseData.find((el) => el.name == ex.name);
-
-    if (supported.includes(relatedBodyPart.bodyPart)) {
-      return `/${relatedBodyPart.bodyPart}.png`;
-    }
-
-    return "/Default.png";
-  };
-
-  const getBodyPart = (ex): String => {
-    return exerciseData.find((el) => el.name == ex.name).bodyPart;
-  };
 
   const handleSaveUnsave = async () => {
     setAlreadySaved(!alreadySaved);
@@ -146,13 +120,13 @@ const IndividualRoutine = (props: {
     }
 
     if (!currentUserData.errors) {
-      let updatedUserDetails: UpdateUserInput = {
+      const updatedUserDetails: UpdateUserInput = {
         id: userAttributes.sub,
         savedRoutines: generateNewSavedRoutines(),
       };
 
       try {
-        const updatedUser = await API.graphql({
+        await API.graphql({
           query: updateUser,
           variables: { input: updatedUserDetails },
           authMode: GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS,
@@ -244,52 +218,7 @@ const IndividualRoutine = (props: {
               }
               {routine.days.map((day, dayKey) => (
                 <Grid key={dayKey} item xs={12}>
-                  <Paper className={classes.paper}>
-                    <Grid container alignItems="flex-start">
-                      <Grid item xs={12} style={{ marginBottom: "8px" }}>
-                        <Typography component="h6" variant="h6">
-                          Day {dayKey + 1}: {day.name}
-                        </Typography>
-                      </Grid>
-                      {day.exercises.map((ex, exKey) => (
-                        <Grid
-                          key={exKey}
-                          item
-                          xs={12}
-                          style={{ marginBottom: "12px" }}
-                        >
-                          <Paper className={classes.paper} elevation={3}>
-                            <Grid
-                              container
-                              justify="flex-start"
-                              alignItems="center"
-                            >
-                              <Grid item xs={3} sm={1}>
-                                <Avatar src={getBodyPartImage(ex)}></Avatar>
-                              </Grid>
-                              <Grid item xs={9} sm={5}>
-                                <Typography>
-                                  <b>{ex.name}</b>
-                                </Typography>
-                                <Typography>
-                                  {getBodyPart(ex)} Exercise
-                                </Typography>
-                              </Grid>
-                              <Grid item xs={3} sm={1}>
-                                {/* Empty Spacer for mobile */}
-                              </Grid>
-                              <Grid item xs={3} sm={2}>
-                                <Typography>{ex.sets} Sets</Typography>
-                              </Grid>
-                              <Grid item xs={3} sm={2}>
-                                <Typography>{ex.reps} Reps</Typography>
-                              </Grid>
-                            </Grid>
-                          </Paper>
-                        </Grid>
-                      ))}
-                    </Grid>
-                  </Paper>
+                  <DayView day={day} dayKey={dayKey} />
                 </Grid>
               ))}
             </Grid>
@@ -299,23 +228,6 @@ const IndividualRoutine = (props: {
     </div>
   );
 };
-
-// export const getStaticPaths: GetStaticPaths = async () => {
-//   let result = (await API.graphql(graphqlOperation(listRoutines))) as {
-//     data: ListRoutinesQuery;
-//     errors: any[];
-//   };
-
-//   if (result.errors) {
-//     console.error("Failed to fetch routines paths.", result.errors);
-//     throw new Error(result.errors[0].message);
-//   }
-//   const paths = result.data.listRoutines.items.map(({ id }) => ({
-//     params: { id },
-//   }));
-
-//   return { paths };
-// };
 
 export const getServerSideProps: GetServerSideProps = async ({
   params: { id },
@@ -334,7 +246,6 @@ export const getServerSideProps: GetServerSideProps = async ({
     props: {
       routine: routine.data.getRoutine,
     },
-    // revalidate: 1,
   };
 };
 

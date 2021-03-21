@@ -78,7 +78,7 @@ const Edit = (props: {
     const [exCap] = useState<number>(20);
     const router = useRouter();
     const classes = useStyles();
-    const { user, userAttributes } = useUser();
+    const { user } = useUser();
 
     // Stops React Beautiful DND complaining about a lot when we load it up
     resetServerContext()
@@ -93,6 +93,7 @@ const Edit = (props: {
             name: routine.name,
             description: routine.description,
             days: days,
+            userMade: "true"
         };
 
         try {

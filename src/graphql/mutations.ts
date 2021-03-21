@@ -118,6 +118,7 @@ export const createRoutine = /* GraphQL */ `
         }
       }
       owner
+      userMade
       createdAt
       updatedAt
     }
@@ -143,6 +144,7 @@ export const updateRoutine = /* GraphQL */ `
         }
       }
       owner
+      userMade
       createdAt
       updatedAt
     }
@@ -168,6 +170,7 @@ export const deleteRoutine = /* GraphQL */ `
         }
       }
       owner
+      userMade
       createdAt
       updatedAt
     }

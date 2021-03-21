@@ -11,30 +11,46 @@ import RoutineCard from "../components/RoutineCard";
 import Hero from "../components/Hero";
 import { ListRoutinesQuery, Routine } from "../API";
 import RoutinesWithNextToken from '../types/RoutinesWithNextToken'
+import { Divider, Tab, Tabs } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   cardGrid: {
-    paddingTop: theme.spacing(8),
-    paddingBottom: theme.spacing(8),
+    paddingTop: theme.spacing(4),
+    paddingBottom: theme.spacing(4),
+  },
+  root: {
+    flexGrow: 1,
   },
 }));
 
 function Index({ routinesList, nextToken, errors, }: { routinesList: any; nextToken: string | null, errors: any[]; }): any {
-  const [routines, setRoutines] = useState<Array<Routine>>(routinesList);
-  const [stateToken, setNextToken] = useState<string>(nextToken);
-  const classes = useStyles();
+  const [routinesRecommended, setRoutinesRecommended] = useState<Array<Routine>>(routinesList);
+  const [stateTokenRecommended, setNextTokenRecommended] = useState<string>(nextToken);
+  const [routinesUserMade, setRoutinesUserMade] = useState<Array<Routine>>(routinesList);
+  const [stateTokenUserMade, setNextTokenUserMade] = useState<string>(nextToken);
 
-  const updateRoutinesState = async (): Promise<void> => {
-    const newRoutines = await loadMoreRoutines()
-    setRoutines([...routines, ...newRoutines.moreRoutines])
+  const classes = useStyles();
+  const [tabValue, setTabValue] = useState(0);
+
+  const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+    setTabValue(newValue);
+  };
+
+  // Recommended
+  const updateRoutinesStateRecommended = async (): Promise<void> => {
+    const newRoutines = await loadMoreRoutinesRecommended()
+    setRoutinesRecommended([...routinesRecommended, ...newRoutines.moreRoutines])
   }
 
-  const loadMoreRoutines = async (): Promise<RoutinesWithNextToken> => {
+  const loadMoreRoutinesRecommended = async (): Promise<RoutinesWithNextToken> => {
     const result = (await API.graphql({
       query: listRoutines,
       variables: {
+        filter: {
+          userMade: { eq: "true" }
+        },
         limit: 12,
-        nextToken: stateToken
+        nextToken: stateTokenRecommended
       }
     })) as {
       data: ListRoutinesQuery;
@@ -43,10 +59,64 @@ function Index({ routinesList, nextToken, errors, }: { routinesList: any; nextTo
 
     // re calculate token here
     if (result.data.listRoutines.nextToken) {
-      setNextToken(result.data.listRoutines.nextToken)
+      setNextTokenRecommended(result.data.listRoutines.nextToken)
     }
     else {
-      setNextToken(null)
+      setNextTokenRecommended(null)
+    }
+
+    return {
+      moreRoutines: result.data.listRoutines.items as Routine[],
+      token: result.data.listRoutines.nextToken,
+    }
+  }
+
+  // User Made
+  const fetchInitialUserMadeRoutines = async (): Promise<void> => {
+    const result = (await API.graphql(
+      {
+        query: listRoutines,
+        variables: {
+          filter: {
+            userMade: { eq: "true" }
+          },
+          limit: 12,
+        }
+      })
+    ) as {
+      data: ListRoutinesQuery;
+      errors: any[];
+    };
+
+    if (!result.errors) {
+      setRoutinesUserMade(result.data.listRoutines.items);
+      setNextTokenUserMade(result.data.listRoutines.nextToken);
+    }
+  }
+
+  const updateRoutinesStateUserMade = async (): Promise<void> => {
+    const newRoutines = await loadMoreRoutinesUserMade()
+    setRoutinesUserMade([...routinesUserMade, ...newRoutines.moreRoutines])
+  }
+
+  const loadMoreRoutinesUserMade = async (): Promise<RoutinesWithNextToken> => {
+    const result = (await API.graphql({
+      query: listRoutines,
+      variables: {
+        limit: 12,
+        nextToken: stateTokenUserMade
+      }
+    })) as {
+      data: ListRoutinesQuery;
+      errors: any[];
+    };
+
+    // re calculate token here
+    if (result.data.listRoutines.nextToken) {
+      setNextTokenUserMade(result.data.listRoutines.nextToken)
+    }
+    else {
+      setNextTokenUserMade(null)
     }
 
     return {
@@ -56,7 +126,8 @@ function Index({ routinesList, nextToken, errors, }: { routinesList: any; nextTo
   }
 
   useEffect(() => {
-    setRoutines(routinesList);
+    setRoutinesRecommended(routinesList);
+    fetchInitialUserMadeRoutines();
   }, []);
 
   return (
@@ -65,24 +136,65 @@ function Index({ routinesList, nextToken, errors, }: { routinesList: any; nextTo
       <main>
         <Hero />
         <Container className={classes.cardGrid} maxWidth="md">
-          <Grid container spacing={4}>
-            {routines.map((routine) => (
-              <Grid item key={routine.id} xs={12} sm={6} md={4}>
-                <RoutineCard routine={routine} />
-              </Grid>
-            ))}
+          <Divider style={{ width: '100%', marginBottom: '16px' }} />
+
+          <Grid container alignItems="center" justify="center" style={{ marginBottom: '16px' }}>
+            <Grid item xs={12}>
+              <Tabs className={classes.root}
+                value={tabValue}
+                onChange={handleTabChange}
+                indicatorColor="primary"
+                textColor="primary"
+                centered
+              >
+                <Tab label="Recommended" />
+                <Tab label="User Made" />
+              </Tabs>
+            </Grid>
           </Grid>
-          <Grid container direction="row" alignItems="center" justify="center" style={{ marginTop: '32px' }}>
-            {
-              stateToken &&
-              <Button variant="outlined" color="primary" onClick={() => updateRoutinesState()}>
-                Load More
-            </Button>
-            }
-          </Grid>
+          {
+            tabValue == 0 ?
+              <React.Fragment>
+                {/* Recommended Routines */}
+                < Grid container spacing={4}>
+                  {routinesRecommended.map((routine) => (
+                    <Grid item key={routine.id} xs={12} sm={6} md={4}>
+                      <RoutineCard routine={routine} />
+                    </Grid>
+                  ))}
+                </Grid>
+                <Grid container direction="row" alignItems="center" justify="center" style={{ marginTop: '32px' }}>
+                  {
+                    stateTokenRecommended &&
+                    <Button variant="outlined" color="primary" onClick={() => updateRoutinesStateRecommended()}>
+                      Load More
+                    </Button>
+                  }
+                </Grid>
+              </React.Fragment>
+              :
+              <React.Fragment>
+                {/* User Made Routines */}
+                <Grid container spacing={4}>
+                  {routinesUserMade.map((routine) => (
+                    <Grid item key={routine.id} xs={12} sm={6} md={4}>
+                      <RoutineCard routine={routine} />
+                    </Grid>
+                  ))}
+                </Grid>
+                <Grid container direction="row" alignItems="center" justify="center" style={{ marginTop: '32px' }}>
+                  {
+                    stateTokenUserMade &&
+                    <Button variant="outlined" color="primary" onClick={() => updateRoutinesStateUserMade()}>
+                      Load More
+                    </Button>
+                  }
+                </Grid>
+              </React.Fragment>
+          }
         </Container>
       </main>
-    </React.Fragment>
+    </React.Fragment >
   );
 }
 
@@ -91,6 +203,9 @@ export const getServerSideProps: GetServerSideProps = async () => {
     {
       query: listRoutines,
       variables: {
+        filter: {
+          userMade: { eq: "false" }
+        },
         limit: 12,
       }
     })

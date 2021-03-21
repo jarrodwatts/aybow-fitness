@@ -2,6 +2,42 @@
 /* eslint-disable */
 //  This file was automatically generated and should not be edited.
 
+export type User = {
+  __typename: "User",
+  id?: string,
+  username?: string,
+  email?: string,
+  savedRoutines?: Array< string | null > | null,
+  createdAt?: string,
+  updatedAt?: string,
+  savedWeights?: ModelRecordedExerciseWithWeightConnection,
+};
+
+export type ModelRecordedExerciseWithWeightConnection = {
+  __typename: "ModelRecordedExerciseWithWeightConnection",
+  items?:  Array<RecordedExerciseWithWeight | null > | null,
+  nextToken?: string | null,
+};
+
+export type RecordedExerciseWithWeight = {
+  __typename: "RecordedExerciseWithWeight",
+  id?: string,
+  ownerID?: string,
+  exercise?: Exercise,
+  weight?: string,
+  createdAt?: string | null,
+  updatedAt?: string,
+  username?: string | null,
+};
+
+export type Exercise = {
+  __typename: "Exercise",
+  name?: string,
+  description?: string | null,
+  reps?: string,
+  sets?: string,
+};
+
 export type CreateUserInput = {
   id?: string | null,
   username: string,
@@ -73,42 +109,6 @@ export type ModelIDInput = {
   size?: ModelSizeInput | null,
 };
 
-export type User = {
-  __typename: "User",
-  id?: string,
-  username?: string,
-  email?: string,
-  savedRoutines?: Array< string | null > | null,
-  createdAt?: string,
-  updatedAt?: string,
-  savedWeights?: ModelRecordedExerciseWithWeightConnection,
-};
-
-export type ModelRecordedExerciseWithWeightConnection = {
-  __typename: "ModelRecordedExerciseWithWeightConnection",
-  items?:  Array<RecordedExerciseWithWeight | null > | null,
-  nextToken?: string | null,
-};
-
-export type RecordedExerciseWithWeight = {
-  __typename: "RecordedExerciseWithWeight",
-  id?: string,
-  ownerID?: string,
-  exercise?: Exercise,
-  weight?: string,
-  createdAt?: string | null,
-  updatedAt?: string,
-  username?: string | null,
-};
-
-export type Exercise = {
-  __typename: "Exercise",
-  name?: string,
-  description?: string | null,
-  reps?: string,
-  sets?: string,
-};
-
 export type UpdateUserInput = {
   id: string,
   username?: string | null,
@@ -126,6 +126,7 @@ export type CreateRoutineInput = {
   description?: string | null,
   days: Array< DayInput | null >,
   owner: string,
+  userMade?: string | null,
 };
 
 export type DayInput = {
@@ -144,6 +145,7 @@ export type ExerciseInput = {
 export type ModelRoutineConditionInput = {
   name?: ModelStringInput | null,
   description?: ModelStringInput | null,
+  userMade?: ModelStringInput | null,
   and?: Array< ModelRoutineConditionInput | null > | null,
   or?: Array< ModelRoutineConditionInput | null > | null,
   not?: ModelRoutineConditionInput | null,
@@ -156,6 +158,7 @@ export type Routine = {
   description?: string | null,
   days?:  Array<Day | null >,
   owner?: string,
+  userMade?: string | null,
   createdAt?: string,
   updatedAt?: string,
 };
@@ -173,6 +176,7 @@ export type UpdateRoutineInput = {
   description?: string | null,
   days?: Array< DayInput | null > | null,
   owner?: string | null,
+  userMade?: string | null,
 };
 
 export type DeleteRoutineInput = {
@@ -229,6 +233,7 @@ export type ModelRoutineFilterInput = {
   name?: ModelStringInput | null,
   description?: ModelStringInput | null,
   owner?: ModelStringInput | null,
+  userMade?: ModelStringInput | null,
   and?: Array< ModelRoutineFilterInput | null > | null,
   or?: Array< ModelRoutineFilterInput | null > | null,
   not?: ModelRoutineFilterInput | null,
@@ -248,6 +253,32 @@ export type ModelRecordedExerciseWithWeightFilterInput = {
   and?: Array< ModelRecordedExerciseWithWeightFilterInput | null > | null,
   or?: Array< ModelRecordedExerciseWithWeightFilterInput | null > | null,
   not?: ModelRecordedExerciseWithWeightFilterInput | null,
+};
+
+export type GetUserSavedWeightsSortByDateQueryVariables = {
+  id?: string,
+};
+
+export type GetUserSavedWeightsSortByDateQuery = {
+  getUser?:  {
+    __typename: "User",
+    savedWeights?:  {
+      __typename: "ModelRecordedExerciseWithWeightConnection",
+      items?:  Array< {
+        __typename: "RecordedExerciseWithWeight",
+        id: string,
+        createdAt?: string | null,
+        exercise:  {
+          __typename: "Exercise",
+          name: string,
+          description?: string | null,
+          reps: string,
+          sets: string,
+        },
+        weight: string,
+      } | null > | null,
+    } | null,
+  } | null,
 };
 
 export type CreateUserMutationVariables = {
@@ -385,6 +416,7 @@ export type CreateRoutineMutation = {
       } | null > | null,
     } | null >,
     owner: string,
+    userMade?: string | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -414,6 +446,7 @@ export type UpdateRoutineMutation = {
       } | null > | null,
     } | null >,
     owner: string,
+    userMade?: string | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -443,6 +476,7 @@ export type DeleteRoutineMutation = {
       } | null > | null,
     } | null >,
     owner: string,
+    userMade?: string | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -621,6 +655,7 @@ export type GetRoutineQuery = {
       } | null > | null,
     } | null >,
     owner: string,
+    userMade?: string | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -653,6 +688,7 @@ export type ListRoutinesQuery = {
         } | null > | null,
       } | null >,
       owner: string,
+      userMade?: string | null,
       createdAt: string,
       updatedAt: string,
     } | null > | null,
@@ -827,6 +863,7 @@ export type OnCreateRoutineSubscription = {
       } | null > | null,
     } | null >,
     owner: string,
+    userMade?: string | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -851,6 +888,7 @@ export type OnUpdateRoutineSubscription = {
       } | null > | null,
     } | null >,
     owner: string,
+    userMade?: string | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -875,6 +913,7 @@ export type OnDeleteRoutineSubscription = {
       } | null > | null,
     } | null >,
     owner: string,
+    userMade?: string | null,
     createdAt: string,
     updatedAt: string,
   } | null,

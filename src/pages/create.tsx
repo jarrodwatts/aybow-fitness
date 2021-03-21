@@ -87,6 +87,7 @@ const Create = () => {
       name: routine.name,
       description: routine.description,
       days: days,
+      userMade: "true",
     };
 
     try {
@@ -97,7 +98,7 @@ const Create = () => {
       });
       await router.push(`/routine/${id}`);
     } catch (err) {
-      // console.error(err);
+      console.error(err);
     }
   }
 

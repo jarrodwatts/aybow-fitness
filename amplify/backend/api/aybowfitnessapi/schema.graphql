@@ -28,6 +28,7 @@ type User
 type Routine
   @model
   @key(name: "routinesByOwner", fields: ["owner"])
+  @key(name: "routinesByUserMade", fields: ["userMade"])
   @auth(
     rules: [
       {
@@ -44,6 +45,7 @@ type Routine
   description: String
   days: [Day]!
   owner: String!
+  userMade: String # Has to be string to be a sort key
 }
 
 type Day {

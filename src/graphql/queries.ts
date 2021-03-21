@@ -84,6 +84,7 @@ export const getRoutine = /* GraphQL */ `
         }
       }
       owner
+      userMade
       createdAt
       updatedAt
     }
@@ -111,6 +112,7 @@ export const listRoutines = /* GraphQL */ `
           }
         }
         owner
+        userMade
         createdAt
         updatedAt
       }

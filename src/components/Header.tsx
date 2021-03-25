@@ -81,13 +81,13 @@ export default function MenuAppBar() {
                 variant="contained"
                 color="primary"
                 style={{ marginRight: "8px" }}
-                onClick={() => router.push(`/profile`)}
+                onClick={() => router.push(`/signup`)}
               >
                 Sign Up
               </Button>
               <Button
                 variant="contained"
-                onClick={() => router.push(`/profile`)}
+                onClick={() => router.push(`/signin`)}
               >
                 Sign In
               </Button>

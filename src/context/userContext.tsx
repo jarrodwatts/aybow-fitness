@@ -57,7 +57,7 @@ export default function UserContextComp({ children }: { children: any }): any {
 
   return (
     <UserContext.Provider
-      value={{ user, userAttributes, setUser, setUserAttributes, loadingUser }}
+      value={{ user, userAttributes, setUser, setUserAttributes, loadingUser, authState }}
     >
       {children}
     </UserContext.Provider>

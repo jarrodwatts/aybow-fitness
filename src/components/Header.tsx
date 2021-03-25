@@ -50,7 +50,7 @@ export default function MenuAppBar() {
     await Auth.signOut();
     setUser(null);
     setUserAttributes(null);
-    router.push(`/`);
+    // router.push(`/`);
   };
 
   useEffect(() => {

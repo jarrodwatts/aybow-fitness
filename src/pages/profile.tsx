@@ -26,6 +26,7 @@ import UseRoutineCard from "../components/UseRoutineCard";
 import { getUserSavedWeightsSortByDate } from "../graphql/custom/customQueries";
 import CompletedExerciseCard from "../components/CompletedExerciseCard";
 import EditRoutineCard from "../components/EditRoutineCard";
+import SignIn from "./signin";
 
 Amplify.configure(awsconfig);
 
@@ -44,8 +45,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Profile() {
-  const { user, userAttributes } = useUser();
+function Profile(): any {
+  const { user, userAttributes, loadingUser } = useUser();
   const [savedRoutines, setSavedRoutines] = useState<Array<Routine>>([]);
   const [createdRoutines, setCreatedRoutines] = useState<Array<Routine>>([]);
   const [savedWeights, setSavedWeights] = useState<Array<RecordedExerciseWithWeight>>([]);
@@ -180,110 +181,120 @@ function Profile() {
     }
   }, [userAttributes]);
 
-  if (!user) {
-    return null;
+
+  if (loadingUser) {
+    return (
+      // TODO: Loading Screen
+      <div>Loading...</div>
+    )
   }
 
-  return (
-    <Container maxWidth="sm">
-      <Grid
-        container
-        alignItems="center"
-        justify="center"
-        style={{ marginTop: "64px" }}
-        spacing={3}
-      >
-        <Grid item>
-          <Avatar></Avatar>
-        </Grid>
-        <Grid item>
-          <Typography component="h1" variant="h3">
-            {user.getUsername()}
-          </Typography>
-        </Grid>
+  if (!user && !loadingUser) {
+    return <SignIn />
+  }
 
-        <Tabs className={classes.root}
-          value={tabValue}
-          onChange={handleChange}
-          indicatorColor="primary"
-          textColor="primary"
-          centered
+  else {
+    return (
+      <Container maxWidth="sm">
+        <Grid
+          container
+          alignItems="center"
+          justify="center"
+          style={{ marginTop: "64px" }}
+          spacing={3}
         >
-          <Tab label="My Routines" />
-          <Tab label="My Exercises" />
-        </Tabs>
+          <Grid item>
+            <Avatar></Avatar>
+          </Grid>
+          <Grid item>
+            <Typography component="h1" variant="h3">
+              {user.getUsername()}
+            </Typography>
+          </Grid>
 
-        <Divider
-          style={{ width: "100%", marginTop: "16px", marginBottom: "16px" }}
-        />
+          <Tabs className={classes.root}
+            value={tabValue}
+            onChange={handleChange}
+            indicatorColor="primary"
+            textColor="primary"
+            centered
+          >
+            <Tab label="My Routines" />
+            <Tab label="My Exercises" />
+          </Tabs>
 
-        {
-          tabValue === 0 ?
-            // Saved Routines and Created Routines
-            savedRoutines.length === 0 && createdRoutines.length === 0 ? (
-              <NoRoutinesAvailable />
-            ) : (
-              <React.Fragment>
-                {savedRoutines.length == 0 ? null : (
-                  <React.Fragment>
-                    <Grid item xs={12}>
-                      <Typography component="h2" variant="h4">
-                        Your Saved Routines
+          <Divider
+            style={{ width: "100%", marginTop: "16px", marginBottom: "16px" }}
+          />
+
+          {
+            tabValue === 0 ?
+              // Saved Routines and Created Routines
+              savedRoutines.length === 0 && createdRoutines.length === 0 ? (
+                <NoRoutinesAvailable />
+              ) : (
+                <React.Fragment>
+                  {savedRoutines.length == 0 ? null : (
+                    <React.Fragment>
+                      <Grid item xs={12}>
+                        <Typography component="h2" variant="h4">
+                          Your Saved Routines
                       </Typography>
-                    </Grid>
-                    {savedRoutines.map((routine, key) => (
-                      <React.Fragment key={key}>
-                        <UseRoutineCard routine={routine} />
-                      </React.Fragment>
-                    ))}
+                      </Grid>
+                      {savedRoutines.map((routine, key) => (
+                        <React.Fragment key={key}>
+                          <UseRoutineCard routine={routine} />
+                        </React.Fragment>
+                      ))}
 
-                    <Divider
-                      style={{
-                        width: "100%",
-                        marginTop: "16px",
-                        marginBottom: "16px",
-                      }}
-                    />
-                  </React.Fragment>
-                )}
+                      <Divider
+                        style={{
+                          width: "100%",
+                          marginTop: "16px",
+                          marginBottom: "16px",
+                        }}
+                      />
+                    </React.Fragment>
+                  )}
 
-                {createdRoutines.length == 0 ? null : (
-                  <React.Fragment>
-                    <Grid item xs={12}>
-                      <Typography component="h2" variant="h4">
-                        Your Created Routines
+                  {createdRoutines.length == 0 ? null : (
+                    <React.Fragment>
+                      <Grid item xs={12}>
+                        <Typography component="h2" variant="h4">
+                          Your Created Routines
                   </Typography>
-                    </Grid>
-                    {createdRoutines.map((routine, key) => (
-                      <React.Fragment key={key}>
-                        <EditRoutineCard routine={routine} />
-                      </React.Fragment>
-                    ))}
-                  </React.Fragment>
-                )}
-              </React.Fragment>
-            )
-            :
-            // Past Exercises
-            <React.Fragment>
-              <Grid item xs={12} style={{ textAlign: 'left' }}>
-                <Typography component="h2" variant="h4">
-                  Your Saved Exercises
+                      </Grid>
+                      {createdRoutines.map((routine, key) => (
+                        <React.Fragment key={key}>
+                          <EditRoutineCard routine={routine} />
+                        </React.Fragment>
+                      ))}
+                    </React.Fragment>
+                  )}
+                </React.Fragment>
+              )
+              :
+              // Past Exercises
+              <React.Fragment>
+                <Grid item xs={12} style={{ textAlign: 'left' }}>
+                  <Typography component="h2" variant="h4">
+                    Your Saved Exercises
               </Typography>
-              </Grid>
-              {
-                savedWeights.map((weight) => (
-                  <Grid item xs={12} key={weight.id}>
-                    <CompletedExerciseCard
-                      weightEntry={weight}
-                    />
-                  </Grid>
-                ))}
-            </React.Fragment>
-        }
-      </Grid>
-    </Container>
-  );
+                </Grid>
+                {
+                  savedWeights.map((weight) => (
+                    <Grid item xs={12} key={weight.id}>
+                      <CompletedExerciseCard
+                        weightEntry={weight}
+                      />
+                    </Grid>
+                  ))}
+              </React.Fragment>
+          }
+        </Grid>
+      </Container>
+    );
+  }
 }
 
 export default Profile;

@@ -1,20 +1,15 @@
 import React from "react";
 import {
-  Container,
-  Avatar,
   Grid,
   Typography,
-  Divider,
   Button,
-  Paper,
 } from "@material-ui/core";
 import { useRouter } from "next/router";
 
-const NoRoutinesAvailable = () => {
+const NoRoutinesAvailable = (): any => {
   const router = useRouter();
   return (
-    <Paper
-      elevation={3}
+    <div
       style={{
         minHeight: "320px",
         padding: "32px",
@@ -27,7 +22,7 @@ const NoRoutinesAvailable = () => {
       <Grid container justify="center" alignItems="center" spacing={3}>
         <Grid item>
           <Typography component="h3" variant="h4">
-            Looks like you haven't <b>saved</b> or <b>created</b> any routines
+            Looks like you haven&apos;t <b>saved</b> or <b>created</b> any routines
             yet.
           </Typography>
         </Grid>
@@ -58,7 +53,7 @@ const NoRoutinesAvailable = () => {
           </Grid>
         </Grid>
       </Grid>
-    </Paper>
+    </div>
   );
 };
 

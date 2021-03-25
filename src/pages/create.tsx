@@ -3,7 +3,6 @@ import { API } from "aws-amplify";
 import { v4 as uuid } from "uuid";
 import { useRouter } from "next/router";
 import { createRoutine } from "../graphql/mutations";
-import { withAuthenticator } from "@aws-amplify/ui-react";
 import { GRAPHQL_AUTH_MODE } from "@aws-amplify/api";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
@@ -31,6 +30,7 @@ import changeDays from "../lib/createHelpers/changeDays";
 import reorderExerciseList from "../lib/createHelpers/reorderExerciseList";
 import removeFromDay from "../lib/createHelpers/removeFromDay";
 import addToDay from "../lib/createHelpers/addToDay";
+import SignIn from './signin'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -75,7 +75,7 @@ const Create = () => {
   const [exCap] = useState<number>(20);
   const router = useRouter();
   const classes = useStyles();
-  const { user } = useUser();
+  const { user, loadingUser } = useUser();
 
   async function createNewRoutine(event) {
     // Perform some form validation
@@ -223,165 +223,179 @@ const Create = () => {
     setDays([...newDays]);
   };
 
-  return (
-    <Container component="main" maxWidth="md">
-      <CssBaseline />
-      <DragDropContext onDragEnd={onDragEnd}>
-        <div className={classes.paper}>
-          <Avatar className={classes.avatar}>🏋🏾</Avatar>
-          <Typography component="h1" variant="h5">
-            Create A Routine
-          </Typography>
+  if (loadingUser) {
+    return (
+      // TODO: Loading Screen
+      <div>Loading...</div>
+    )
+  }
 
-          <form className={classes.form}>
-            <Grid container spacing={5} >
-              <Grid item xs={12} sm={8}>
-                <Grid
-                  container
-                  spacing={2}
-                  alignItems="center"
-                  justify="center"
-                >
-                  <Grid item xs={12}>
-                    <TextField
-                      name="routineName"
-                      variant="outlined"
-                      required
-                      fullWidth
-                      id="routineName"
-                      label="Routine Name"
-                      autoFocus
-                      onChange={(e) =>
-                        setRoutine({ ...routine, name: e.target.value })
-                      }
-                    />
-                  </Grid>
+  if (!loadingUser && user) {
+    return (
+      <Container component="main" maxWidth="md">
+        <CssBaseline />
+        <DragDropContext onDragEnd={onDragEnd}>
+          <div className={classes.paper}>
+            <Avatar className={classes.avatar}>🏋🏾</Avatar>
+            <Typography component="h1" variant="h5">
+              Create A Routine
+            </Typography>
 
-                  <Grid item xs={12}>
-                    <TextField
-                      name="routineDescription"
-                      variant="outlined"
-                      required
-                      fullWidth
-                      id="routineDescription"
-                      label="Routine Description"
-                      multiline
-                      onChange={(e) =>
-                        setRoutine({ ...routine, description: e.target.value })
-                      }
-                    />
-                  </Grid>
-
-                  <Divider style={{ width: "100%", marginTop: "12px" }} />
-
-                  {days.map((day, key) => (
-                    <Grid item xs={12} key={key}>
-                      <DayEditableContainer
-                        day={day}
-                        changeDayName={changeDayName}
-                        changeSetOrRepsValue={changeSetOrRepsValue}
-                        removeDay={removeDay}
-                        keyProp={key}
+            <form className={classes.form}>
+              <Grid container spacing={5} >
+                <Grid item xs={12} sm={8}>
+                  <Grid
+                    container
+                    spacing={2}
+                    alignItems="center"
+                    justify="center"
+                  >
+                    <Grid item xs={12}>
+                      <TextField
+                        name="routineName"
+                        variant="outlined"
+                        required
+                        fullWidth
+                        id="routineName"
+                        label="Routine Name"
+                        autoFocus
+                        onChange={(e) =>
+                          setRoutine({ ...routine, name: e.target.value })
+                        }
                       />
                     </Grid>
-                  ))}
 
-                  {days.length < 7 && (
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      size="small"
-                      className={classes.button}
-                      startIcon={<AddCircle />}
-                      onClick={addDay}
-                    >
-                      Add A Day
-                    </Button>
-                  )}
-                </Grid>
-              </Grid>
-
-              <Grid
-                container
-                item
-                xs={12}
-                sm={4}
-                spacing={1}>
-                <Grid item xs={12}>
-                  <div style={{
-                    position: "sticky",
-                    top: "128px",
-                  }}>
-                    <Divider style={{ width: "100%" }} />
                     <Grid item xs={12}>
-                      <Typography variant="h6">Exercise List</Typography>
+                      <TextField
+                        name="routineDescription"
+                        variant="outlined"
+                        required
+                        fullWidth
+                        id="routineDescription"
+                        label="Routine Description"
+                        multiline
+                        onChange={(e) =>
+                          setRoutine({ ...routine, description: e.target.value })
+                        }
+                      />
                     </Grid>
 
-                    <Grid item xs={12} style={{ marginBottom: "8px" }}>
-                      <Paper className={classes.root}>
-                        <InputBase
-                          className={classes.input}
-                          placeholder="Search for an exercise"
-                          inputProps={{ "aria-label": "search for an exercise" }}
-                          onChange={(event) =>
-                            handleSearchChange(event.target.value)
-                          }
+                    <Divider style={{ width: "100%", marginTop: "12px" }} />
+
+                    {days.map((day, key) => (
+                      <Grid item xs={12} key={key}>
+                        <DayEditableContainer
+                          day={day}
+                          changeDayName={changeDayName}
+                          changeSetOrRepsValue={changeSetOrRepsValue}
+                          removeDay={removeDay}
+                          keyProp={key}
                         />
-                        <IconButton>
-                          <SearchIcon />
-                        </IconButton>
-                      </Paper>
-                    </Grid>
+                      </Grid>
+                    ))}
 
-                    {/* Begin List exercises */}
-                    <Droppable droppableId="exerciseList">
-                      {(provided) => (
-                        <Grid
-                          {...provided.droppableProps}
-                          ref={provided.innerRef}
-                          item
-                          xs={12}
-                          style={{
-                            height: "480px",
-                            overflowY: "scroll",
-                            overflowX: "hidden",
-                            whiteSpace: "nowrap",
-                          }}
-                        >
-                          {filteredExercises.slice(0, exCap).map((exerc, key) => (
-                            <ExerciseInExerciseListDraggable
-                              exerc={exerc}
-                              key={key}
-                              keyProp={key}
-                            />
-                          ))}
-                          {provided.placeholder}
-                        </Grid>
-                      )}
-                    </Droppable>
-
-                    <Divider style={{ width: "100%" }} />
-                  </div>
+                    {days.length < 7 && (
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        size="small"
+                        className={classes.button}
+                        startIcon={<AddCircle />}
+                        onClick={addDay}
+                      >
+                        Add A Day
+                      </Button>
+                    )}
+                  </Grid>
                 </Grid>
 
-              </Grid>
-            </Grid>
+                <Grid
+                  container
+                  item
+                  xs={12}
+                  sm={4}
+                  spacing={1}>
+                  <Grid item xs={12}>
+                    <div style={{
+                      position: "sticky",
+                      top: "128px",
+                    }}>
+                      <Divider style={{ width: "100%" }} />
+                      <Grid item xs={12}>
+                        <Typography variant="h6">Exercise List</Typography>
+                      </Grid>
 
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              className={classes.submit}
-              onClick={(e) => createNewRoutine(e)}
-            >
-              Create Routine
+                      <Grid item xs={12} style={{ marginBottom: "8px" }}>
+                        <Paper className={classes.root}>
+                          <InputBase
+                            className={classes.input}
+                            placeholder="Search for an exercise"
+                            inputProps={{ "aria-label": "search for an exercise" }}
+                            onChange={(event) =>
+                              handleSearchChange(event.target.value)
+                            }
+                          />
+                          <IconButton>
+                            <SearchIcon />
+                          </IconButton>
+                        </Paper>
+                      </Grid>
+
+                      {/* Begin List exercises */}
+                      <Droppable droppableId="exerciseList">
+                        {(provided) => (
+                          <Grid
+                            {...provided.droppableProps}
+                            ref={provided.innerRef}
+                            item
+                            xs={12}
+                            style={{
+                              height: "480px",
+                              overflowY: "scroll",
+                              overflowX: "hidden",
+                              whiteSpace: "nowrap",
+                            }}
+                          >
+                            {filteredExercises.slice(0, exCap).map((exerc, key) => (
+                              <ExerciseInExerciseListDraggable
+                                exerc={exerc}
+                                key={key}
+                                keyProp={key}
+                              />
+                            ))}
+                            {provided.placeholder}
+                          </Grid>
+                        )}
+                      </Droppable>
+
+                      <Divider style={{ width: "100%" }} />
+                    </div>
+                  </Grid>
+
+                </Grid>
+              </Grid>
+
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                className={classes.submit}
+                onClick={(e) => createNewRoutine(e)}
+              >
+                Create Routine
             </Button>
-          </form>
-        </div>
-      </DragDropContext>
-    </Container>
-  );
+            </form>
+          </div>
+        </DragDropContext>
+      </Container>
+    );
+  }
+  else {
+    return (
+      <SignIn />
+    )
+  }
 };
 
-export default withAuthenticator(Create);
+export default Create;

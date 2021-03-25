@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import { API, graphqlOperation } from "aws-amplify";
-import { v4 as uuid } from "uuid";
 import { useRouter } from "next/router";
 import { updateRoutine } from "../../graphql/mutations";
-import { withAuthenticator } from "@aws-amplify/ui-react";
 import { GRAPHQL_AUTH_MODE } from "@aws-amplify/api";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
@@ -33,6 +31,7 @@ import removeFromDay from "../../lib/createHelpers/removeFromDay";
 import addToDay from "../../lib/createHelpers/addToDay";
 import { GetServerSideProps } from "next";
 import { getRoutine } from "../../graphql/queries";
+import SignIn from "../signin";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -396,18 +395,12 @@ const Edit = (props: {
         );
     }
     else {
-        // TODO: This is awful
         return (
-            <div style={{ height: '100vh', width: '100vw', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', padding: '16px' }}>
-                <Typography variant="h1" style={{ marginBottom: '32px' }}>😭 Uh Oh. 😭</Typography>
-                <Typography variant="h5" style={{ marginBottom: '16px' }}>Looks like you aren't the owner of this routine.</Typography>
-                <Typography variant="h5" color="textSecondary">Did you remember to sign in?</Typography>
-            </div>
+            <SignIn />
         )
     }
 };
 
-// export default withAuthenticator(Edit);
 export default Edit;
 
 export const getServerSideProps: GetServerSideProps = async ({

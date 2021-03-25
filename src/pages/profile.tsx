@@ -287,4 +287,4 @@ function Profile() {
   );
 }
 
-export default withAuthenticator(Profile);
+export default Profile;

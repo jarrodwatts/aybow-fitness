@@ -1,4 +1,3 @@
-import { withAuthenticator } from "@aws-amplify/ui-react";
 import React, { useState, useEffect } from "react";
 import { useUser } from "../context/userContext";
 import { makeStyles } from "@material-ui/core/styles";

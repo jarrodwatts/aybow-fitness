@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function SignUp(): any {
+export default function SignIn(): any {
     const classes = useStyles();
     const { register, errors, handleSubmit } = useForm<SignInInput>();
     const router = useRouter();
@@ -52,7 +52,11 @@ export default function SignUp(): any {
             setUser(authData as CognitoUser);
             const { attributes } = await Auth.currentAuthenticatedUser();
             setUserAttributes(attributes);
-            router.push(`/profile`)
+
+            // If current page is signup or signin
+            if (router.pathname === "signin" || router.pathname === "signup") {
+                router.push(`/profile`)
+            }
         } catch (err) {
             console.error(err)
             setAmplifySignupError(err?.message)
@@ -136,7 +140,7 @@ export default function SignUp(): any {
                         <Grid item>
                             <Link href="/signup" variant="body2">
                                 Don&apos;t have an account? Sign Up!
-                                </Link>
+                            </Link>
                         </Grid>
                     </Grid>
                 </form>

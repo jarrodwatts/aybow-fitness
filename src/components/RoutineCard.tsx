@@ -6,8 +6,8 @@ import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import Link from "next/link";
 import { useRouter } from "next/router";
+import { Routine } from "../API";
 
 const useStyles = makeStyles(() => ({
   card: {
@@ -23,7 +23,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const RoutineCard = ({ routine }) => {
+const RoutineCard = ({ routine }: { routine: Routine }): any => {
   const classes = useStyles();
   const router = useRouter();
   return (

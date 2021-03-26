@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { API } from "aws-amplify";
 import { listRoutines } from "../graphql/queries";
-import { GetServerSideProps } from "next";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
@@ -23,11 +22,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Index({ routinesList, nextToken, errors, }: { routinesList: any; nextToken: string | null, errors: any[]; }): any {
-  const [routinesRecommended, setRoutinesRecommended] = useState<Array<Routine>>(routinesList);
-  const [stateTokenRecommended, setNextTokenRecommended] = useState<string>(nextToken);
-  const [routinesUserMade, setRoutinesUserMade] = useState<Array<Routine>>(routinesList);
-  const [stateTokenUserMade, setNextTokenUserMade] = useState<string>(nextToken);
+function Index(): any {
+  const [routinesRecommended, setRoutinesRecommended] = useState<Array<Routine>>([]);
+  const [stateTokenRecommended, setNextTokenRecommended] = useState<string>();
+  const [routinesUserMade, setRoutinesUserMade] = useState<Array<Routine>>([]);
+  const [stateTokenUserMade, setNextTokenUserMade] = useState<string>();
 
   const classes = useStyles();
   const [tabValue, setTabValue] = useState(0);
@@ -37,6 +36,28 @@ function Index({ routinesList, nextToken, errors, }: { routinesList: any; nextTo
   };
 
   // Recommended
+  const fetchInitialRecommendedRoutines = async (): Promise<void> => {
+    const result = (await API.graphql(
+      {
+        query: listRoutines,
+        variables: {
+          filter: {
+            userMade: { eq: "false" }
+          },
+          limit: 12,
+        }
+      })
+    ) as {
+      data: ListRoutinesQuery;
+      errors: any[];
+    };
+
+    if (!result.errors) {
+      setRoutinesRecommended(result.data.listRoutines.items);
+      setNextTokenRecommended(result.data.listRoutines.nextToken);
+    }
+  }
+
   const updateRoutinesStateRecommended = async (): Promise<void> => {
     const newRoutines = await loadMoreRoutinesRecommended()
     setRoutinesRecommended([...routinesRecommended, ...newRoutines.moreRoutines])
@@ -126,7 +147,7 @@ function Index({ routinesList, nextToken, errors, }: { routinesList: any; nextTo
   }
 
   useEffect(() => {
-    setRoutinesRecommended(routinesList);
+    fetchInitialRecommendedRoutines();
     fetchInitialUserMadeRoutines();
   }, []);
 
@@ -197,40 +218,5 @@ function Index({ routinesList, nextToken, errors, }: { routinesList: any; nextTo
     </React.Fragment >
   );
 }
-
-export const getServerSideProps: GetServerSideProps = async () => {
-  const result = (await API.graphql(
-    {
-      query: listRoutines,
-      variables: {
-        filter: {
-          userMade: { eq: "false" }
-        },
-        limit: 12,
-      }
-    })
-  ) as {
-    data: ListRoutinesQuery;
-    errors: any[];
-  };
-
-  if (!result.errors) {
-    return {
-      props: {
-        routinesList: result.data.listRoutines.items as Array<Routine>,
-        nextToken: result.data.listRoutines.nextToken,
-        errors: [],
-      },
-    };
-  }
-
-  return {
-    props: {
-      routinesList: [],
-      nextToken: null,
-      errors: result.errors,
-    },
-  };
-};
 
 export default Index;

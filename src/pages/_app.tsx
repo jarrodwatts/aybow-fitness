@@ -21,11 +21,31 @@ export default function MyApp(props) {
   return (
     <UserProvider>
       <Head>
-        <title>Aybow Fitness</title>
+        <meta charSet="utf-8" />
+        <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta
           name="viewport"
-          content="minimum-scale=1, initial-scale=1, width=device-width"
+          content="minimum-scale=1, initial-scale=1, width=device-width" />
+        <meta name="description" content="Workout Routine creation and gym progress tracking tool" />
+        <meta name="keywords" content="Workout Routines, Gym, Fitness, Progress Logger," />
+        <meta name="author" content="Jarrod Watts" />
+        <title>Aybow Fitness</title>
+
+        <link rel="manifest" href="/manifest.json" />
+        <link
+          href="/icons/icon-16x16.png"
+          rel="icon"
+          type="image/png"
+          sizes="16x16"
         />
+        <link
+          href="/icons/icon-32x32.png"
+          rel="icon"
+          type="image/png"
+          sizes="32x32"
+        />
+        <link rel="apple-touch-icon" href="/apple-icon.png"></link>
+        <meta name="theme-color" content="#317EFB" />
       </Head>
       <ThemeProvider theme={theme}>
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}

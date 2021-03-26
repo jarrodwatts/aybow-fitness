@@ -64,19 +64,20 @@ function Index(): any {
   }
 
   const loadMoreRoutinesRecommended = async (): Promise<RoutinesWithNextToken> => {
-    const result = (await API.graphql({
-      query: listRoutines,
-      variables: {
-        filter: {
-          userMade: { eq: "true" }
-        },
-        limit: 12,
-        nextToken: stateTokenRecommended
-      }
-    })) as {
-      data: ListRoutinesQuery;
-      errors: any[];
-    };
+    const result = (
+      await API.graphql({
+        query: listRoutines,
+        variables: {
+          filter: {
+            userMade: { eq: "true" }
+          },
+          limit: 12,
+          nextToken: stateTokenRecommended
+        }
+      })) as {
+        data: ListRoutinesQuery;
+        errors: any[];
+      };
 
     // re calculate token here
     if (result.data.listRoutines.nextToken) {

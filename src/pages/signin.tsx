@@ -48,14 +48,18 @@ export default function SignIn(): any {
     const onSubmit = async (data: SignInInput): Promise<void> => {
         setAmplifySignupError("")
         try {
+            console.log(router.pathname)
             const authData = await Auth.signIn(username, password);
             setUser(authData as CognitoUser);
             const { attributes } = await Auth.currentAuthenticatedUser();
             setUserAttributes(attributes);
 
             // If current page is signup or signin
-            if (router.pathname === "signin" || router.pathname === "signup") {
+            if (router.pathname === "/signin" || router.pathname === "/signup") {
                 router.push(`/profile`)
+            }
+            else {
+                console.log(router.pathname)
             }
         } catch (err) {
             console.error(err)

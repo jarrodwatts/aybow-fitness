@@ -23,6 +23,7 @@ export default function MyApp(props) {
       <Head>
         <meta charSet="utf-8" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width" />

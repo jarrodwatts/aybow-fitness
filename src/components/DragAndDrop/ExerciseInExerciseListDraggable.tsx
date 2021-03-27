@@ -3,6 +3,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import { Paper } from "@material-ui/core";
 import { Draggable } from "react-beautiful-dnd";
+import ExerciseNameBodyPart from "../../types/ExerciseNameBodyPart";
 
 const useStyles = makeStyles((theme) => ({
   exercisePaper: {
@@ -19,7 +20,13 @@ const getItemStyle = (isDragging, draggableStyle) => ({
   ...draggableStyle,
 });
 
-const ExerciseInExerciseListDraggable = ({ exerc, keyProp }) => {
+const ExerciseInExerciseListDraggable = ({
+  exerc,
+  keyProp,
+}: {
+  exerc: ExerciseNameBodyPart;
+  keyProp: any;
+}): any => {
   const classes = useStyles();
   return (
     <Draggable

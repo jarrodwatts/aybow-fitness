@@ -415,7 +415,7 @@ const Edit = (props: { routine: GetRoutineQuery["getRoutine"] }): any => {
                           >
                             {filteredExercises
                               .slice(0, exCap)
-                              .map((exerc, key) => (
+                              .map((exerc: ExerciseNameBodyPart, key) => (
                                 <ExerciseInExerciseListDraggable
                                   exerc={exerc}
                                   key={key}

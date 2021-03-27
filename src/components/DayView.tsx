@@ -2,6 +2,7 @@ import React from "react";
 import { Grid, Paper, Typography, Avatar } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { getBodyPartImage, getBodyPart } from "../lib/bodyPartHelpers";
+import { Day } from "../API";
 
 const useStyles = makeStyles((theme) => ({
   heroImage: {
@@ -27,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const DayView = ({ day, dayKey }) => {
+const DayView = ({ day, dayKey }: { day: Day; dayKey: any }): any => {
   const classes = useStyles();
 
   return (

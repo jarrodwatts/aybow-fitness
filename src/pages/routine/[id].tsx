@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { API, graphqlOperation } from "aws-amplify";
-import { GetRoutineQuery, GetUserQueryVariables } from "../../API";
+import { GetRoutineQuery, GetUserQueryVariables, Routine } from "../../API";
 import { getRoutine, getUser } from "../../graphql/queries";
 import config from "../../aws-exports";
 import { GetServerSideProps } from "next";
@@ -40,10 +40,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const IndividualRoutine = (props: {
-  routine: GetRoutineQuery["getRoutine"];
-}): any => {
-  const { routine } = props;
+const IndividualRoutine = ({ routine }: { routine: Routine }): any => {
   const { userAttributes, user } = useUser();
   const [alreadySaved, setAlreadySaved] = useState<boolean>(false);
   const router = useRouter();
@@ -244,7 +241,7 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   return {
     props: {
-      routine: routine.data.getRoutine,
+      routine: routine.data.getRoutine as Routine,
     },
   };
 };

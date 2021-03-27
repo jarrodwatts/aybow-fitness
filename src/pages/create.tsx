@@ -65,7 +65,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Create = () => {
+const Create = (): any => {
   const [routine, setRoutine] = useState<CreateRoutineInput>();
   const [id] = useState<string>(uuid());
   const [days, setDays] = useState<Array<DayInput>>([]);

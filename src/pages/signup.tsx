@@ -52,7 +52,7 @@ export default function SignUp(): any {
   const [confirmationCode, setConfirmationCode] = useState<string>("");
   const [amplifySignupError, setAmplifySignupError] = useState<string>();
 
-  const onSubmit = async (data: SignUpInput): Promise<void> => {
+  const onSubmit = async (): Promise<void> => {
     setAmplifySignupError("");
     const result = await signUp();
 
@@ -143,7 +143,6 @@ export default function SignUp(): any {
   const resendConfirmationCode = async (): Promise<void> => {
     try {
       await Auth.resendSignUp(username);
-      console.log("code resent successfully");
     } catch (err) {
       console.error("error resending code: ", err);
     }

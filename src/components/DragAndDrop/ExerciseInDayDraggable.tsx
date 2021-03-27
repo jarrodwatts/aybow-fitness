@@ -5,6 +5,7 @@ import Typography from "@material-ui/core/Typography";
 import { Box, Paper } from "@material-ui/core";
 import { Draggable } from "react-beautiful-dnd";
 import { makeStyles } from "@material-ui/core/styles";
+import { ExerciseInput } from "../../API";
 
 const useStyles = makeStyles((theme) => ({
   dayPaper: {
@@ -21,7 +22,20 @@ const ExerciseInDayDraggable = ({
   changeSetOrRepsValue,
   setsVal,
   repsVal,
-}) => {
+}: {
+  exercise: ExerciseInput;
+  exKey: any;
+  dayKey: any;
+  key: any;
+  changeSetOrRepsValue: (
+    field: string,
+    value: string,
+    exerciseIndex: number,
+    dayIndex: number
+  ) => void;
+  setsVal: string;
+  repsVal: string;
+}): any => {
   const classes = useStyles();
 
   const getItemStyle = (isDragging, draggableStyle) => ({

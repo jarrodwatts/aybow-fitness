@@ -30,7 +30,7 @@ import changeDays from "../lib/createHelpers/changeDays";
 import reorderExerciseList from "../lib/createHelpers/reorderExerciseList";
 import removeFromDay from "../lib/createHelpers/removeFromDay";
 import addToDay from "../lib/createHelpers/addToDay";
-import SignIn from './signin'
+import SignIn from "./signin";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -114,7 +114,7 @@ const Create = () => {
   }
 
   async function removeDay(index: number): Promise<void> {
-    setDays(days.filter((day) => days.indexOf(day) != index))
+    setDays(days.filter((day) => days.indexOf(day) != index));
   }
 
   function handleSearchChange(val: string): void {
@@ -227,7 +227,7 @@ const Create = () => {
     return (
       // TODO: Loading Screen
       <div>Loading...</div>
-    )
+    );
   }
 
   if (!loadingUser && user) {
@@ -242,7 +242,7 @@ const Create = () => {
             </Typography>
 
             <form className={classes.form}>
-              <Grid container spacing={5} >
+              <Grid container spacing={5}>
                 <Grid item xs={12} sm={8}>
                   <Grid
                     container
@@ -275,7 +275,10 @@ const Create = () => {
                         label="Routine Description"
                         multiline
                         onChange={(e) =>
-                          setRoutine({ ...routine, description: e.target.value })
+                          setRoutine({
+                            ...routine,
+                            description: e.target.value,
+                          })
                         }
                       />
                     </Grid>
@@ -309,17 +312,14 @@ const Create = () => {
                   </Grid>
                 </Grid>
 
-                <Grid
-                  container
-                  item
-                  xs={12}
-                  sm={4}
-                  spacing={1}>
+                <Grid container item xs={12} sm={4} spacing={1}>
                   <Grid item xs={12}>
-                    <div style={{
-                      position: "sticky",
-                      top: "128px",
-                    }}>
+                    <div
+                      style={{
+                        position: "sticky",
+                        top: "128px",
+                      }}
+                    >
                       <Divider style={{ width: "100%" }} />
                       <Grid item xs={12}>
                         <Typography variant="h6">Exercise List</Typography>
@@ -330,7 +330,9 @@ const Create = () => {
                           <InputBase
                             className={classes.input}
                             placeholder="Search for an exercise"
-                            inputProps={{ "aria-label": "search for an exercise" }}
+                            inputProps={{
+                              "aria-label": "search for an exercise",
+                            }}
                             onChange={(event) =>
                               handleSearchChange(event.target.value)
                             }
@@ -356,13 +358,15 @@ const Create = () => {
                               whiteSpace: "nowrap",
                             }}
                           >
-                            {filteredExercises.slice(0, exCap).map((exerc, key) => (
-                              <ExerciseInExerciseListDraggable
-                                exerc={exerc}
-                                key={key}
-                                keyProp={key}
-                              />
-                            ))}
+                            {filteredExercises
+                              .slice(0, exCap)
+                              .map((exerc, key) => (
+                                <ExerciseInExerciseListDraggable
+                                  exerc={exerc}
+                                  key={key}
+                                  keyProp={key}
+                                />
+                              ))}
                             {provided.placeholder}
                           </Grid>
                         )}
@@ -371,7 +375,6 @@ const Create = () => {
                       <Divider style={{ width: "100%" }} />
                     </div>
                   </Grid>
-
                 </Grid>
               </Grid>
 
@@ -384,17 +387,14 @@ const Create = () => {
                 onClick={(e) => createNewRoutine(e)}
               >
                 Create Routine
-            </Button>
+              </Button>
             </form>
           </div>
         </DragDropContext>
       </Container>
     );
-  }
-  else {
-    return (
-      <SignIn />
-    )
+  } else {
+    return <SignIn />;
   }
 };
 

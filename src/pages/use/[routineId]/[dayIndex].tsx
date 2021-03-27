@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import { API, graphqlOperation } from "aws-amplify";
-import { CreateRecordedExerciseWithWeightInput, Day, ExerciseInput, GetRoutineQuery } from "../../../API";
+import {
+  CreateRecordedExerciseWithWeightInput,
+  Day,
+  ExerciseInput,
+  GetRoutineQuery,
+} from "../../../API";
 import { getRoutine } from "../../../graphql/queries";
 import { GetServerSideProps } from "next";
 import {
@@ -61,14 +66,16 @@ const dayIndex = ({ day }: { day: Day }): any => {
   };
 
   const lookupExByName = (exName: string): ExerciseInput => {
-    const { description, reps, sets } = day.exercises.filter((ex) => ex.name == exName)[0]
+    const { description, reps, sets } = day.exercises.filter(
+      (ex) => ex.name == exName
+    )[0];
     return {
       name: exName,
       description: description,
       reps: reps,
       sets: sets,
-    }
-  }
+    };
+  };
 
   const createWeightForSave = async (exName: string, exWeight: string) => {
     const exerciseInput = lookupExByName(exName);
@@ -77,7 +84,7 @@ const dayIndex = ({ day }: { day: Day }): any => {
       ownerID: userAttributes.sub,
       exercise: exerciseInput,
       weight: exWeight,
-    }
+    };
 
     try {
       await API.graphql({
@@ -85,23 +92,18 @@ const dayIndex = ({ day }: { day: Day }): any => {
         variables: { input: input },
         authMode: GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS,
       });
-
     } catch (err) {
       console.error(err);
     }
-
-  }
+  };
 
   const submitWeights = async () => {
-
-    Object.entries(weightMap).forEach(
-      ([exName, exWeight]) => {
-        if (exWeight != "") {
-          createWeightForSave(exName, exWeight as string)
-        }
+    Object.entries(weightMap).forEach(([exName, exWeight]) => {
+      if (exWeight != "") {
+        createWeightForSave(exName, exWeight as string);
       }
-    );
-    router.push(`/profile`)
+    });
+    router.push(`/profile`);
   };
 
   return (
@@ -114,7 +116,11 @@ const dayIndex = ({ day }: { day: Day }): any => {
         spacing={3}
       >
         <Grid item>
-          <Typography component="h1" variant="h3" style={{ marginBottom: '16px' }}>
+          <Typography
+            component="h1"
+            variant="h3"
+            style={{ marginBottom: "16px" }}
+          >
             {day.name}
           </Typography>
 

@@ -65,7 +65,9 @@ const EditRoutineCard = ({ routine }: { routine: Routine }): any => {
                   variant="contained"
                   color="secondary"
                   onClick={() => router.push(`/edit/${routine.id}`)}
-                >Edit Routine</Button>
+                >
+                  Edit Routine
+                </Button>
               </Grid>
 
               <Grid item>

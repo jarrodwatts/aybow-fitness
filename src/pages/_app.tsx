@@ -26,9 +26,16 @@ export default function MyApp(props) {
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta
           name="viewport"
-          content="minimum-scale=1, initial-scale=1, width=device-width" />
-        <meta name="description" content="Workout Routine creation and gym progress tracking tool" />
-        <meta name="keywords" content="Workout Routines, Gym, Fitness, Progress Logger," />
+          content="minimum-scale=1, initial-scale=1, width=device-width"
+        />
+        <meta
+          name="description"
+          content="Aybow Fitness Is A Workout Routine Creation And Fitness Progress Tracking Tool. Sign Up Today To Start Tracking Your Progress."
+        />
+        <meta
+          name="keywords"
+          content="Workout Routines, Gym, Fitness, Progress Logger,"
+        />
         <meta name="author" content="Jarrod Watts" />
         <title>Aybow Fitness</title>
 

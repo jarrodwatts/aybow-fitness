@@ -8,7 +8,6 @@ import { useRouter } from "next/router";
 
 const useStyles = makeStyles((theme) => ({
   heroContent: {
-    // backgroundColor: theme.palette.background.paper,
     marginTop: "128px",
   },
   heroButtons: {

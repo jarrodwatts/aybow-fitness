@@ -1,9 +1,9 @@
 type SignUpInput = {
-    firstName: string,
-    lastName: string,
-    username: string,
-    email: string,
-    password: string
-}
+  firstName: string;
+  lastName: string;
+  username: string;
+  email: string;
+  password: string;
+};
 
-export default SignUpInput
+export default SignUpInput;

@@ -8,4 +8,3 @@ The inspiration behind Aybow is the frustration and clunkiness I find day-to-day
 
 Please see my blog post hosted on Hashnode describing the process of building Aybow below!
 https://jarrodwatts.hashnode.dev/aybow-fitness-hashnode-hackathon-entry
-

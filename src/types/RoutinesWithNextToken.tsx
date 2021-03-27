@@ -1,8 +1,8 @@
-import { Routine } from "../API"
+import { Routine } from "../API";
 
 type RoutinesWithNextToken = {
-  moreRoutines: Routine[],
-  token: string | null,
-}
+  moreRoutines: Routine[];
+  token: string | null;
+};
 
-export default RoutinesWithNextToken
+export default RoutinesWithNextToken;

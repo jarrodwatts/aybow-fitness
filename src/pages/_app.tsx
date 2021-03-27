@@ -7,7 +7,7 @@ import theme from "../theme";
 import Header from "../components/Header";
 import UserProvider from "../context/userContext";
 
-export default function MyApp(props) {
+export default function MyApp(props: any): any {
   const { Component, pageProps } = props;
 
   useEffect(() => {

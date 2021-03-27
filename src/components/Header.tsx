@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function MenuAppBar() {
+export default function MenuAppBar(): any {
   const classes = useStyles();
   const [auth, setAuth] = useState(null);
   const router = useRouter();

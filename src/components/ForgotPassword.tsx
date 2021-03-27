@@ -53,7 +53,7 @@ const ForgotPassword = ({
   const { register, errors, handleSubmit } = useForm<SignInInput>();
   const [amplifyError, setAmplifyError] = useState<string>();
 
-  const onSubmit = async (data: SignUpInput): Promise<void> => {
+  const onSubmit = async (): Promise<void> => {
     try {
       await Auth.forgotPasswordSubmit(username, recoveryCode, newPassword);
       setUsername(username);

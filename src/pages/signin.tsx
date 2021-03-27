@@ -50,7 +50,7 @@ export default function SignIn(): any {
   const [amplifySignupError, setAmplifySignupError] = useState<string>();
   const [phase, setPhase] = useState<string>("signin");
 
-  const onSubmit = async (data: SignInInput): Promise<void> => {
+  const onSubmit = async (): Promise<void> => {
     setAmplifySignupError("");
     try {
       const authData = await Auth.signIn(username, password);
@@ -72,8 +72,7 @@ export default function SignIn(): any {
   const sendPasswordResetEmail = async () => {
     try {
       // Send confirmation code to user's email
-      const x = await Auth.forgotPassword(username);
-      console.log(x);
+      await Auth.forgotPassword(username);
     } catch (err) {
       console.error(err);
     }

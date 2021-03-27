@@ -30,8 +30,6 @@ const useStyles = makeStyles((theme) => ({
 const DayView = ({ day, dayKey }) => {
   const classes = useStyles();
 
-
-
   return (
     <Paper className={classes.paper}>
       <Grid container alignItems="flex-start">

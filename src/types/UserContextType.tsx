@@ -9,7 +9,7 @@ type UserContextType = {
   setUser: Dispatch<SetStateAction<CognitoUser>>;
   setUserAttributes: Dispatch<any>;
   loadingUser: boolean;
-  authState: AuthState
+  authState: AuthState;
 };
 
 export default UserContextType;

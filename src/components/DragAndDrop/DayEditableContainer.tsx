@@ -7,7 +7,7 @@ import { Droppable } from "react-beautiful-dnd";
 import ExerciseInDayDraggable from "./ExerciseInDayDraggable";
 import { makeStyles } from "@material-ui/core/styles";
 import { DayInput } from "../../API";
-import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
+import RemoveCircleIcon from "@material-ui/icons/RemoveCircle";
 
 const useStyles = makeStyles((theme) => ({
   dayPaper: {
@@ -24,11 +24,16 @@ const DayEditableContainer = ({
   removeDay,
   keyProp,
 }: {
-  day: DayInput,
-  changeDayName: (dayIndex: number, name: string) => void,
-  changeSetOrRepsValue: (field: string, value: string, exerciseIndex: number, dayIndex: number) => void,
-  removeDay: (index: number) => Promise<void>,
-  keyProp: number
+  day: DayInput;
+  changeDayName: (dayIndex: number, name: string) => void;
+  changeSetOrRepsValue: (
+    field: string,
+    value: string,
+    exerciseIndex: number,
+    dayIndex: number
+  ) => void;
+  removeDay: (index: number) => Promise<void>;
+  keyProp: number;
 }): any => {
   const classes = useStyles();
 
@@ -36,7 +41,6 @@ const DayEditableContainer = ({
     <Paper elevation={2} className={classes.dayPaper}>
       <Grid container spacing={3}>
         <Grid container item xs={12} direction="row" alignItems="center">
-
           <Grid item xs={11}>
             <TextField
               name={"day" + keyProp + "Name"}
@@ -53,8 +57,10 @@ const DayEditableContainer = ({
 
           <Grid item xs={1}>
             <Tooltip title="Delete Day" aria-label="delete">
-              <IconButton aria-label="delete"
-                onClick={() => removeDay(keyProp)}>
+              <IconButton
+                aria-label="delete"
+                onClick={() => removeDay(keyProp)}
+              >
                 <RemoveCircleIcon color="error" />
               </IconButton>
             </Tooltip>

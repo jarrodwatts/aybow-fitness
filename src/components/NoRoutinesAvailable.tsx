@@ -1,9 +1,5 @@
 import React from "react";
-import {
-  Grid,
-  Typography,
-  Button,
-} from "@material-ui/core";
+import { Grid, Typography, Button } from "@material-ui/core";
 import { useRouter } from "next/router";
 
 const NoRoutinesAvailable = (): any => {
@@ -22,8 +18,8 @@ const NoRoutinesAvailable = (): any => {
       <Grid container justify="center" alignItems="center" spacing={3}>
         <Grid item>
           <Typography component="h3" variant="h4">
-            Looks like you haven&apos;t <b>saved</b> or <b>created</b> any routines
-            yet.
+            Looks like you haven&apos;t <b>saved</b> or <b>created</b> any
+            routines yet.
           </Typography>
         </Grid>
         <Grid item>

@@ -1,6 +1,6 @@
 type SignInInput = {
-    username: string,
-    password: string
-}
+  username: string;
+  password: string;
+};
 
-export default SignInInput
+export default SignInInput;

@@ -1,7 +1,7 @@
 type SignUpErrorResponse = {
-    code: string,
-    message: string,
-    name: string
-}
+  code: string;
+  message: string;
+  name: string;
+};
 
-export default SignUpErrorResponse
+export default SignUpErrorResponse;

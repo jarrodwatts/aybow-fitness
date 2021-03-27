@@ -49,7 +49,7 @@ export default function CompletedExerciseCard({ weightEntry }: { weightEntry: Re
 
                     <Grid item>
                         <Typography variant="h6" component="p">
-                            <b>{weightEntry.weight}</b> kgs, for <b>{weightEntry.exercise.sets} sets</b> of <b>{weightEntry.exercise.reps} reps</b>.
+                            <b>{weightEntry.weight}</b>, for <b>{weightEntry.exercise.sets} sets</b> of <b>{weightEntry.exercise.reps} reps</b>.
                     </Typography>
                     </Grid>
 

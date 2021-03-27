@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { API, graphqlOperation } from "aws-amplify";
 import { useRouter } from "next/router";
-import { updateRoutine } from "../../graphql/mutations";
+import { deleteRoutine, updateRoutine } from "../../graphql/mutations";
 import { GRAPHQL_AUTH_MODE } from "@aws-amplify/api";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
@@ -11,7 +11,7 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import { CreateRoutineInput, DayInput, GetRoutineQuery } from "../../API";
+import { CreateRoutineInput, DayInput, DeleteRoutineInput, GetRoutineQuery, Routine } from "../../API";
 import { Divider, IconButton, Paper } from "@material-ui/core";
 import { AddCircle } from "@material-ui/icons";
 import exerciseData from "../../lib/exerciseData";
@@ -32,6 +32,7 @@ import addToDay from "../../lib/createHelpers/addToDay";
 import { GetServerSideProps } from "next";
 import { getRoutine } from "../../graphql/queries";
 import SignIn from "../signin";
+import ConfirmDeletePopup from "../../components/ConfirmDeletePopup";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -75,12 +76,13 @@ const Edit = (props: {
         Array<ExerciseNameBodyPart>
     >(exerciseData as Array<ExerciseNameBodyPart>);
     const [exCap] = useState<number>(20);
+    const [showDeletePopup, setShowDeletePopup] = useState<boolean>(false);
     const router = useRouter();
     const classes = useStyles();
     const { user } = useUser();
 
     // Stops React Beautiful DND complaining about a lot when we load it up
-    resetServerContext()
+    resetServerContext();
 
     async function updateRoutineEvent(event) {
         // Perform some form validation
@@ -230,6 +232,26 @@ const Edit = (props: {
         setDays([...newDays]);
     };
 
+    const deleteRoutineTrigger = async (): Promise<void> => {
+
+        const deleteRoutineInput: DeleteRoutineInput = {
+            id: routine.id
+        }
+
+        try {
+            await API.graphql({
+                query: deleteRoutine,
+                variables: {
+                    input: deleteRoutineInput,
+                },
+                authMode: GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS,
+            });
+            await router.push(`/`);
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
     if (user?.getUsername() == routine.owner) {
         // Make a check if the user is the owner
         return (
@@ -282,6 +304,20 @@ const Edit = (props: {
                                                 }
                                             />
                                         </Grid>
+
+                                        <Button variant="contained" color="secondary"
+                                            onClick={() => setShowDeletePopup(true)}>
+                                            Delete Routine
+                                        </Button>
+
+                                        {
+                                            showDeletePopup &&
+                                            <ConfirmDeletePopup
+                                                routine={routine as Routine}
+                                                deleteRoutineTrigger={deleteRoutineTrigger}
+                                                setShowDeletePopup={setShowDeletePopup}
+                                                showDeletePopup={showDeletePopup} />
+                                        }
 
                                         <Divider style={{ width: "100%", marginTop: "12px" }} />
 
@@ -386,7 +422,7 @@ const Edit = (props: {
                                 className={classes.submit}
                                 onClick={(e) => updateRoutineEvent(e)}
                             >
-                                Update Routine
+                                Save Changes
                         </Button>
                         </form>
                     </div>

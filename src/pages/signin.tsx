@@ -15,6 +15,8 @@ import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/router';
 import { useUser } from '../context/userContext';
 import { CognitoUser } from "@aws-amplify/auth";
+import { Divider } from '@material-ui/core';
+import ForgotPassword from '../components/ForgotPassword';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -43,12 +45,14 @@ export default function SignIn(): any {
     const { setUser, setUserAttributes } = useUser();
     const [username, setUsername] = useState<string>("")
     const [password, setPassword] = useState<string>("")
+    const [recoveryCode, setRecoveryCode] = useState<string>();
+    const [newPassword, setNewPassword] = useState<string>();
     const [amplifySignupError, setAmplifySignupError] = useState<string>()
+    const [phase, setPhase] = useState<string>("signin")
 
     const onSubmit = async (data: SignInInput): Promise<void> => {
         setAmplifySignupError("")
         try {
-            console.log(router.pathname)
             const authData = await Auth.signIn(username, password);
             setUser(authData as CognitoUser);
             const { attributes } = await Auth.currentAuthenticatedUser();
@@ -58,14 +62,35 @@ export default function SignIn(): any {
             if (router.pathname === "/signin" || router.pathname === "/signup") {
                 router.push(`/profile`)
             }
-            else {
-                console.log(router.pathname)
-            }
         } catch (err) {
             console.error(err)
             setAmplifySignupError(err?.message)
             setUserAttributes(null);
         }
+    }
+
+    const sendPasswordResetEmail = async () => {
+        try {
+            // Send confirmation code to user's email
+            const x = await Auth.forgotPassword(username)
+            console.log(x)
+        }
+        catch (err) {
+            console.error(err)
+        }
+
+    }
+
+    const handleForgetPasswordPhaseStart = () => {
+
+        if (username) {
+            setPhase("forgotPassword");
+            sendPasswordResetEmail();
+        }
+        else {
+            setAmplifySignupError("Please enter your username first to recover your account")
+        }
+
     }
 
     return (
@@ -77,77 +102,110 @@ export default function SignIn(): any {
                 </Avatar>
 
                 <Typography component="h1" variant="h5">
-                    Sign up to Aybow
+                    Sign in to Aybow
                     </Typography>
 
-                <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                            <TextField
-                                inputRef={register(
-                                    {
-                                        required: "Please enter your username",
-                                    })}
-                                autoComplete="username"
-                                type="text"
-                                name="username"
-                                variant="outlined"
-                                required
-                                fullWidth
-                                id="username"
-                                label="Username"
-                                onChange={(e) => setUsername(e.target.value)}
-                                error={errors.username ? true : false}
-                                helperText={errors.username ? errors.username.message : null}
-                            />
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <TextField
-                                inputRef={register({
-                                    required: "Please enter your password",
-                                })}
-                                variant="outlined"
-                                required
-                                fullWidth
-                                name="password"
-                                label="Password"
-                                type="password"
-                                id="password"
-                                autoComplete="current-password"
-                                onChange={(e) => setPassword(e.target.value)}
-                                error={errors.password ? true : false}
-                                helperText={errors.password ? errors.password.message : null}
-                            />
-                        </Grid>
-
-                        {amplifySignupError && (
+                {phase === "signin" &&
+                    <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
+                        <Grid container spacing={2}>
                             <Grid item xs={12}>
-                                <Typography color="error">
-                                    {amplifySignupError}
-                                </Typography>
-                            </Grid>)
-                        }
+                                <TextField
+                                    inputRef={register(
+                                        {
+                                            required: "Please enter your username",
+                                        })}
+                                    autoComplete="username"
+                                    type="text"
+                                    name="username"
+                                    variant="outlined"
+                                    required
+                                    fullWidth
+                                    id="username"
+                                    label="Username"
+                                    onChange={(e) => setUsername(e.target.value)}
+                                    error={errors.username ? true : false}
+                                    helperText={errors.username ? errors.username.message : null}
+                                />
+                            </Grid>
 
-                    </Grid>
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        className={classes.submit}
-                        onClick={() => handleSubmit(onSubmit)}
-                    >
-                        Sign In
-                        </Button>
-                    <Grid container justify="flex-end">
-                        <Grid item>
-                            <Link href="/signup" variant="body2">
-                                Don&apos;t have an account? Sign Up!
-                            </Link>
+                            <Grid item xs={12}>
+                                <TextField
+                                    inputRef={register({
+                                        required: "Please enter your password",
+                                    })}
+                                    variant="outlined"
+                                    required
+                                    fullWidth
+                                    name="password"
+                                    label="Password"
+                                    type="password"
+                                    id="password"
+                                    autoComplete="current-password"
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    error={errors.password ? true : false}
+                                    helperText={errors.password ? errors.password.message : null}
+                                />
+                            </Grid>
+
+                            {amplifySignupError && (
+                                <Grid item xs={12}>
+                                    <Typography color="error">
+                                        {amplifySignupError}
+                                    </Typography>
+                                </Grid>)
+                            }
+
                         </Grid>
-                    </Grid>
-                </form>
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            color="primary"
+                            className={classes.submit}
+                            onClick={() => handleSubmit(onSubmit)}
+                        >
+                            Sign In
+                        </Button>
+                        <Grid container direction="column" alignItems="center" justify="center" spacing={1}>
+                            <Grid item>
+                                <Link href="/signup" variant="body1">
+                                    Don&apos;t have an account? Sign Up!
+                                </Link>
+                            </Grid>
+
+                            <Divider style={{ width: '100%', marginTop: '8px', marginBottom: '8px' }} />
+
+                            <Grid item>
+                                <Link variant="body2" onClick={handleForgetPasswordPhaseStart}>
+                                    Forgot my Password
+                                </Link>
+                            </Grid>
+
+                            {/* Forgot username isn't an option yet in Amplify... */}
+                            {/* <Grid item>
+                                <Link variant="body2" onClick={() => setPhase("forgotUsername")}>
+                                    Forgot my Username
+                                </Link>
+                            </Grid> */}
+
+                        </Grid>
+                    </form>
+                }
+
+                {
+                    phase === "forgotPassword" &&
+                    <ForgotPassword
+                        username={username}
+                        recoveryCode={recoveryCode}
+                        newPassword={newPassword}
+                        setRecoveryCode={setRecoveryCode}
+                        setNewPassword={setNewPassword}
+                        setUsername={setUsername}
+                        setPassword={setPassword}
+                        setPhase={setPhase}
+                    />
+                }
+
             </div>
         </Container>
     );

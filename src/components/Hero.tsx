@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 
 const useStyles = makeStyles((theme) => ({
   heroContent: {
-    marginTop: "128px",
+    marginTop: "64px",
   },
   heroButtons: {
     marginTop: theme.spacing(4),

@@ -11,6 +11,7 @@ import Button from "@material-ui/core/Button";
 import { useUser } from "../context/userContext";
 import { useRouter } from "next/router";
 import { Auth } from "aws-amplify";
+import LinearProgress from "@material-ui/core/LinearProgress";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -30,6 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function MenuAppBar(): any {
   const classes = useStyles();
   const [auth, setAuth] = useState(null);
+  const [loading, setLoading] = React.useState(false);
   const router = useRouter();
 
   const { setUser, setUserAttributes, user } = useUser();
@@ -57,6 +59,24 @@ export default function MenuAppBar(): any {
     // Listen for updates on user
     setAuth(user);
   }, [user]);
+
+  // display the progress bar on page loading status
+  useEffect(() => {
+    const start = () => {
+      setLoading(true);
+    };
+    const end = () => {
+      setLoading(false);
+    };
+    router.events.on("routeChangeStart", start);
+    router.events.on("routeChangeComplete", end);
+    router.events.on("routeChangeError", end);
+    return () => {
+      router.events.off("routeChangeStart", start);
+      router.events.off("routeChangeComplete", end);
+      router.events.off("routeChangeError", end);
+    };
+  }, []);
 
   return (
     <div className={classes.root}>
@@ -131,7 +151,9 @@ export default function MenuAppBar(): any {
             </React.Fragment>
           )}
         </Toolbar>
+        {loading ? <LinearProgress /> : <div style={{ height: "4px" }}></div>}
       </AppBar>
+      <div style={{ marginTop: "72px" }}></div>
     </div>
   );
 }

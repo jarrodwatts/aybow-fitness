@@ -138,7 +138,7 @@ const IndividualRoutine = ({ routine }: { routine: Routine }): any => {
   };
 
   return (
-    <div style={{ marginTop: "64px" }}>
+    <div>
       <div className={classes.heroImage}>
         <Image
           className={classes.test}

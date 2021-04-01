@@ -194,13 +194,7 @@ function Profile(): any {
   } else {
     return (
       <Container maxWidth="sm">
-        <Grid
-          container
-          alignItems="center"
-          justify="center"
-          style={{ marginTop: "64px" }}
-          spacing={3}
-        >
+        <Grid container alignItems="center" justify="center" spacing={3}>
           <Grid item>
             <Avatar></Avatar>
           </Grid>

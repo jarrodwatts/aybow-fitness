@@ -17,6 +17,8 @@ import { useUser } from "../context/userContext";
 import { CognitoUser } from "@aws-amplify/auth";
 import { Divider } from "@material-ui/core";
 import ForgotPassword from "../components/ForgotPassword";
+import { CognitoHostedUIIdentityProvider } from "@aws-amplify/auth/lib/types";
+import EmailIcon from "@material-ui/icons/Email";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -47,7 +49,7 @@ export default function SignIn(): any {
   const [recoveryCode, setRecoveryCode] = useState<string>();
   const [newPassword, setNewPassword] = useState<string>();
   const [amplifySignupError, setAmplifySignupError] = useState<string>();
-  const [phase, setPhase] = useState<string>("signin");
+  const [phase, setPhase] = useState<string>("methodSelect");
 
   const onSubmit = async (): Promise<void> => {
     setAmplifySignupError("");
@@ -88,121 +90,207 @@ export default function SignIn(): any {
     }
   };
 
-  return (
-    <Container component="main" maxWidth="xs" style={{ marginTop: "64px" }}>
-      <CssBaseline />
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
+  if (phase === "methodSelect") {
+    return (
+      <Container component="main" maxWidth="sm" style={{ marginTop: "64px" }}>
+        <CssBaseline />
+        <Grid
+          container
+          alignItems="center"
+          justify="center"
+          direction="column"
+          spacing={1}
+          style={{
+            width: "100%",
+            height: "65vh",
+          }}
+        >
+          <Grid item style={{ textAlign: "center" }}>
+            <Typography component="h1" variant="h3">
+              Welcome Back To Aybow!
+            </Typography>
+          </Grid>
 
-        <Typography component="h1" variant="h5">
-          Sign in to Aybow
-        </Typography>
+          <Grid item style={{ marginBottom: "16px", textAlign: "center" }}>
+            <Typography component="h3" variant="body1">
+              Please choose your preferred method of signing in.
+            </Typography>
+          </Grid>
 
-        {phase === "signin" && (
-          <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  inputRef={register({
-                    required: "Please enter your username",
-                  })}
-                  autoComplete="username"
-                  type="text"
-                  name="username"
-                  variant="outlined"
-                  required
-                  fullWidth
-                  id="username"
-                  label="Username"
-                  onChange={(e) => setUsername(e.target.value)}
-                  error={errors.username ? true : false}
-                  helperText={errors.username ? errors.username.message : null}
-                />
-              </Grid>
-
-              <Grid item xs={12}>
-                <TextField
-                  inputRef={register({
-                    required: "Please enter your password",
-                  })}
-                  variant="outlined"
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="current-password"
-                  onChange={(e) => setPassword(e.target.value)}
-                  error={errors.password ? true : false}
-                  helperText={errors.password ? errors.password.message : null}
-                />
-              </Grid>
-
-              {amplifySignupError && (
-                <Grid item xs={12}>
-                  <Typography color="error">{amplifySignupError}</Typography>
-                </Grid>
-              )}
-            </Grid>
+          <Grid item>
             <Button
-              type="submit"
-              fullWidth
               variant="contained"
-              color="primary"
-              className={classes.submit}
-              onClick={() => handleSubmit(onSubmit)}
+              onClick={() =>
+                Auth.federatedSignIn({
+                  provider: CognitoHostedUIIdentityProvider.Facebook,
+                })
+              }
+              style={{
+                backgroundColor: "#1877F2",
+                color: "#FAFAFA",
+                minWidth: "216px",
+              }}
             >
-              Sign In
+              Sign In with Facebook
             </Button>
-            <Grid
-              container
-              direction="column"
-              alignItems="center"
-              justify="center"
-              spacing={1}
+          </Grid>
+
+          <Grid item>
+            <Button
+              variant="contained"
+              onClick={() =>
+                Auth.federatedSignIn({
+                  provider: CognitoHostedUIIdentityProvider.Google,
+                })
+              }
+              style={{ backgroundColor: "#FFFFFF", minWidth: "216px" }}
             >
-              <Grid item>
-                <Link href="/signup" variant="body1">
-                  Don&apos;t have an account? Sign Up!
-                </Link>
+              Sign In with Google
+            </Button>
+          </Grid>
+
+          <Grid item>
+            <Button
+              startIcon={<EmailIcon />}
+              variant="contained"
+              color="secondary"
+              onClick={() => setPhase("signin")}
+              style={{ minWidth: "216px" }}
+            >
+              Sign In with Email
+            </Button>
+          </Grid>
+        </Grid>
+      </Container>
+    );
+  } else {
+    return (
+      <Container component="main" maxWidth="xs" style={{ marginTop: "64px" }}>
+        <CssBaseline />
+        <div className={classes.paper}>
+          <Avatar className={classes.avatar}>
+            <LockOutlinedIcon />
+          </Avatar>
+
+          <Typography component="h1" variant="h5">
+            Sign in to Aybow
+          </Typography>
+
+          {phase === "signin" && (
+            <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <TextField
+                    inputRef={register({
+                      required: "Please enter your username",
+                    })}
+                    autoComplete="username"
+                    type="text"
+                    name="username"
+                    variant="outlined"
+                    required
+                    fullWidth
+                    id="username"
+                    label="Username"
+                    onChange={(e) => setUsername(e.target.value)}
+                    error={errors.username ? true : false}
+                    helperText={
+                      errors.username ? errors.username.message : null
+                    }
+                  />
+                </Grid>
+
+                <Grid item xs={12}>
+                  <TextField
+                    inputRef={register({
+                      required: "Please enter your password",
+                    })}
+                    variant="outlined"
+                    required
+                    fullWidth
+                    name="password"
+                    label="Password"
+                    type="password"
+                    id="password"
+                    autoComplete="current-password"
+                    onChange={(e) => setPassword(e.target.value)}
+                    error={errors.password ? true : false}
+                    helperText={
+                      errors.password ? errors.password.message : null
+                    }
+                  />
+                </Grid>
+
+                {amplifySignupError && (
+                  <Grid item xs={12}>
+                    <Typography color="error">{amplifySignupError}</Typography>
+                  </Grid>
+                )}
               </Grid>
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                className={classes.submit}
+                onClick={() => handleSubmit(onSubmit)}
+              >
+                Sign In
+              </Button>
+              <Grid
+                container
+                direction="column"
+                alignItems="center"
+                justify="center"
+                spacing={1}
+              >
+                <Grid item>
+                  <Link href="/signup" variant="body1">
+                    Don&apos;t have an account? Sign Up!
+                  </Link>
+                </Grid>
 
-              <Divider
-                style={{ width: "100%", marginTop: "8px", marginBottom: "8px" }}
-              />
+                <Divider
+                  style={{
+                    width: "100%",
+                    marginTop: "8px",
+                    marginBottom: "8px",
+                  }}
+                />
 
-              <Grid item>
-                <Link variant="body2" onClick={handleForgetPasswordPhaseStart}>
-                  Forgot my Password
-                </Link>
-              </Grid>
+                <Grid item>
+                  <Link
+                    variant="body2"
+                    onClick={handleForgetPasswordPhaseStart}
+                  >
+                    Forgot my Password
+                  </Link>
+                </Grid>
 
-              {/* Forgot username isn't an option yet in Amplify... */}
-              {/* <Grid item>
+                {/* Forgot username isn't an option yet in Amplify... */}
+                {/* <Grid item>
                                 <Link variant="body2" onClick={() => setPhase("forgotUsername")}>
                                     Forgot my Username
                                 </Link>
                             </Grid> */}
-            </Grid>
-          </form>
-        )}
+              </Grid>
+            </form>
+          )}
 
-        {phase === "forgotPassword" && (
-          <ForgotPassword
-            username={username}
-            recoveryCode={recoveryCode}
-            newPassword={newPassword}
-            setRecoveryCode={setRecoveryCode}
-            setNewPassword={setNewPassword}
-            setUsername={setUsername}
-            setPassword={setPassword}
-            setPhase={setPhase}
-          />
-        )}
-      </div>
-    </Container>
-  );
+          {phase === "forgotPassword" && (
+            <ForgotPassword
+              username={username}
+              recoveryCode={recoveryCode}
+              newPassword={newPassword}
+              setRecoveryCode={setRecoveryCode}
+              setNewPassword={setNewPassword}
+              setUsername={setUsername}
+              setPassword={setPassword}
+              setPhase={setPhase}
+            />
+          )}
+        </div>
+      </Container>
+    );
+  }
 }

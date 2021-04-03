@@ -28,7 +28,7 @@ import CompletedExerciseCard from "../components/CompletedExerciseCard";
 import EditRoutineCard from "../components/EditRoutineCard";
 import SignIn from "./signin";
 
-Amplify.configure(awsconfig);
+//Amplify.configure(awsconfig);
 
 const useStyles = makeStyles((theme) => ({
   large: {

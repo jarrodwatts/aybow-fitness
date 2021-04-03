@@ -11,7 +11,20 @@ const awsmobile = {
     "aws_cognito_region": "ap-southeast-2",
     "aws_user_pools_id": "ap-southeast-2_wGW0ZRMxR",
     "aws_user_pools_web_client_id": "6i6gkrm5vfrad0vdi4fu9igh7",
-    "oauth": {}
+    "oauth": {
+        "domain": "aybowfitness-dev.auth.ap-southeast-2.amazoncognito.com",
+        "scope": [
+            "phone",
+            "email",
+            "openid",
+            "profile",
+            "aws.cognito.signin.user.admin"
+        ],
+        "redirectSignIn": "http://localhost:3000/profile/",
+        "redirectSignOut": "http://localhost:3000/",
+        "responseType": "code"
+    },
+    "federationTarget": "COGNITO_USER_POOLS"
 };
 
 

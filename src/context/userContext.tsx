@@ -1,5 +1,5 @@
 import { useState, useEffect, createContext, useContext } from "react";
-import Amplify, { Auth } from "aws-amplify";
+import Amplify, { Auth, Hub } from "aws-amplify";
 import { CognitoUser } from "@aws-amplify/auth";
 import UserContextType from "../types/UserContextType";
 
@@ -8,7 +8,7 @@ import UserContextType from "../types/UserContextType";
 import awsconfig from "../aws-exports";
 import { AuthState, onAuthUIStateChange } from "@aws-amplify/ui-components";
 
-Amplify.configure(awsconfig);
+Amplify.configure(awsconfig)
 
 export const UserContext = createContext<UserContextType>(null);
 
@@ -39,6 +39,47 @@ export default function UserContextComp({ children }: { children: any }): any {
     );
   }, []);
 
+  const listener = (data) => {
+    console.log(data);
+    switch (data.payload.event) {
+      case "signIn":
+        console.log("Signed in")
+        checkUser();
+        break;
+      case "signUp":
+        console.log("Signed Up")
+        checkUser();
+        break;
+      case "signOut":
+        console.log("Signed Out")
+        checkUser();
+        break;
+      case "signIn_failure":
+        console.log("Signed in FAILURE")
+        checkUser();
+        break;
+      case "tokenRefresh":
+        console.log("Token refreshed")
+        checkUser();
+        break;
+      case "tokenRefresh_failure":
+        console.log("Token refreshed FAILURE")
+        checkUser();
+        break;
+      case "configured":
+        console.log("Configured.")
+        checkUser();
+        break;
+    }
+  };
+
+  // Listen for social sign in
+  useEffect(() => {
+    Hub.listen("auth", listener);
+
+    checkUser();
+  }, []);
+
   async function checkUser() {
     try {
       const user = await Auth.currentAuthenticatedUser();
@@ -48,12 +89,16 @@ export default function UserContextComp({ children }: { children: any }): any {
         setUserAttributes(attributes);
       }
     } catch (error) {
+      console.error(error);
       setUser(null);
       setUserAttributes(null);
     } finally {
       setLoadingUser(false);
     }
   }
+
+  console.log("user:", user)
+  console.log("userAttributes:", userAttributes)
 
   return (
     <UserContext.Provider

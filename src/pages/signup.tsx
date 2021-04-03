@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -16,6 +16,8 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import { useUser } from "../context/userContext";
 import { CognitoUser } from "@aws-amplify/auth";
+import { CognitoHostedUIIdentityProvider } from "@aws-amplify/auth/lib/types";
+import EmailIcon from "@material-ui/icons/Email";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -42,7 +44,7 @@ export default function SignUp(): any {
   const router = useRouter();
   const { setUser, setUserAttributes } = useUser();
 
-  const [phase, setPhase] = useState<string>("signup");
+  const [phase, setPhase] = useState<string>("methodSelect");
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
   const [username, setUsername] = useState<string>("");
@@ -50,6 +52,7 @@ export default function SignUp(): any {
   const [email, setEmail] = useState<string>("");
   const [confirmationCode, setConfirmationCode] = useState<string>("");
   const [amplifySignupError, setAmplifySignupError] = useState<string>();
+  const [tempUser, setTempUser] = useState<any>();
 
   const onSubmit = async (): Promise<void> => {
     setAmplifySignupError("");
@@ -146,6 +149,81 @@ export default function SignUp(): any {
       console.error("error resending code: ", err);
     }
   };
+
+  if (phase === "methodSelect") {
+    return (
+      <Container component="main" maxWidth="sm" style={{ marginTop: "64px" }}>
+        <CssBaseline />
+        <Grid
+          container
+          alignItems="center"
+          justify="center"
+          direction="column"
+          spacing={1}
+          style={{
+            width: "100%",
+            height: "65vh",
+          }}
+        >
+          <Grid item style={{ textAlign: "center" }}>
+            <Typography component="h1" variant="h3">
+              Welcome to Aybow!
+            </Typography>
+          </Grid>
+
+          <Grid item style={{ marginBottom: "16px", textAlign: "center" }}>
+            <Typography component="h3" variant="body1">
+              Please choose your preferred method to create an account.
+            </Typography>
+          </Grid>
+
+          <Grid item>
+            <Button
+              variant="contained"
+              onClick={() =>
+                Auth.federatedSignIn({
+                  provider: CognitoHostedUIIdentityProvider.Facebook,
+                })
+              }
+              style={{
+                backgroundColor: "#1877F2",
+                color: "#FAFAFA",
+                minWidth: "216px",
+              }}
+            >
+              Sign Up with Facebook
+            </Button>
+          </Grid>
+
+          <Grid item>
+            <Button
+              variant="contained"
+              onClick={() =>
+                Auth.federatedSignIn({
+                  provider: CognitoHostedUIIdentityProvider.Google,
+                })
+              }
+              style={{ backgroundColor: "#FFFFFF", minWidth: "216px" }}
+            >
+              Sign Up with Google
+            </Button>
+          </Grid>
+
+          <Grid item>
+            <Button
+              startIcon={<EmailIcon />}
+              variant="contained"
+              color="secondary"
+              onClick={() => setPhase("signup")}
+              style={{ minWidth: "216px" }}
+            >
+              Sign Up with Email
+            </Button>
+          </Grid>
+        </Grid>
+      </Container>
+    );
+  }
 
   if (phase === "signup") {
     return (

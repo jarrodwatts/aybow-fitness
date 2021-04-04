@@ -1,5 +1,5 @@
 import { useState, useEffect, createContext, useContext } from "react";
-import Amplify, { Auth, Hub } from "aws-amplify";
+import Amplify, { Auth } from "aws-amplify";
 import { CognitoUser } from "@aws-amplify/auth";
 import UserContextType from "../types/UserContextType";
 
@@ -39,47 +39,6 @@ export default function UserContextComp({ children }: { children: any }): any {
     );
   }, []);
 
-  const listener = (data) => {
-    console.log(data);
-    switch (data.payload.event) {
-      case "signIn":
-        console.log("Signed in")
-        checkUser();
-        break;
-      case "signUp":
-        console.log("Signed Up")
-        checkUser();
-        break;
-      case "signOut":
-        console.log("Signed Out")
-        checkUser();
-        break;
-      case "signIn_failure":
-        console.log("Signed in FAILURE")
-        checkUser();
-        break;
-      case "tokenRefresh":
-        console.log("Token refreshed")
-        checkUser();
-        break;
-      case "tokenRefresh_failure":
-        console.log("Token refreshed FAILURE")
-        checkUser();
-        break;
-      case "configured":
-        console.log("Configured.")
-        checkUser();
-        break;
-    }
-  };
-
-  // Listen for social sign in
-  useEffect(() => {
-    Hub.listen("auth", listener);
-
-    checkUser();
-  }, []);
-
   async function checkUser() {
     try {
       const user = await Auth.currentAuthenticatedUser();
@@ -96,9 +55,6 @@ export default function UserContextComp({ children }: { children: any }): any {
       setLoadingUser(false);
     }
   }
-
-  console.log("user:", user)
-  console.log("userAttributes:", userAttributes)
 
   return (
     <UserContext.Provider
@@ -117,4 +73,4 @@ export default function UserContextComp({ children }: { children: any }): any {
 }
 
 // Custom hook that shorthands the context
-export const useUser = (): any => useContext(UserContext);
+export const useUser = (): UserContextType => useContext(UserContext);

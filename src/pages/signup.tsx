@@ -52,7 +52,6 @@ export default function SignUp(): any {
   const [email, setEmail] = useState<string>("");
   const [confirmationCode, setConfirmationCode] = useState<string>("");
   const [amplifySignupError, setAmplifySignupError] = useState<string>();
-  const [tempUser, setTempUser] = useState<any>();
 
   const onSubmit = async (): Promise<void> => {
     setAmplifySignupError("");

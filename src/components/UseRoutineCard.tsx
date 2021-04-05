@@ -61,11 +61,11 @@ const UseRoutineCard = ({ routine }: { routine: Routine }): any => {
               justify="space-between"
               style={{ marginTop: "8px" }}
             >
-              <Grid item>
+              {/* <Grid item>
                 <Typography>
                   <b>Routine from {routine.owner}</b>
                 </Typography>
-              </Grid>
+              </Grid> */}
 
               <Grid item>
                 <Button

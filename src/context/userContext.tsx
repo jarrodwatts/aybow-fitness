@@ -7,14 +7,17 @@ import UserContextType from "../types/UserContextType";
 // In _app.tsx it will be initialized for every page
 import awsconfig from "../aws-exports";
 import { AuthState, onAuthUIStateChange } from "@aws-amplify/ui-components";
+import CognitoUserAttributes from "../types/CognitoUserAttributes";
 
-Amplify.configure(awsconfig)
+Amplify.configure(awsconfig);
 
 export const UserContext = createContext<UserContextType>(null);
 
 export default function UserContextComp({ children }: { children: any }): any {
   const [user, setUser] = useState<CognitoUser>(null);
-  const [userAttributes, setUserAttributes] = useState(null);
+  const [userAttributes, setUserAttributes] = useState<CognitoUserAttributes>(
+    null
+  );
   const [authState, setAuthState] = useState<AuthState>();
   const [loadingUser, setLoadingUser] = useState<boolean>(true); // Helpful, to update the UI accordingly.
 
@@ -55,6 +58,9 @@ export default function UserContextComp({ children }: { children: any }): any {
       setLoadingUser(false);
     }
   }
+
+  console.log(user);
+  console.log(userAttributes);
 
   return (
     <UserContext.Provider

@@ -9,7 +9,32 @@ import awsconfig from "../aws-exports";
 import { AuthState, onAuthUIStateChange } from "@aws-amplify/ui-components";
 import CognitoUserAttributes from "../types/CognitoUserAttributes";
 
-Amplify.configure(awsconfig);
+const isLocalhost = process.env.NODE_ENV == "development";
+
+const [
+  localRedirectSignIn,
+  productionRedirectSignIn,
+] = awsconfig.oauth.redirectSignIn.split(",");
+
+const [
+  localRedirectSignOut,
+  productionRedirectSignOut,
+] = awsconfig.oauth.redirectSignOut.split(",");
+
+const updatedAwsConfig = {
+  ...awsconfig,
+  oauth: {
+    ...awsconfig.oauth,
+    redirectSignIn: isLocalhost
+      ? localRedirectSignIn
+      : productionRedirectSignIn,
+    redirectSignOut: isLocalhost
+      ? localRedirectSignOut
+      : productionRedirectSignOut,
+  },
+};
+
+Amplify.configure(updatedAwsConfig);
 
 export const UserContext = createContext<UserContextType>(null);
 
@@ -58,9 +83,6 @@ export default function UserContextComp({ children }: { children: any }): any {
       setLoadingUser(false);
     }
   }
-
-  console.log(user);
-  console.log(userAttributes);
 
   return (
     <UserContext.Provider

@@ -1,6 +1,6 @@
 {
     "identityPoolName": "aybowfitness24958a15_identitypool_24958a15",
-    "allowUnauthenticatedIdentities": false,
+    "allowUnauthenticatedIdentities": true,
     "resourceNameTruncated": "aybowf24958a15",
     "userPoolName": "aybowfitness24958a15_userpool_24958a15",
     "autoVerifiedAttributes": [

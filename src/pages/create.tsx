@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { API } from "aws-amplify";
+import { API, Storage } from "aws-amplify";
 import { v4 as uuid } from "uuid";
 import { useRouter } from "next/router";
 import { createRoutine } from "../graphql/mutations";
@@ -23,6 +23,7 @@ import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import { useUser } from "../context/userContext";
 import ExerciseInExerciseListDraggable from "../components/DragAndDrop/ExerciseInExerciseListDraggable";
 import DayEditableContainer from "../components/DragAndDrop/DayEditableContainer";
+import ImageDropzone from "../components/ImageDropzone";
 import reorderExercisesInDay from "../lib/createHelpers/reorderExercisesInDay";
 import DragDropEvent from "../types/DragDropEvent";
 import deepCopy from "../lib/deepCopy";
@@ -68,6 +69,7 @@ const Create = (): any => {
   const [routine, setRoutine] = useState<CreateRoutineInput>();
   const [id] = useState<string>(uuid());
   const [days, setDays] = useState<Array<DayInput>>([]);
+  const [routineImage, setRoutineImage] = useState(null);
   const [filteredExercises, setFilteredExercises] = useState<
     Array<ExerciseNameBodyPart>
   >(exerciseData as Array<ExerciseNameBodyPart>);
@@ -77,19 +79,25 @@ const Create = (): any => {
   const { user, loadingUser } = useUser();
 
   async function createNewRoutine(event) {
-    // Perform some form validation
     event.preventDefault();
 
-    const createRoutineInputValues: CreateRoutineInput = {
-      owner: user.getUsername(),
-      id: id,
-      name: routine.name,
-      description: routine.description,
-      days: days,
-      userMade: "true",
-    };
-
     try {
+      if (routineImage) {
+        await Storage.put(id, routineImage, {
+          contentType: "image/png",
+        });
+      }
+
+      const createRoutineInputValues: CreateRoutineInput = {
+        owner: user.getUsername(),
+        id: id,
+        name: routine.name,
+        description: routine.description,
+        days: days,
+        userMade: "true",
+        hasImage: routineImage ? true : false,
+      };
+
       await API.graphql({
         query: createRoutine,
         variables: { input: createRoutineInputValues },
@@ -282,7 +290,9 @@ const Create = (): any => {
                       />
                     </Grid>
 
-                    <Divider style={{ width: "100%", marginTop: "12px" }} />
+                    <Grid item xs={12}>
+                      <ImageDropzone setRoutineImage={setRoutineImage} />
+                    </Grid>
 
                     {days.map((day, key) => (
                       <Grid item xs={12} key={key}>

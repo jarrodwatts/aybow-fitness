@@ -181,14 +181,13 @@ Parameters:
   authProviders:
     Type: CommaDelimitedList
       
-  hostedUIProviderCreds:
-    Type: String
-  
-            
   oAuthMetadata:
     Type: String
   
             
+  hostedUIProviderCreds:
+    Type: String
+  
             
 Conditions:
   ShouldNotCreateEnvResources: !Equals [ !Ref env, NONE ]

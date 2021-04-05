@@ -46,6 +46,7 @@ type Routine
   days: [Day]!
   owner: String!
   userMade: String # Has to be string to be a sort key
+  hasImage: Boolean
 }
 
 type Day {

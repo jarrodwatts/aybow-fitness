@@ -39,6 +39,7 @@ const Hero = (): any => {
               <Button
                 variant="contained"
                 color="primary"
+                id="create"
                 onClick={() => router.push(`/create`)}
               >
                 Create My Own

@@ -64,5 +64,11 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     }
+  },
+  "storage": {
+    "routineimagebucket": {
+      "service": "S3",
+      "providerPlugin": "awscloudformation"
+    }
   }
 }

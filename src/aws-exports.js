@@ -24,7 +24,9 @@ const awsmobile = {
         "redirectSignOut": "http://localhost:3000/,https://aybow.com/",
         "responseType": "code"
     },
-    "federationTarget": "COGNITO_USER_POOLS"
+    "federationTarget": "COGNITO_USER_POOLS",
+    "aws_user_files_s3_bucket": "aybowfitnessa41889462c6d40a789d09c690fc20675205104-dev",
+    "aws_user_files_s3_bucket_region": "ap-southeast-2"
 };
 
 

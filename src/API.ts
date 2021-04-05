@@ -127,6 +127,7 @@ export type CreateRoutineInput = {
   days: Array< DayInput | null >,
   owner: string,
   userMade?: string | null,
+  hasImage?: boolean | null,
 };
 
 export type DayInput = {
@@ -146,9 +147,17 @@ export type ModelRoutineConditionInput = {
   name?: ModelStringInput | null,
   description?: ModelStringInput | null,
   userMade?: ModelStringInput | null,
+  hasImage?: ModelBooleanInput | null,
   and?: Array< ModelRoutineConditionInput | null > | null,
   or?: Array< ModelRoutineConditionInput | null > | null,
   not?: ModelRoutineConditionInput | null,
+};
+
+export type ModelBooleanInput = {
+  ne?: boolean | null,
+  eq?: boolean | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
 };
 
 export type Routine = {
@@ -159,6 +168,7 @@ export type Routine = {
   days?:  Array<Day | null >,
   owner?: string,
   userMade?: string | null,
+  hasImage?: boolean | null,
   createdAt?: string,
   updatedAt?: string,
 };
@@ -177,6 +187,7 @@ export type UpdateRoutineInput = {
   days?: Array< DayInput | null > | null,
   owner?: string | null,
   userMade?: string | null,
+  hasImage?: boolean | null,
 };
 
 export type DeleteRoutineInput = {
@@ -234,6 +245,7 @@ export type ModelRoutineFilterInput = {
   description?: ModelStringInput | null,
   owner?: ModelStringInput | null,
   userMade?: ModelStringInput | null,
+  hasImage?: ModelBooleanInput | null,
   and?: Array< ModelRoutineFilterInput | null > | null,
   or?: Array< ModelRoutineFilterInput | null > | null,
   not?: ModelRoutineFilterInput | null,
@@ -417,6 +429,7 @@ export type CreateRoutineMutation = {
     } | null >,
     owner: string,
     userMade?: string | null,
+    hasImage?: boolean | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -447,6 +460,7 @@ export type UpdateRoutineMutation = {
     } | null >,
     owner: string,
     userMade?: string | null,
+    hasImage?: boolean | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -477,6 +491,7 @@ export type DeleteRoutineMutation = {
     } | null >,
     owner: string,
     userMade?: string | null,
+    hasImage?: boolean | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -656,6 +671,7 @@ export type GetRoutineQuery = {
     } | null >,
     owner: string,
     userMade?: string | null,
+    hasImage?: boolean | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -689,6 +705,7 @@ export type ListRoutinesQuery = {
       } | null >,
       owner: string,
       userMade?: string | null,
+      hasImage?: boolean | null,
       createdAt: string,
       updatedAt: string,
     } | null > | null,
@@ -864,6 +881,7 @@ export type OnCreateRoutineSubscription = {
     } | null >,
     owner: string,
     userMade?: string | null,
+    hasImage?: boolean | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -889,6 +907,7 @@ export type OnUpdateRoutineSubscription = {
     } | null >,
     owner: string,
     userMade?: string | null,
+    hasImage?: boolean | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -914,6 +933,7 @@ export type OnDeleteRoutineSubscription = {
     } | null >,
     owner: string,
     userMade?: string | null,
+    hasImage?: boolean | null,
     createdAt: string,
     updatedAt: string,
   } | null,

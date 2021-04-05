@@ -4,7 +4,13 @@ import { GetRoutineQuery, GetUserQueryVariables, Routine } from "../../API";
 import { getRoutine, getUser } from "../../graphql/queries";
 import config from "../../aws-exports";
 import { GetServerSideProps } from "next";
-import { Container, Grid, Typography, Button } from "@material-ui/core";
+import {
+  Container,
+  Grid,
+  Typography,
+  Button,
+  Divider,
+} from "@material-ui/core";
 import Image from "next/image";
 import { makeStyles } from "@material-ui/core/styles";
 import { useUser } from "../../context/userContext";
@@ -35,7 +41,6 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     padding: theme.spacing(2),
-    //textAlign: "center",
     color: theme.palette.text.secondary,
   },
 }));
@@ -139,77 +144,58 @@ const IndividualRoutine = ({ routine }: { routine: Routine }): any => {
 
   return (
     <div>
-      <div className={classes.heroImage}>
-        <Image
-          className={classes.test}
-          alt={routine.name}
-          src="https://source.unsplash.com/3200x900/?fitness"
-          layout="fill"
-          objectFit="cover"
-          quality={100}
-        />
-      </div>
-
       <Grid container alignItems="center" justify="center">
         <Container maxWidth="md">
-          <div
-            style={{
-              textAlign: "center",
-              height: "35vh",
-              display: "flex",
-              justifyContent: "center",
-              alignContent: "center",
-              flexDirection: "column",
-              background: "linear-gradient(rgba(0, 0, 0, 0.6))",
-            }}
-          >
-            <Typography
-              component="h1"
-              variant="h2"
-              style={{ color: "#fff", marginBottom: "8px" }}
-            >
-              {routine.name}
-            </Typography>
-            <Typography
-              component="h2"
-              variant="body1"
-              style={{ color: "#fff", maxHeight: "13vh", overflowY: "auto" }}
-            >
-              {routine.description}
-            </Typography>
-          </div>
-
           <div className={classes.root} style={{ marginTop: "32px" }}>
-            <Grid container spacing={3}>
-              <Grid item xs={8}>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
                 <Typography component="h3" variant="h4">
-                  The Routine
+                  {routine.name}
                 </Typography>
               </Grid>
-              {
-                // The user who created the routine shouldn't see the save button
-                user ? (
-                  <Grid item xs={4}>
-                    <Button
-                      variant="contained"
-                      color={alreadySaved ? "secondary" : "primary"}
-                      onClick={handleSaveUnsave}
-                    >
-                      {alreadySaved ? "Unsave Routine" : "Save Routine"}
-                    </Button>
-                  </Grid>
-                ) : (
-                  <Grid item xs={4}>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => router.push(`/profile`)}
-                    >
-                      Save Routine
-                    </Button>
-                  </Grid>
-                )
-              }
+              <Grid
+                item
+                xs={12}
+                style={{ maxHeight: "256px", overflowY: "auto" }}
+              >
+                <Typography component="h2" variant="body1">
+                  {routine.description}
+                </Typography>
+              </Grid>
+              <Grid container item alignItems="center" justify="flex-end">
+                {
+                  // The user who created the routine shouldn't see the save button
+                  user ? (
+                    <Grid item>
+                      <Button
+                        variant="contained"
+                        color={alreadySaved ? "secondary" : "primary"}
+                        onClick={handleSaveUnsave}
+                      >
+                        {alreadySaved ? "Unsave Routine" : "Save Routine"}
+                      </Button>
+                    </Grid>
+                  ) : (
+                    <Grid item>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => router.push(`/profile`)}
+                      >
+                        Save Routine
+                      </Button>
+                    </Grid>
+                  )
+                }
+
+                <Divider
+                  style={{
+                    width: "100%",
+                    marginTop: "8px",
+                    marginBottom: "8px",
+                  }}
+                />
+              </Grid>
               {routine.days.map((day, dayKey) => (
                 <Grid key={dayKey} item xs={12}>
                   <DayView day={day} dayKey={dayKey} />

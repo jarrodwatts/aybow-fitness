@@ -107,6 +107,7 @@ export const onCreateRoutine = /* GraphQL */ `
       }
       owner
       userMade
+      hasImage
       createdAt
       updatedAt
     }
@@ -130,6 +131,7 @@ export const onUpdateRoutine = /* GraphQL */ `
       }
       owner
       userMade
+      hasImage
       createdAt
       updatedAt
     }
@@ -153,6 +155,7 @@ export const onDeleteRoutine = /* GraphQL */ `
       }
       owner
       userMade
+      hasImage
       createdAt
       updatedAt
     }

@@ -85,6 +85,7 @@ export const getRoutine = /* GraphQL */ `
       }
       owner
       userMade
+      hasImage
       createdAt
       updatedAt
     }
@@ -113,6 +114,7 @@ export const listRoutines = /* GraphQL */ `
         }
         owner
         userMade
+        hasImage
         createdAt
         updatedAt
       }

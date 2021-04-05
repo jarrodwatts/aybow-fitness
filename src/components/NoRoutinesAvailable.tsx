@@ -17,7 +17,7 @@ const NoRoutinesAvailable = (): any => {
     >
       <Grid container justify="center" alignItems="center" spacing={3}>
         <Grid item>
-          <Typography component="h3" variant="h4">
+          <Typography component="h3" variant="h5">
             Looks like you haven&apos;t <b>saved</b> or <b>created</b> any
             routines yet.
           </Typography>
@@ -28,7 +28,7 @@ const NoRoutinesAvailable = (): any => {
           </Typography>
         </Grid>
 
-        <Grid container item justify="center" alignItems="center" spacing={3}>
+        <Grid container item justify="center" alignItems="center" spacing={1}>
           <Grid item>
             <Button
               color="primary"

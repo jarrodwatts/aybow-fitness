@@ -185,9 +185,6 @@ const IndividualRoutine = ({ routine }: { routine: Routine }): any => {
                 <Typography component="h3" variant="h4">
                   The Routine
                 </Typography>
-                <Typography component="h4" variant="h6">
-                  Made by <b>{routine.owner}</b>
-                </Typography>
               </Grid>
               {
                 // The user who created the routine shouldn't see the save button

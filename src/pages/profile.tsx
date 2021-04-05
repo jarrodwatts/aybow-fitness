@@ -164,7 +164,6 @@ function Profile(): any {
 
   const onSubmit = async (data: EditProfileInput): Promise<void> => {
     setFormGenericError("");
-    console.log("submitting firing");
 
     try {
       await Auth.updateUserAttributes(user, {

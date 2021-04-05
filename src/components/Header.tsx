@@ -102,12 +102,14 @@ export default function MenuAppBar(): any {
                 color="primary"
                 style={{ marginRight: "8px" }}
                 onClick={() => router.push(`/signup`)}
+                id="signup"
               >
                 Sign Up
               </Button>
               <Button
                 variant="contained"
                 onClick={() => router.push(`/signin`)}
+                id="signin"
               >
                 Sign In
               </Button>
@@ -120,6 +122,7 @@ export default function MenuAppBar(): any {
                 aria-haspopup="true"
                 onClick={handleMenu}
                 color="inherit"
+                id="accountCircle"
               >
                 <AccountCircle />
               </IconButton>

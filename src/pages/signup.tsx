@@ -432,7 +432,7 @@ export default function SignUp(): any {
           </Typography>
 
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
               <TextField
                 inputProps={{
                   maxLength: 6,

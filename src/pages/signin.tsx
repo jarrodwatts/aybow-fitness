@@ -120,6 +120,7 @@ export default function SignIn(): any {
           <Grid item>
             <Button
               variant="contained"
+              id="signinwithfacebook"
               onClick={() =>
                 Auth.federatedSignIn({
                   provider: CognitoHostedUIIdentityProvider.Facebook,
@@ -138,6 +139,7 @@ export default function SignIn(): any {
           <Grid item>
             <Button
               variant="contained"
+              id="signinwithgoogle"
               onClick={() =>
                 Auth.federatedSignIn({
                   provider: CognitoHostedUIIdentityProvider.Google,
@@ -152,6 +154,7 @@ export default function SignIn(): any {
           <Grid item>
             <Button
               startIcon={<EmailIcon />}
+              id="signinwithemail"
               variant="contained"
               color="secondary"
               onClick={() => setPhase("signin")}
@@ -229,6 +232,7 @@ export default function SignIn(): any {
               </Grid>
               <Button
                 type="submit"
+                id="submitemailandpassword"
                 fullWidth
                 variant="contained"
                 color="primary"

@@ -1,0 +1,6 @@
+[{
+        "relation": ["delegate_permission/common.handle_all_urls"],
+        "target" : { "namespace": "android_app", "package_name": "com.aybow.twa",
+                     "sha256_cert_fingerprints": ["0C:16:94:3C:9B:AB:AA:C1:CB:D2:66:AC:33:95:72:C3:F9:B4:58:9C:55:A3:2E:BC:FB:0A:76:06:51:B4:8F:73"] }
+      }
+]
